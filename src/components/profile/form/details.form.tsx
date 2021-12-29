@@ -2,8 +2,7 @@ import React from 'react';
 import {Controller, useFormContext} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
 import {Input} from 'react-native-elements';
-import {BirthdayForm} from './birthday.form';
-
+import {DateForm} from './date.form';
 import {FieldForm} from './field.form';
 import {AllowanceForm} from './allowance.form';
 
@@ -21,9 +20,6 @@ export const DetailsForm = ({}: DetailsFormProps) => {
         <FieldForm lable="Nickname">
           <Controller
             control={control}
-            rules={{
-              required: true,
-            }}
             render={({field: {onChange, value, onBlur}}) => (
               <Input
                 value={value}
@@ -36,12 +32,8 @@ export const DetailsForm = ({}: DetailsFormProps) => {
             name="nickname"
           />
         </FieldForm>
-        <FieldForm lable="Birthday">
-          <BirthdayForm date={new Date()} />
-        </FieldForm>
-        <FieldForm lable="Allowance">
-          <AllowanceForm></AllowanceForm>
-        </FieldForm>
+        <DateForm name="birthdate" label="Birthdate" />
+        <AllowanceForm />
       </View>
     </View>
   );

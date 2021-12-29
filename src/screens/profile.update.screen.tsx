@@ -13,8 +13,6 @@ import {Stash} from '../types/stash.type';
 
 const schema = yup.object().shape({
   nickname: yup.string().required('required field'),
-  avatar: yup.string().required('required field'),
-  color: yup.string().required('required field'),
 });
 
 type ProfileForm = {
@@ -57,7 +55,7 @@ export const ProfileCreateScreen = () => {
         <DetailsForm />
       </FormProvider>
       <FAB
-        title="create"
+        title="Create"
         buttonStyle={style.createButton}
         onPress={methods.handleSubmit(onSubmit)}></FAB>
     </View>
