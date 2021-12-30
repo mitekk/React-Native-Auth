@@ -14,15 +14,28 @@ import {Avatar, FAB} from 'react-native-elements';
 
 const schema = yup.object().shape({
   interval: yup.string().required('required field'),
-  amount: yup.number().required('required field'),
+  amount: yup
+    .number()
+    .typeError('please specify amount')
+    .positive('borrow from a kid?')
+    .max(1000000, 'max value 1000000')
+    .required('required field'),
   start: yup.date().required('required field'),
 });
 
 type StashModalProps = {
   visible: boolean;
-  stash?: Stash;
+  stash?: {stash: Stash; index: number};
   color: string;
-  hide: (stash?: Stash) => void;
+  hide: (response: StashResponse) => void;
+};
+
+type StashAction = 'create' | 'update' | 'delete' | 'cancel';
+
+export type StashResponse = {
+  action: StashAction;
+  stash?: Stash;
+  index?: number;
 };
 
 export const StashModal = ({
@@ -31,7 +44,9 @@ export const StashModal = ({
   color,
   hide,
 }: StashModalProps) => {
-  const {interval, amount, start} = {...stashToEdit};
+  const {stash, index} = {...stashToEdit};
+  const {interval, amount, start} = {...stash};
+
   const [openIntervals, setOpenIntervals] = useState(false);
   const [intervals, setIntervals] = useState([
     {label: 'Day', value: 'day'},
@@ -47,7 +62,6 @@ export const StashModal = ({
   const {
     control,
     setValue,
-    getValues,
     handleSubmit,
     formState: {errors},
   } = useForm<Stash>({
@@ -68,15 +82,23 @@ export const StashModal = ({
   }, [formDate]);
 
   useEffect(() => {
-    if (start) {
+    if (start && interval && amount) {
       setFormDate(start);
+      setFormInterval(interval);
+      setValue('amount', amount);
     } else {
       setFormDate(new Date());
+      setFormInterval('week');
+      setValue('amount', 1);
     }
-  }, [start]);
+  }, [start, interval, amount]);
 
   const onSubmit: SubmitHandler<Stash> = data => {
-    hide(data);
+    if (stashToEdit) {
+      hide({index, action: 'update', stash: data});
+    } else {
+      hide({action: 'create', stash: data});
+    }
   };
 
   return (
@@ -85,7 +107,7 @@ export const StashModal = ({
       transparent={true}
       visible={visible}
       onRequestClose={() => {
-        hide();
+        hide({action: 'cancel'});
       }}>
       <View style={style.centeredView}>
         <View style={style.modalView}>
@@ -93,8 +115,15 @@ export const StashModal = ({
             style={style.close}
             name={'times'}
             size={20}
-            onPress={() => hide()}
+            onPress={() => hide({action: 'cancel'})}
           />
+          <Icon
+            style={{...style.delete, display: stashToEdit ? 'flex' : 'none'}}
+            name={'trash-alt'}
+            size={18}
+            onPress={() => hide({action: 'delete', index})}
+          />
+
           <View style={style.header}>
             <Avatar
               rounded
@@ -217,6 +246,12 @@ const style = StyleSheet.create({
     position: 'absolute',
     top: 25,
     right: 25,
+  },
+  delete: {
+    position: 'absolute',
+    top: 25,
+    left: 25,
+    color: '#CB0F0FC9',
   },
   header: {
     flex: 2,

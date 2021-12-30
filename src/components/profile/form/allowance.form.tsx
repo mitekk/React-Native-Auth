@@ -3,10 +3,11 @@ import {useFormContext} from 'react-hook-form';
 import {StyleSheet, View, FlatList, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import {pullAt} from 'lodash';
 import {Stash} from '../../../types/stash.type';
 import {uuid} from '../../../utils/uuid';
 import {FieldForm} from './field.form';
-import {StashModal} from './stash.modal';
+import {StashModal, StashResponse} from './stash.modal';
 
 type AllowanceFormProps = {};
 
@@ -20,7 +21,8 @@ export const AllowanceForm = ({}: AllowanceFormProps) => {
 
   const [allowance, setAllowance] = useState<Stash[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [stashToEdit, setStashToEdit] = useState<Stash>();
+  const [stashToEdit, setStashToEdit] =
+    useState<{stash: Stash; index: number}>();
 
   useEffect(() => {
     setAllowance(getValues('allowance'));
@@ -39,10 +41,10 @@ export const AllowanceForm = ({}: AllowanceFormProps) => {
     />
   );
 
-  const renderItem = ({item}: {item: Stash}) => (
+  const renderItem = ({item, index}: {item: Stash; index: number}) => (
     <TouchableOpacity
       onPress={() => {
-        setStashToEdit(item);
+        setStashToEdit({stash: item, index});
         setModalVisible(!modalVisible);
       }}>
       <View style={style.stash}>
@@ -69,11 +71,30 @@ export const AllowanceForm = ({}: AllowanceFormProps) => {
           visible={modalVisible}
           stash={stashToEdit}
           color={getValues('color')}
-          hide={stash => {
-            if (!!stash) {
-              console.log(stash);
-              setAllowance([...allowance, stash]);
-            }
+          hide={response => {
+            const handleResponse = ({stash, index}: StashResponse) => ({
+              create: () => {
+                setAllowance([...allowance, stash!]);
+              },
+              update: () =>
+                setAllowance(
+                  allowance.map((existingStash, stashIndex) => {
+                    if (stashIndex === index) {
+                      return stash!;
+                    }
+                    return existingStash;
+                  }),
+                ),
+              delete: () => {
+                const allowanceCopy = [...allowance];
+                pullAt(allowanceCopy, [index!]);
+                setAllowance(allowanceCopy);
+              },
+              cancel: () => {},
+            });
+
+            const {action} = response;
+            handleResponse(response)[action]();
             setModalVisible(false);
             setStashToEdit(undefined);
           }}
