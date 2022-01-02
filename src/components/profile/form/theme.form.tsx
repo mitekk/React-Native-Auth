@@ -1,9 +1,7 @@
 import React, {useState} from 'react';
 import {useFormContext} from 'react-hook-form';
-import {GestureResponderEvent, StyleSheet, TextInput, View} from 'react-native';
+import {StyleSheet, TextInput, View} from 'react-native';
 import {Avatar} from 'react-native-elements';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import {openImageGallery} from '../../../utils/gallery';
 
 type ThemeFormProps = {
   avatar: string;
@@ -34,11 +32,9 @@ export const ThemeForm = ({
     setValue('color', color);
     setFormColor(color);
   };
-  const openMedia = async () => await openImageGallery();
 
   return (
     <View style={{...style.themeFormContainer, backgroundColor: formColor}}>
-      <Icon style={style.photo} name="camera" size={25} onPress={openMedia} />
       <View style={style.colorField} onTouchStart={getAnotherColor}></View>
       <View style={style.profileInput}>
         <TextInput {...register('avatar')} style={style.hidden} />
@@ -69,12 +65,5 @@ const style = StyleSheet.create({
   hidden: {display: 'none'},
   avatar: {
     alignSelf: 'center',
-  },
-  photo: {
-    position: 'absolute',
-    top: 25,
-    right: 25,
-    color: '#353534',
-    zIndex: 2,
   },
 });

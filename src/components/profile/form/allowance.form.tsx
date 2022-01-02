@@ -13,7 +13,6 @@ type AllowanceFormProps = {};
 
 export const AllowanceForm = ({}: AllowanceFormProps) => {
   const {
-    control,
     setValue,
     getValues,
     formState: {errors},
@@ -29,14 +28,17 @@ export const AllowanceForm = ({}: AllowanceFormProps) => {
   }, []);
 
   useEffect(() => {
-    setValue('allowance', allowance);
+    allowance && setValue('allowance', allowance);
   }, [allowance]);
 
   const addStash = (
     <Icon
       name="plus"
       size={13}
-      style={{alignSelf: 'flex-end'}}
+      style={{
+        alignSelf: 'flex-end',
+        color: errors?.allowance?.message ? 'red' : 'black',
+      }}
       onPress={() => setModalVisible(!modalVisible)}
     />
   );
@@ -60,7 +62,10 @@ export const AllowanceForm = ({}: AllowanceFormProps) => {
   );
 
   return (
-    <FieldForm lable="Allowance" action={addStash}>
+    <FieldForm
+      lable="Allowance"
+      action={addStash}
+      style={{color: errors?.allowance?.message ? 'red' : 'black'}}>
       <View style={style.allowance}>
         <FlatList
           data={allowance}
