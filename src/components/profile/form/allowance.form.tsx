@@ -15,6 +15,7 @@ export const AllowanceForm = ({}: AllowanceFormProps) => {
   const {
     setValue,
     getValues,
+    clearErrors,
     formState: {errors},
   } = useFormContext();
 
@@ -28,8 +29,35 @@ export const AllowanceForm = ({}: AllowanceFormProps) => {
   }, []);
 
   useEffect(() => {
-    allowance && setValue('allowance', allowance);
+    setValue('allowance', allowance);
+    clearErrors('allowance');
   }, [allowance]);
+
+  const handleStashHide = (response: StashResponse) => {
+    const handleResponse = ({stash, index}: StashResponse) => ({
+      create: () => setAllowance([...allowance, stash!]),
+      update: () =>
+        setAllowance(
+          allowance.map((existingStash, stashIndex) => {
+            if (stashIndex === index) {
+              return stash!;
+            }
+            return existingStash;
+          }),
+        ),
+      delete: () => {
+        const allowanceCopy = [...allowance];
+        pullAt(allowanceCopy, [index!]);
+        setAllowance(allowanceCopy);
+      },
+      cancel: () => {},
+    });
+
+    const {action} = response;
+    handleResponse(response)[action]();
+    setModalVisible(false);
+    setStashToEdit(undefined);
+  };
 
   const addStash = (
     <Icon
@@ -76,33 +104,7 @@ export const AllowanceForm = ({}: AllowanceFormProps) => {
           visible={modalVisible}
           stash={stashToEdit}
           color={getValues('color')}
-          hide={response => {
-            const handleResponse = ({stash, index}: StashResponse) => ({
-              create: () => {
-                setAllowance([...allowance, stash!]);
-              },
-              update: () =>
-                setAllowance(
-                  allowance.map((existingStash, stashIndex) => {
-                    if (stashIndex === index) {
-                      return stash!;
-                    }
-                    return existingStash;
-                  }),
-                ),
-              delete: () => {
-                const allowanceCopy = [...allowance];
-                pullAt(allowanceCopy, [index!]);
-                setAllowance(allowanceCopy);
-              },
-              cancel: () => {},
-            });
-
-            const {action} = response;
-            handleResponse(response)[action]();
-            setModalVisible(false);
-            setStashToEdit(undefined);
-          }}
+          hide={handleStashHide}
         />
       </View>
     </FieldForm>

@@ -9,10 +9,10 @@ import {ThemeForm} from '../components/profile/form/theme.form';
 import {avatarUtil} from '../utils/form/avatar.util';
 import {colorUtil} from '../utils/form/color.util';
 import {DetailsForm} from '../components/profile/form/details.form';
-import {allowanceUtil} from '../utils/form/allowance.util';
 import {Stash} from '../types/stash.type';
 import {openImageGallery} from '../utils/gallery';
 import {MediaForm} from '../components/profile/form/media.form';
+import {allowanceUtil} from '../utils/form/allowance.util';
 
 const schema = yup.object().shape({
   nickname: yup.string().required('required field'),
@@ -90,9 +90,9 @@ export const ProfileCreateScreen = () => {
           {
             theme: (
               <ThemeForm
-                avatar={initialAvatar}
+                avatar={methods.getValues('avatar')}
                 getAvatar={avatarUtil.getAvatar}
-                color={initialColor}
+                color={methods.getValues('color')}
                 getColor={colorUtil.getColor}
               />
             ),
