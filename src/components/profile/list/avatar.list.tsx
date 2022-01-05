@@ -2,9 +2,9 @@ import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Avatar} from './avatar';
-import {Profile} from '../../../types/profile.type';
 import {ProfileScreenNavigation} from '../../../types/route.type';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {Profile} from '../../../types/profile/profile.type';
 
 type AvatarListProps = {
   profiles: Profile[];

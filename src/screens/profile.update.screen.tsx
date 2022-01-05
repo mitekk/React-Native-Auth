@@ -6,13 +6,11 @@ import {yupResolver} from '@hookform/resolvers/yup';
 import {Divider, FAB} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {ThemeForm} from '../components/profile/form/theme.form';
-import {avatarUtil} from '../utils/form/avatar.util';
-import {colorUtil} from '../utils/form/color.util';
 import {DetailsForm} from '../components/profile/form/details.form';
-import {Stash} from '../types/stash.type';
-import {openImageGallery} from '../utils/gallery';
+import {Stash} from '../types/profile/stash.type';
 import {MediaForm} from '../components/profile/form/media.form';
-import {allowanceUtil} from '../utils/form/allowance.util';
+import {allowanceUtil, avatarUtil, colorUtil} from '../utils/form';
+import {openImageGallery} from '../utils/imageGallery';
 
 const schema = yup.object().shape({
   nickname: yup.string().required('required field'),

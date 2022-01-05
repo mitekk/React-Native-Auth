@@ -6,4 +6,5 @@ export type Stash = {
   amount: number;
   start: Date;
   nextEnrichment: Date;
+  balance: number;
 };

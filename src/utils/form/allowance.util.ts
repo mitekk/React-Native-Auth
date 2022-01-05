@@ -1,4 +1,4 @@
-import {ALLOWANCE} from '../../mock/allowance.mock';
+import {ALLOWANCE} from '../../mock';
 
 export const allowanceUtil = {
   getAllowance: () => ALLOWANCE,

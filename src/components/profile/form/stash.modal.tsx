@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {Modal, StyleSheet, View} from 'react-native';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {Stash} from '../../../types/stash.type';
-import {Interval} from '../../../types/interval.type';
+import {Stash} from '../../../types/profile/stash.type';
+import {Interval} from '../../../types/profile/interval.type';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {FieldForm} from './field.form';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -45,7 +45,7 @@ export const StashModal = ({
   hide,
 }: StashModalProps) => {
   const {stash, index} = {...stashToEdit};
-  const {interval, amount, start} = {...stash};
+  const {interval, amount, start, balance} = {...stash};
 
   const [openIntervals, setOpenIntervals] = useState(false);
   const [intervals, setIntervals] = useState([
@@ -70,6 +70,7 @@ export const StashModal = ({
       interval: interval || 'week',
       amount: amount || 1,
       start: start || new Date(),
+      balance: balance || 0,
     },
   });
 
@@ -82,16 +83,18 @@ export const StashModal = ({
   }, [formDate]);
 
   useEffect(() => {
-    if (start && interval && amount) {
+    if (start && interval && amount && balance !== undefined) {
       setFormDate(start);
       setFormInterval(interval);
       setValue('amount', amount);
+      setValue('balance', balance);
     } else {
       setFormDate(new Date());
       setFormInterval('week');
       setValue('amount', 1);
+      setValue('balance', 0);
     }
-  }, [start, interval, amount]);
+  }, [start, interval, amount, balance]);
 
   const onSubmit: SubmitHandler<Stash> = data => {
     if (stashToEdit) {
@@ -127,15 +130,13 @@ export const StashModal = ({
           <View style={style.header}>
             <Avatar
               rounded
-              size="xlarge"
+              size={125}
               icon={{name: 'piggy-bank', type: 'font-awesome-5'}}
-              containerStyle={{...style.avatar, backgroundColor: color}}
+              containerStyle={{backgroundColor: color}}
             />
           </View>
           <View style={style.body}>
-            <FieldForm
-              lable="Intervals"
-              style={{zIndex: 2, paddingVertical: 15}}>
+            <FieldForm lable="Intervals" containerStyle={{zIndex: 2}}>
               <Controller
                 control={control}
                 render={() => (
@@ -208,6 +209,22 @@ export const StashModal = ({
                 )}
               </View>
             </FieldForm>
+            <FieldForm lable="Initial balance">
+              <Controller
+                control={control}
+                render={({field: {onChange, value, onBlur}}) => (
+                  <Input
+                    value={value.toString()}
+                    onBlur={onBlur}
+                    onChangeText={value => onChange(value)}
+                    style={{zIndex: 1}}
+                    errorStyle={{color: 'red', alignSelf: 'center'}}
+                    errorMessage={errors?.amount?.message}
+                  />
+                )}
+                name="balance"
+              />
+            </FieldForm>
           </View>
           <FAB
             title={stashToEdit ? 'Update' : 'Create'}
@@ -254,14 +271,16 @@ const style = StyleSheet.create({
     color: '#CB0F0FC9',
   },
   header: {
-    flex: 2,
+    flex: 4,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  avatar: {
-    backgroundColor: 'red',
+
+  body: {
+    flex: 10,
+    justifyContent: 'space-evenly',
+    paddingVertical: 20,
   },
-  body: {flex: 3, justifyContent: 'space-evenly', paddingVertical: 25},
   createButton: {
     backgroundColor: 'navy',
   },

@@ -43,7 +43,7 @@ const style = StyleSheet.create({
   detailsForm: {
     flex: 3,
     paddingHorizontal: 50,
-    paddingVertical: 10,
+    marginVertical: 20,
   },
   inputFields: {
     flex: 1,

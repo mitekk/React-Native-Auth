@@ -6,19 +6,21 @@ type FieldFormProps = {
   lable: string;
   children: JSX.Element;
   action?: JSX.Element;
-  style?: StyleProp<TextStyle | ViewStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
+  labelStyle?: StyleProp<TextStyle>;
 };
 
 export const FieldForm = ({
   children,
   lable,
   action,
-  style: styleFromParent,
+  containerStyle,
+  labelStyle,
 }: FieldFormProps) => {
   return (
-    <View style={(style.field, styleFromParent)}>
+    <View style={containerStyle}>
       <View style={style.header}>
-        <Text style={(style.label, styleFromParent)}>{lable}</Text>
+        <Text style={labelStyle}>{lable}</Text>
         {action}
       </View>
       {children}
@@ -27,13 +29,9 @@ export const FieldForm = ({
 };
 
 const style = StyleSheet.create({
-  field: {},
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-  },
-  label: {
-    paddingTop: 10,
   },
 });

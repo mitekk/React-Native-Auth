@@ -4,7 +4,7 @@ import {StyleSheet, View, FlatList, TouchableOpacity} from 'react-native';
 import {Text} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {pullAt} from 'lodash';
-import {Stash} from '../../../types/stash.type';
+import {Stash} from '../../../types/profile/stash.type';
 import {uuid} from '../../../utils/uuid';
 import {FieldForm} from './field.form';
 import {StashModal, StashResponse} from './stash.modal';
@@ -93,7 +93,7 @@ export const AllowanceForm = ({}: AllowanceFormProps) => {
     <FieldForm
       lable="Allowance"
       action={addStash}
-      style={{color: errors?.allowance?.message ? 'red' : 'black'}}>
+      labelStyle={{color: errors?.allowance?.message ? 'red' : 'black'}}>
       <View style={style.allowance}>
         <FlatList
           data={allowance}
