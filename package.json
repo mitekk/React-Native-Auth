@@ -6,7 +6,7 @@
   "scripts": {
     "watch": "tsc -w",
     "dev": "nodemon dist/index.js",
-    "migration:create": "npx mikro-orm migration:create"
+    "create:migration": "mikro-orm migration:create"
   },
   "keywords": [],
   "author": "Mitya Kurs",
@@ -22,6 +22,7 @@
     "@mikro-orm/migrations": "4.5.10",
     "@mikro-orm/postgresql": "4.5.10",
     "apollo-server-express": "3.6.1",
+    "argon2": "^0.28.3",
     "class-validator": "^0.13.2",
     "express": "4.17.2",
     "graphql": "15.3.0",
