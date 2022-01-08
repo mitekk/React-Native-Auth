@@ -1,19 +1,28 @@
 import { MikroORM } from "@mikro-orm/core";
 import { __prod__ } from "./constants";
-import { Profile } from "./entities/Profile.entity";
 import microConfig from "./mikro-orm.config";
+import express from "express";
+import { ApolloServer } from "apollo-server-express";
+import { buildSchema } from "type-graphql";
+import { HelloResolver } from "./resolvers/hello";
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
   await orm.getMigrator().up();
+  const app = express();
+  const apolloServer = new ApolloServer({
+    schema: await buildSchema({
+      resolvers: [HelloResolver],
+      validate: false,
+    }),
+  });
 
-  // const profile = orm.em.create(Profile, { title: "hello from orm" });
-  // await orm.em.persistAndFlush(profile);
-
-  // await orm.em.nativeInsert(Profile, { title: "hello from orm" });
-
-  const profiles = await orm.em.find(Profile, {});
-  console.log(profiles);
+  apolloServer.start().then((res) => {
+    apolloServer.applyMiddleware({ app });
+    app.listen(4000, () => {
+      console.log("server started on localhost:4000");
+    });
+  });
 };
 
 main();
