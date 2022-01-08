@@ -1,6 +1,6 @@
 import { __prod__ } from "./constants";
-import { Profile } from "./entities/Profile.entity";
 import { MikroORM } from "@mikro-orm/core";
+import { Profile } from "./entities/Profile.entity";
 
 export default {
   migrations: {
