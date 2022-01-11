@@ -20,7 +20,7 @@ const main = async () => {
   const app = express();
 
   // https://github.com/apollographql/apollo-server/issues/5775#issuecomment-936896592
-  // app.set("trust proxy", !__prod__);
+  app.set("trust proxy", !__prod__);
 
   app.use(
     cors({
@@ -60,7 +60,7 @@ const main = async () => {
   });
 
   apolloServer.start().then(() => {
-    apolloServer.applyMiddleware({ app, cors: __prod__ });
+    apolloServer.applyMiddleware({ app, path: "/", cors: __prod__ });
     app.listen(4000, () => {
       console.log("server started on localhost:4000");
     });
