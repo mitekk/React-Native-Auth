@@ -40,15 +40,8 @@ class UserResponse {
 @Resolver()
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  async me(@Ctx() { req, em }: Context): Promise<User | null> {
-    const { uuid } = req.session;
-
-    if (!uuid) {
-      return null;
-    }
-
-    const user = await em.findOne(User, { uuid });
-    return user;
+  async me(@Ctx() {}: Context): Promise<User | null> {
+    return null;
   }
 
   @Mutation(() => UserResponse)
@@ -134,8 +127,6 @@ export class UserResolver {
         ],
       };
     }
-
-    req.session.uuid = user.uuid;
 
     return { user };
   }
