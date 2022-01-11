@@ -6,6 +6,7 @@ import {
   InputType,
   Mutation,
   ObjectType,
+  Query,
   Resolver,
 } from "type-graphql";
 import argon2 from "argon2";
@@ -38,6 +39,18 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { req, em }: Context): Promise<User | null> {
+    const { uuid } = req.session;
+
+    if (!uuid) {
+      return null;
+    }
+
+    const user = await em.findOne(User, { uuid });
+    return user;
+  }
+
   @Mutation(() => UserResponse)
   async register(
     @Arg("credentials") { username, password }: CredentialsInput,
@@ -65,7 +78,8 @@ export class UserResolver {
       };
     }
 
-    const user = em.create(User, { username, password });
+    const hashedPassword = await argon2.hash(password);
+    const user = em.create(User, { username, password: hashedPassword });
 
     try {
       await em.persistAndFlush(user);
@@ -96,7 +110,7 @@ export class UserResolver {
   @Mutation(() => UserResponse)
   async login(
     @Arg("credentials") { username, password }: CredentialsInput,
-    @Ctx() { em }: Context
+    @Ctx() { em, req }: Context
   ): Promise<UserResponse> {
     const user = await em.findOne(User, { username });
     if (!user) {
@@ -109,7 +123,7 @@ export class UserResolver {
         ],
       };
     }
-    const valid = argon2.verify(user.password, password);
+    const valid = await argon2.verify(user.password, password);
     if (!valid) {
       return {
         errors: [
@@ -120,6 +134,8 @@ export class UserResolver {
         ],
       };
     }
+
+    req.session.uuid = user.uuid;
 
     return { user };
   }
