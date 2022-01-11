@@ -12,7 +12,9 @@
   "author": "Mitya Kurs",
   "license": "ISC",
   "devDependencies": {
+    "@types/connect-redis": "^0.0.18",
     "@types/express": "4.17.13",
+    "@types/express-session": "^1.17.4",
     "@types/uuid": "8.3.4",
     "nodemon": "2.0.15"
   },
@@ -24,9 +26,12 @@
     "apollo-server-express": "3.6.1",
     "argon2": "^0.28.3",
     "class-validator": "^0.13.2",
+    "connect-redis": "^6.0.0",
     "express": "4.17.2",
+    "express-session": "^1.17.2",
     "graphql": "15.3.0",
     "pg": "8.7.1",
+    "redis": "v3",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "1.1.1",
     "uuid": "8.3.2"
