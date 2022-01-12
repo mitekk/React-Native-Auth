@@ -5,11 +5,22 @@ import microConfig from "./mikro-orm.config";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
-import { HelloResolver } from "./resolvers/hello.resolver";
+import jwt from "jsonwebtoken";
 import { ProfileResolver } from "./resolvers/profile.resolver";
 import { UserResolver } from "./resolvers/user.resolver";
 // import redis from "redis";
 import { Context } from "./types";
+
+const getUser = (token?: string) => {
+  try {
+    if (token) {
+      return jwt.verify(JSON.parse(token), "jwt_sOmE_sEcUrE_pAsSECRET");
+    }
+    return null;
+  } catch (error) {
+    return null;
+  }
+};
 
 const main = async () => {
   const orm = await MikroORM.init(microConfig);
@@ -20,10 +31,15 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, ProfileResolver, UserResolver],
+      resolvers: [ProfileResolver, UserResolver],
       validate: false,
     }),
-    context: ({ req, res }: Context) => ({ em: orm.em, req, res }),
+    context: ({ req, res }: Context) => {
+      const token = req.headers.authorization;
+      const user = getUser(token?.replace("Bearer", ""));
+
+      return { em: orm.em, req, res, user };
+    },
   });
 
   apolloServer.start().then(() => {

@@ -10,6 +10,7 @@ import {
   Resolver,
 } from "type-graphql";
 import argon2 from "argon2";
+import jwt from "jsonwebtoken";
 import { Context } from "../types";
 
 @InputType()
@@ -35,13 +36,16 @@ class UserResponse {
 
   @Field(() => User, { nullable: true })
   user?: User;
+
+  @Field(() => String)
+  token?: string;
 }
 
 @Resolver()
 export class UserResolver {
   @Query(() => User, { nullable: true })
-  async me(@Ctx() {}: Context): Promise<User | null> {
-    return null;
+  async me(@Ctx() { em, user }: Context): Promise<User | null> {
+    return await em.findOneOrFail(User, { uuid: user?.uuid });
   }
 
   @Mutation(() => UserResponse)
@@ -97,13 +101,18 @@ export class UserResolver {
         ],
       };
     }
-    return { user };
+
+    const token = jwt.sign({ ...user }, "jwt_sOmE_sEcUrE_pAsSECRET", {
+      expiresIn: "1y",
+    });
+
+    return { user, token };
   }
 
   @Mutation(() => UserResponse)
   async login(
     @Arg("credentials") { username, password }: CredentialsInput,
-    @Ctx() { em, req }: Context
+    @Ctx() { em }: Context
   ): Promise<UserResponse> {
     const user = await em.findOne(User, { username });
     if (!user) {
@@ -128,6 +137,10 @@ export class UserResolver {
       };
     }
 
-    return { user };
+    const token = jwt.sign({ uuid: user.uuid }, "jwt_sOmE_sEcUrE_pAsSECRET", {
+      expiresIn: "1y",
+    });
+
+    return { user, token };
   }
 }
