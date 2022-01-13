@@ -4,6 +4,9 @@ import { Request, Response } from "express";
 export type User = {
   uuid: string;
   nickname: string;
+  avatar: string;
+  birthdate: string;
+  color: string;
 };
 
 export type Context = {

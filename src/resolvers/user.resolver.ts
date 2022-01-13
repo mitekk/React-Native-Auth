@@ -11,7 +11,8 @@ import {
 } from "type-graphql";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
-import { Context } from "../types";
+import { Context } from "../types/types";
+import { jwt_secret } from "../constants";
 
 @InputType()
 class CredentialsInput {
@@ -102,7 +103,7 @@ export class UserResolver {
       };
     }
 
-    const token = jwt.sign({ ...user }, "jwt_sOmE_sEcUrE_pAsSECRET", {
+    const token = jwt.sign({ ...user }, jwt_secret, {
       expiresIn: "1y",
     });
 

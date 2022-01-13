@@ -1,18 +1,18 @@
 import { PrimaryKey, Property } from "@mikro-orm/core";
-import { Field, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import { v4 } from "uuid";
 
 @ObjectType()
 export abstract class BaseEntity {
-  @Field(() => String)
-  @PrimaryKey()
+  @Field(() => ID)
+  @PrimaryKey({ type: "uuid" })
   uuid: string = v4();
 
   @Field(() => String)
-  @Property()
+  @Property({ type: "date" })
   createdAt: Date = new Date();
 
   @Field(() => String)
-  @Property({ onUpdate: () => new Date() })
+  @Property({ type: "date", onUpdate: () => new Date() })
   updatedAt: Date = new Date();
 }
