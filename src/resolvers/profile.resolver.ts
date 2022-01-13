@@ -1,6 +1,6 @@
 import { Profile } from "../entities/Profile.entity";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
-import { Context } from "../types";
+import { Context } from "../types/types";
 
 @Resolver()
 export class ProfileResolver {

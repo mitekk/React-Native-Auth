@@ -2,4 +2,6 @@ node_modules/
 dist/
 pgdata/
 migrations/
+redis-data/
 yarn-error.log
+.env
