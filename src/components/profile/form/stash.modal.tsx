@@ -3,7 +3,6 @@ import {Modal, StyleSheet, View} from 'react-native';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {Stash} from '../../../types/profile/stash.type';
-import {Interval} from '../../../types/profile/interval.type';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {FieldForm} from './field.form';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -55,9 +54,7 @@ export const StashModal = ({
   ]);
   const [openStart, setOpenStart] = useState(false);
   const [formDate, setFormDate] = useState<Date>();
-  const [formInterval, setFormInterval] = useState<Interval>(
-    interval || 'week',
-  );
+  const [formInterval, setFormInterval] = useState<any>(interval || 'week');
 
   const {
     control,
