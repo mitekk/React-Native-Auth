@@ -1,8 +1,6 @@
-import {Interval} from './interval.type';
-
 export type Stash = {
   id: number;
-  interval: Interval;
+  interval: string;
   amount: number;
   start: Date;
   nextEnrichment: Date;

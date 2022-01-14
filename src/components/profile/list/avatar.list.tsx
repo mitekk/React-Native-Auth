@@ -2,7 +2,7 @@ import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Avatar} from './avatar';
-import {ProfileScreenNavigation} from '../../../types/route.type';
+import {RootScreenNavigation} from '../../../types/route.type';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Profile} from '../../../types/profile/profile.type';
 
@@ -11,7 +11,7 @@ type AvatarListProps = {
 };
 
 export const AvatarList = ({profiles}: AvatarListProps) => {
-  const navigation = useNavigation<ProfileScreenNavigation>();
+  const navigation = useNavigation<RootScreenNavigation>();
   return (
     <View style={style.listContainer}>
       <FlatList
