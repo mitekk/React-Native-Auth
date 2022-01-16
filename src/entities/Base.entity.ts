@@ -6,7 +6,7 @@ import { v4 } from "uuid";
 export abstract class BaseEntity {
   @Field(() => ID)
   @PrimaryKey({ type: "uuid" })
-  uuid: string = v4();
+  id: string = v4();
 
   @Field(() => String)
   @Property({ type: "date" })

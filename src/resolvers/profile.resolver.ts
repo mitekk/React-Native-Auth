@@ -12,11 +12,11 @@ export class ProfileResolver {
 
   @Query(() => Profile, { nullable: true })
   profile(
-    @Arg("uuid") uuid: string,
+    @Arg("id") id: string,
     @Ctx() { em, user }: Context
   ): Promise<Profile | null> {
     if (!user) throw new Error("You are not authenticated!");
-    return em.findOne(Profile, { uuid });
+    return em.findOne(Profile, { id });
   }
 
   @Mutation(() => Profile)
@@ -32,12 +32,12 @@ export class ProfileResolver {
 
   @Mutation(() => Profile, { nullable: true })
   async updateProfile(
-    @Arg("uuid") uuid: string,
+    @Arg("id") id: string,
     @Arg("nickname") nickname: string,
     @Ctx() { em, user }: Context
   ): Promise<Profile | null> {
     if (!user) throw new Error("You are not authenticated!");
-    const profile = await em.findOne(Profile, { uuid });
+    const profile = await em.findOne(Profile, { id });
 
     if (!profile) {
       return null;
@@ -53,11 +53,11 @@ export class ProfileResolver {
 
   @Mutation(() => Boolean)
   async deleteProfile(
-    @Arg("uuid") uuid: string,
+    @Arg("id") id: string,
     @Ctx() { em, user }: Context
   ): Promise<boolean> {
     if (!user) throw new Error("You are not authenticated!");
-    await em.nativeDelete(Profile, { uuid });
+    await em.nativeDelete(Profile, { id });
     return true;
   }
 }

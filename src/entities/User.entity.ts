@@ -7,7 +7,7 @@ import { BaseEntity } from "./Base.entity";
 export class User extends BaseEntity {
   @Field(() => String)
   @Property({ type: "text", unique: true })
-  username!: string;
+  email!: string;
 
   @Property({ type: "text" })
   password!: string;

@@ -17,7 +17,7 @@ import { jwt_secret } from "../constants";
 @InputType()
 class CredentialsInput {
   @Field()
-  username!: string;
+  email!: string;
   @Field()
   password!: string;
 }
@@ -38,27 +38,29 @@ class UserResponse {
   @Field(() => User, { nullable: true })
   user?: User;
 
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   token?: string;
 }
 
 @Resolver()
 export class UserResolver {
-  @Query(() => User, { nullable: true })
-  async me(@Ctx() { em, user }: Context): Promise<User | null> {
-    return await em.findOneOrFail(User, { uuid: user?.uuid });
+  @Query(() => UserResponse)
+  async me(@Ctx() { em, user }: Context): Promise<UserResponse> {
+    const foundUser = await em.findOneOrFail(User, { id: user?.id });
+
+    return { user: foundUser };
   }
 
   @Mutation(() => UserResponse)
   async register(
-    @Arg("credentials") { username, password }: CredentialsInput,
+    @Arg("credentials") { email, password }: CredentialsInput,
     @Ctx() { em }: Context
   ): Promise<UserResponse> {
-    if (username?.length <= 1) {
+    if (email?.length <= 1) {
       return {
         errors: [
           {
-            field: "username",
+            field: "email",
             message: "minimum length is 2",
           },
         ],
@@ -77,16 +79,16 @@ export class UserResolver {
     }
 
     const hashedPassword = await argon2.hash(password);
-    const user = em.create(User, { username, password: hashedPassword });
+    const user = em.create(User, { email, password: hashedPassword });
 
     try {
       await em.persistAndFlush(user);
     } catch (error) {
-      if (error.code === "23505" || error.detail.includes("already exists")) {
+      if (error.code === "23505") {
         return {
           errors: [
             {
-              field: "username",
+              field: "email",
               message: "already exists",
             },
           ],
@@ -112,16 +114,16 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async login(
-    @Arg("credentials") { username, password }: CredentialsInput,
+    @Arg("credentials") { email, password }: CredentialsInput,
     @Ctx() { em }: Context
   ): Promise<UserResponse> {
-    const user = await em.findOne(User, { username });
+    const user = await em.findOne(User, { email });
     if (!user) {
       return {
         errors: [
           {
-            field: "username",
-            message: "username doesn't exist",
+            field: "email",
+            message: "email doesn't exist",
           },
         ],
       };
@@ -138,7 +140,7 @@ export class UserResolver {
       };
     }
 
-    const token = jwt.sign({ uuid: user.uuid }, "jwt_sOmE_sEcUrE_pAsSECRET", {
+    const token = jwt.sign({ id: user.id }, jwt_secret, {
       expiresIn: "1y",
     });
 
