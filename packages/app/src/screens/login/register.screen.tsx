@@ -4,10 +4,29 @@ import React from 'react';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
 import {FAB, Input} from 'react-native-elements';
+import {gql, useMutation} from 'urql';
 import * as yup from 'yup';
 import {FieldForm} from '../../components/profile/form/field.form';
 import {RootScreenNavigation} from '../../types/route.type';
 import {LoginLayout} from './login.layout';
+
+const register_mut = gql`
+  mutation Register($email: String!, $password: String!) {
+    register(credentials: {email: $email, password: $password}) {
+      errors {
+        field
+        message
+      }
+      user {
+        id
+        createdAt
+        updatedAt
+        email
+      }
+      token
+    }
+  }
+`;
 
 const schema = yup.object().shape({
   email: yup
@@ -30,6 +49,7 @@ type RegisterInput = {
 
 export const RegisterScreen = () => {
   const navigation = useNavigation<RootScreenNavigation>();
+  const [{}, register] = useMutation(register_mut);
 
   const {
     control,
@@ -43,8 +63,11 @@ export const RegisterScreen = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<RegisterInput> = data => {
-    navigation.navigate('Home');
+  const onSubmit: SubmitHandler<RegisterInput> = async credentials => {
+    // navigation.navigate('Home');
+
+    const {data} = await register(credentials);
+    console.log(data?.register?.token);
   };
 
   return (
