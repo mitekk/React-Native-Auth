@@ -3,11 +3,12 @@ import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
-import {FAB, Input} from 'react-native-elements';
+import {FAB, Input, Text} from 'react-native-elements';
 import {gql, useMutation} from 'urql';
 import * as yup from 'yup';
 import {FieldForm} from '../../components/profile/form/field.form';
 import {RootScreenNavigation} from '../../types/route.type';
+import {useAuth} from '../../utils/auth/auth';
 import {LoginLayout} from './login.layout';
 
 const register_mut = gql`
@@ -49,6 +50,7 @@ type RegisterInput = {
 
 export const RegisterScreen = () => {
   const navigation = useNavigation<RootScreenNavigation>();
+  const {signIn, token} = useAuth();
   const [{}, register] = useMutation(register_mut);
 
   const {
@@ -64,15 +66,21 @@ export const RegisterScreen = () => {
   });
 
   const onSubmit: SubmitHandler<RegisterInput> = async credentials => {
-    // navigation.navigate('Home');
-
     const {data} = await register(credentials);
-    console.log(data?.register?.token);
+    const token = data?.register?.token;
+
+    if (!token) {
+      // TODO:: alert login failed
+    }
+
+    signIn(token);
+    navigation.navigate('Home');
   };
 
   return (
     <LoginLayout title="Bucket" subtitle="The easiest way to manage allowance">
       <View style={styles.body}>
+        <Text>{`token: ${token}`}</Text>
         <View style={{flex: 1}}>
           <FieldForm lable="Email">
             <Controller
