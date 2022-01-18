@@ -1,13 +1,31 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
 import {FAB, Input} from 'react-native-elements';
+import {gql, useMutation} from 'urql';
 import * as yup from 'yup';
 import {FieldForm} from '../../components/profile/form/field.form';
-import {RootScreenNavigation} from '../../types/route.type';
+import {useAuth} from '../../utils/auth/auth';
 import {LoginLayout} from './login.layout';
+
+const login_mut = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(credentials: {email: $email, password: $password}) {
+      errors {
+        field
+        message
+      }
+      user {
+        id
+        createdAt
+        updatedAt
+        email
+      }
+      token
+    }
+  }
+`;
 
 const schema = yup.object().shape({
   email: yup
@@ -29,7 +47,8 @@ type LoginInput = {
 };
 
 export const LoginScreen = () => {
-  const navigation = useNavigation<RootScreenNavigation>();
+  const {signIn} = useAuth();
+  const [{}, login] = useMutation(login_mut);
 
   const {
     control,
@@ -43,8 +62,15 @@ export const LoginScreen = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<LoginInput> = data => {
-    navigation.navigate('Home');
+  const onSubmit: SubmitHandler<LoginInput> = async credentials => {
+    const {data} = await login(credentials);
+    const token = data?.login?.token;
+
+    if (!token) {
+      // TODO:: alert login failed
+    } else {
+      signIn(token);
+    }
   };
 
   return (
@@ -56,6 +82,7 @@ export const LoginScreen = () => {
               control={control}
               render={({field: {onChange, value, onBlur}}) => (
                 <Input
+                  autoCapitalize="none"
                   value={value.toString()}
                   onBlur={onBlur}
                   onChangeText={value => onChange(value)}
@@ -72,6 +99,7 @@ export const LoginScreen = () => {
               control={control}
               render={({field: {onChange, value, onBlur}}) => (
                 <Input
+                  autoCapitalize="none"
                   value={value.toString()}
                   onBlur={onBlur}
                   onChangeText={value => onChange(value)}

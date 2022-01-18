@@ -18,7 +18,7 @@ const {Navigator, Screen} = createNativeStackNavigator<RootStackParamList>();
 export const Routes = () => (
   <NavigationContainer>
     <Navigator
-      initialRouteName={'Register'}
+      initialRouteName={'Intro'}
       screenOptions={{
         headerShown: true,
       }}>
