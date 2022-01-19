@@ -12,23 +12,42 @@ import {
   ProfileScreen,
   ProfileCreateScreen,
 } from './screens';
+import {useAuth} from './utils/auth/auth';
+import {SplashScreen} from './screens/splash.screen';
 
 const {Navigator, Screen} = createNativeStackNavigator<RootStackParamList>();
 
-export const Routes = () => (
-  <NavigationContainer>
-    <Navigator
-      initialRouteName={'Intro'}
-      screenOptions={{
-        headerShown: true,
-      }}>
-      <Screen name="Intro" component={IntoScreen} />
-      <Screen name="Login" component={LoginScreen} />
-      <Screen name="Register" component={RegisterScreen} />
-      <Screen name="Password" component={PasswordScreen} />
-      <Screen name="Home" component={HomeScreen} />
-      <Screen name="Profile" component={ProfileScreen} />
-      <Screen name="ProfileCreate" component={ProfileCreateScreen} />
-    </Navigator>
-  </NavigationContainer>
-);
+export const Routes = () => {
+  const {token, isLoading} = useAuth();
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
+
+  return (
+    <NavigationContainer>
+      {token ? (
+        <Navigator
+          initialRouteName={'Home'}
+          screenOptions={{
+            headerShown: true,
+          }}>
+          <Screen name="Home" component={HomeScreen} />
+          <Screen name="Profile" component={ProfileScreen} />
+          <Screen name="ProfileCreate" component={ProfileCreateScreen} />
+        </Navigator>
+      ) : (
+        <Navigator
+          initialRouteName={'Intro'}
+          screenOptions={{
+            headerShown: false,
+          }}>
+          <Screen name="Intro" component={IntoScreen} />
+          <Screen name="Login" component={LoginScreen} />
+          <Screen name="Register" component={RegisterScreen} />
+          <Screen name="Password" component={PasswordScreen} />
+        </Navigator>
+      )}
+    </NavigationContainer>
+  );
+};

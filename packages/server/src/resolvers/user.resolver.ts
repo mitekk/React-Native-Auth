@@ -79,7 +79,10 @@ export class UserResolver {
     }
 
     const hashedPassword = await argon2.hash(password);
-    const user = em.create(User, { email, password: hashedPassword });
+    const user = em.create(User, {
+      email: email.toLocaleLowerCase(),
+      password: hashedPassword,
+    });
 
     try {
       await em.persistAndFlush(user);
@@ -117,7 +120,7 @@ export class UserResolver {
     @Arg("credentials") { email, password }: CredentialsInput,
     @Ctx() { em }: Context
   ): Promise<UserResponse> {
-    const user = await em.findOne(User, { email });
+    const user = await em.findOne(User, { email: email.toLocaleLowerCase() });
     if (!user) {
       return {
         errors: [

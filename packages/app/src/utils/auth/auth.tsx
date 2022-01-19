@@ -8,13 +8,17 @@ import React, {
 } from 'react';
 import {getToken, removeToken, setToken} from './token';
 
-type AuthAction = {type: 'SIGN_IN'; token: string} | {type: 'SIGN_OUT'};
+type AuthAction =
+  | {type: 'RESTORE_TOKEN'; token?: string | null}
+  | {type: 'SIGN_IN'; token: string}
+  | {type: 'SIGN_OUT'};
 
 type AuthPayload = string;
 
 interface AuthState {
   token: string | undefined | null;
-  status: 'idle' | 'signOut' | 'signIn';
+  isLoading: boolean;
+  isSignout: boolean;
 }
 
 interface AuthContextActions {
@@ -25,24 +29,31 @@ interface AuthContextActions {
 interface AuthContextType extends AuthState, AuthContextActions {}
 
 const AuthContext = createContext<AuthContextType>({
-  status: 'idle',
   token: null,
+  isLoading: true,
+  isSignout: false,
   signIn: () => {},
   signOut: () => {},
 });
 
 const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
   switch (action.type) {
+    case 'RESTORE_TOKEN':
+      return {
+        ...prevState,
+        token: action.token,
+        isLoading: false,
+      };
     case 'SIGN_IN':
       return {
         ...prevState,
-        status: 'signIn',
+        isSignout: false,
         token: action.token,
       };
     case 'SIGN_OUT':
       return {
         ...prevState,
-        status: 'signOut',
+        isSignout: true,
         token: null,
       };
   }
@@ -50,18 +61,22 @@ const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
 
 export const AuthProvider = ({children}: {children: ReactNode}) => {
   const [state, dispatch] = useReducer(AuthReducer, {
-    status: 'idle',
     token: null,
+    isLoading: true,
+    isSignout: false,
   });
 
   useEffect(() => {
     const initState = async () => {
-      const token = await getToken();
-      if (token !== null) {
-        dispatch({type: 'SIGN_IN', token});
-      } else {
-        dispatch({type: 'SIGN_OUT'});
+      let token;
+      try {
+        token = await getToken();
+      } catch (e) {
+        // Restoring token failed
       }
+
+      // TODO::After restoring token, we may need to validate it in production
+      dispatch({type: 'RESTORE_TOKEN', token});
     };
 
     initState();
