@@ -2,7 +2,7 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootStackParamList} from './types/route.type';
-import {Urql} from './urql';
+
 import {
   IntoScreen,
   LoginScreen,
@@ -12,25 +12,42 @@ import {
   ProfileScreen,
   ProfileCreateScreen,
 } from './screens';
+import {useAuth} from './utils/auth/auth';
+import {SplashScreen} from './screens/splash.screen';
 
 const {Navigator, Screen} = createNativeStackNavigator<RootStackParamList>();
 
-export const Routes = () => (
-  <Urql.Provider value={Urql.client}>
+export const Routes = () => {
+  const {token, isLoading} = useAuth();
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
+
+  return (
     <NavigationContainer>
-      <Navigator
-        initialRouteName={'Register'}
-        screenOptions={{
-          headerShown: true,
-        }}>
-        <Screen name="Intro" component={IntoScreen} />
-        <Screen name="Login" component={LoginScreen} />
-        <Screen name="Register" component={RegisterScreen} />
-        <Screen name="Password" component={PasswordScreen} />
-        <Screen name="Home" component={HomeScreen} />
-        <Screen name="Profile" component={ProfileScreen} />
-        <Screen name="ProfileCreate" component={ProfileCreateScreen} />
-      </Navigator>
+      {token ? (
+        <Navigator
+          initialRouteName={'Home'}
+          screenOptions={{
+            headerShown: true,
+          }}>
+          <Screen name="Home" component={HomeScreen} />
+          <Screen name="Profile" component={ProfileScreen} />
+          <Screen name="ProfileCreate" component={ProfileCreateScreen} />
+        </Navigator>
+      ) : (
+        <Navigator
+          initialRouteName={'Intro'}
+          screenOptions={{
+            headerShown: false,
+          }}>
+          <Screen name="Intro" component={IntoScreen} />
+          <Screen name="Login" component={LoginScreen} />
+          <Screen name="Register" component={RegisterScreen} />
+          <Screen name="Password" component={PasswordScreen} />
+        </Navigator>
+      )}
     </NavigationContainer>
-  </Urql.Provider>
-);
+  );
+};

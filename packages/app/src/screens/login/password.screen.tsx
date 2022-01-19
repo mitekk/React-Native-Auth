@@ -47,6 +47,7 @@ export const PasswordScreen = () => {
               control={control}
               render={({field: {onChange, value, onBlur}}) => (
                 <Input
+                  autoCapitalize="none"
                   value={value.toString()}
                   onBlur={onBlur}
                   onChangeText={value => onChange(value)}

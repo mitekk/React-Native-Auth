@@ -8,6 +8,7 @@ import {gql, useMutation} from 'urql';
 import * as yup from 'yup';
 import {FieldForm} from '../../components/profile/form/field.form';
 import {RootScreenNavigation} from '../../types/route.type';
+import {useAuth} from '../../utils/auth/auth';
 import {LoginLayout} from './login.layout';
 
 const register_mut = gql`
@@ -49,6 +50,7 @@ type RegisterInput = {
 
 export const RegisterScreen = () => {
   const navigation = useNavigation<RootScreenNavigation>();
+  const {signIn} = useAuth();
   const [{}, register] = useMutation(register_mut);
 
   const {
@@ -64,10 +66,14 @@ export const RegisterScreen = () => {
   });
 
   const onSubmit: SubmitHandler<RegisterInput> = async credentials => {
-    // navigation.navigate('Home');
-
     const {data} = await register(credentials);
-    console.log(data?.register?.token);
+    const token = data?.register?.token;
+
+    if (!token) {
+      // TODO:: alert login failed
+    } else {
+      signIn(token);
+    }
   };
 
   return (
@@ -79,6 +85,7 @@ export const RegisterScreen = () => {
               control={control}
               render={({field: {onChange, value, onBlur}}) => (
                 <Input
+                  autoCapitalize="none"
                   value={value.toString()}
                   onBlur={onBlur}
                   onChangeText={value => onChange(value)}
@@ -95,6 +102,7 @@ export const RegisterScreen = () => {
               control={control}
               render={({field: {onChange, value, onBlur}}) => (
                 <Input
+                  autoCapitalize="none"
                   value={value.toString()}
                   onBlur={onBlur}
                   onChangeText={value => onChange(value)}
