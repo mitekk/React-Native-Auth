@@ -1,6 +1,6 @@
 import React from 'react';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Routes} from './src/routes';
-import {RouteStateProvider} from './src/routes.state';
 import {UrqlProvider} from './src/urql';
 import {AuthProvider} from './src/utils/auth/auth';
 
@@ -8,9 +8,9 @@ const App = () => {
   return (
     <AuthProvider>
       <UrqlProvider>
-        <RouteStateProvider>
-          <Routes></Routes>
-        </RouteStateProvider>
+        <SafeAreaProvider>
+          <Routes />
+        </SafeAreaProvider>
       </UrqlProvider>
     </AuthProvider>
   );
