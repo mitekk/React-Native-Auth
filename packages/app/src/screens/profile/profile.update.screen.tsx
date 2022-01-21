@@ -68,15 +68,18 @@ export const ProfileCreateScreen = () => {
           {
             theme: (
               <Icon
-                style={style.photo}
+                style={style.icon}
                 name="camera"
                 size={25}
-                onPress={openMedia}
+                onPress={() => {
+                  setPreferredProfile('media');
+                  openMedia();
+                }}
               />
             ),
             media: (
               <Icon
-                style={style.photo}
+                style={style.icon}
                 name="dice"
                 size={25}
                 onPress={() => setPreferredProfile('theme')}
@@ -118,7 +121,7 @@ const style = StyleSheet.create({
   createButton: {
     backgroundColor: 'navy',
   },
-  photo: {
+  icon: {
     position: 'absolute',
     top: 25,
     right: 25,

@@ -11,9 +11,10 @@ import {
   HomeScreen,
   ProfileScreen,
   ProfileCreateScreen,
+  SplashScreen,
 } from './screens';
 import {useAuth} from './utils/auth/auth';
-import {SplashScreen} from './screens/splash.screen';
+import {Theme} from './theme';
 
 const {Navigator, Screen} = createNativeStackNavigator<RootStackParamList>();
 
@@ -25,7 +26,7 @@ export const Routes = () => {
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={Theme}>
       {token ? (
         <Navigator
           initialRouteName={'Home'}
