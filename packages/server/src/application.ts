@@ -9,6 +9,7 @@ import microConfig from "./mikro-orm.config";
 import { ProfileResolver } from "./resolvers/profile.resolver";
 import { UserResolver } from "./resolvers/user.resolver";
 import { Context } from "./types/types";
+import { ProfileIconsResolver } from "./resolvers/profileIcon.resolver";
 
 export const Application = () => {
   let orm: MikroORM<IDatabaseDriver<Connection>>;
@@ -43,7 +44,7 @@ export const Application = () => {
       try {
         const apolloServer = new ApolloServer({
           schema: await buildSchema({
-            resolvers: [ProfileResolver, UserResolver],
+            resolvers: [ProfileResolver, UserResolver, ProfileIconsResolver],
             validate: false,
           }),
           context: ({ req, res }: Context) => {
