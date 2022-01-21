@@ -102,6 +102,7 @@ export const RegisterScreen = () => {
               control={control}
               render={({field: {onChange, value, onBlur}}) => (
                 <Input
+                  secureTextEntry={true}
                   autoCapitalize="none"
                   value={value.toString()}
                   onBlur={onBlur}

@@ -11,21 +11,27 @@ import {
   HomeScreen,
   ProfileScreen,
   ProfileCreateScreen,
+  SplashScreen,
 } from './screens';
 import {useAuth} from './utils/auth/auth';
-import {SplashScreen} from './screens/splash.screen';
+import {Theme} from './theme';
+import {useRouteState} from './routes.state';
 
 const {Navigator, Screen} = createNativeStackNavigator<RootStackParamList>();
 
 export const Routes = () => {
   const {token, isLoading} = useAuth();
+  const {isReady, initialState, setState} = useRouteState();
 
-  if (isLoading) {
+  if (isLoading && !isReady) {
     return <SplashScreen />;
   }
 
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      theme={Theme}
+      initialState={initialState}
+      onStateChange={state => setState(state)}>
       {token ? (
         <Navigator
           initialRouteName={'Home'}

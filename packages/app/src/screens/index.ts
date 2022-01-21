@@ -5,6 +5,7 @@ import {PasswordScreen} from './login/password.screen';
 import {RegisterScreen} from './login/register.screen';
 import {ProfileScreen} from './profile/profile.screen';
 import {ProfileCreateScreen} from './profile/profile.update.screen';
+import {SplashScreen} from './splash.screen';
 
 export {
   HomeScreen,
@@ -14,4 +15,5 @@ export {
   RegisterScreen,
   ProfileScreen,
   ProfileCreateScreen,
+  SplashScreen,
 };

@@ -100,6 +100,7 @@ export const LoginScreen = () => {
               render={({field: {onChange, value, onBlur}}) => (
                 <Input
                   autoCapitalize="none"
+                  secureTextEntry={true}
                   value={value.toString()}
                   onBlur={onBlur}
                   onChangeText={value => onChange(value)}
