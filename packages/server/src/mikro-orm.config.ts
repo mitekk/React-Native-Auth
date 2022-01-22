@@ -3,6 +3,8 @@ import { MikroORM } from "@mikro-orm/core";
 import { Profile } from "./entities/Profile.entity";
 import { User } from "./entities/User.entity";
 import { ProfileIcon } from "./entities/ProfileIcon.entity";
+import { Event } from "./entities/Event.entity";
+import { Allowance } from "./entities/Allowance.entity";
 
 export default {
   migrations: {
@@ -10,7 +12,7 @@ export default {
     pattern: /^[\w-]+\d+\.[tj]s$/,
     emit: "js",
   },
-  entities: [Profile, ProfileIcon, User],
+  entities: [Profile, ProfileIcon, User, Event, Allowance],
   dbName: "bucket",
   type: "postgresql",
   user: "postgres",

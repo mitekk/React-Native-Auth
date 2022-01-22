@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 
 export type User = {
   id: string;
-  nickname: string;
+  name: string;
 };
 
 export type Context = {

@@ -15,13 +15,13 @@ export const AvatarList = ({profiles}: AvatarListProps) => {
   return (
     <View style={style.listContainer}>
       <FlatList
-        keyExtractor={({nickname}, index) => `${nickname}-${index}`}
+        keyExtractor={({name}, index) => `${name}-${index}`}
         data={profiles}
         horizontal
         contentContainerStyle={style.profileList}
         renderItem={({item}) => (
           <Avatar
-            nickname={item.nickname}
+            name={item.name}
             onPress={() =>
               navigation.navigate('Profile', {
                 id: Math.floor(Math.random() * 100),

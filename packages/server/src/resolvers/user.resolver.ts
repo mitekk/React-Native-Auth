@@ -42,10 +42,9 @@ export class UserResolver {
       };
     }
 
-    const hashedPassword = await argon2.hash(password);
     const user = em.create(User, {
       email: email.toLocaleLowerCase(),
-      password: hashedPassword,
+      password,
     });
 
     try {

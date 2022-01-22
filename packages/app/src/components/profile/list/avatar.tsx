@@ -3,18 +3,18 @@ import {Avatar as RNAvatar} from 'react-native-elements';
 import {StyleSheet, View} from 'react-native';
 
 type AvatarProps = {
-  nickname: string;
+  name: string;
   onPress: () => void;
 };
 
-export const Avatar = ({nickname, onPress}: AvatarProps) => {
+export const Avatar = ({name, onPress}: AvatarProps) => {
   return (
     <View style={style.container}>
       <RNAvatar
         size="medium"
         overlayContainerStyle={style.overlayContainerStyle}
         rounded
-        title={nickname}
+        title={name}
         onPress={onPress}
       />
     </View>
