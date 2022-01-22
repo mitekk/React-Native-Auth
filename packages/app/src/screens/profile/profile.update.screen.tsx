@@ -29,7 +29,7 @@ type ProfileForm = {
 type preferredProfile = 'theme' | 'media';
 
 export const ProfileCreateScreen = () => {
-  const {randomAvatar, isLoading} = useProfileIcon();
+  const {randomIcon, isLoading} = useProfileIcon();
 
   const initialColor = colorUtil.getColor();
   const initialAllowance = allowanceUtil.getAllowance();
@@ -39,7 +39,7 @@ export const ProfileCreateScreen = () => {
     defaultValues: useMemo(() => {
       return {
         nickname: '',
-        avatar: randomAvatar(),
+        avatar: randomIcon(),
         color: initialColor,
         birthdate: new Date(),
         allowance: initialAllowance,
@@ -49,7 +49,7 @@ export const ProfileCreateScreen = () => {
 
   useEffect(() => {
     methods.reset({
-      avatar: randomAvatar(),
+      avatar: randomIcon(),
     });
   }, [isLoading]);
 
@@ -102,7 +102,7 @@ export const ProfileCreateScreen = () => {
             theme: (
               <ThemeForm
                 avatar={methods.getValues('avatar')}
-                getAvatar={randomAvatar}
+                getAvatar={randomIcon}
                 color={methods.getValues('color')}
                 getColor={colorUtil.getColor}
               />

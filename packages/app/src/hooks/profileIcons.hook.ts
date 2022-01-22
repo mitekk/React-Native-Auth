@@ -35,8 +35,8 @@ export const useProfileIcon = () => {
     };
   }, [data]);
 
-  const randomAvatar = () =>
+  const randomIcon = () =>
     icons && icons[Math.floor(Math.random() * (25 + 1))]?.name;
 
-  return {icons, isLoading, randomAvatar};
+  return {icons, isLoading, randomIcon};
 };
