@@ -1,46 +1,10 @@
 import { User } from "../entities/User.entity";
-import {
-  Arg,
-  Ctx,
-  Field,
-  InputType,
-  Mutation,
-  ObjectType,
-  Query,
-  Resolver,
-} from "type-graphql";
+import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import { Context } from "../types/types";
 import { jwt_secret } from "../constants";
-
-@InputType()
-class CredentialsInput {
-  @Field()
-  email!: string;
-  @Field()
-  password!: string;
-}
-
-@ObjectType()
-class FieldError {
-  @Field()
-  field: string;
-  @Field()
-  message: string;
-}
-
-@ObjectType()
-class UserResponse {
-  @Field(() => [FieldError], { nullable: true })
-  errors?: FieldError[];
-
-  @Field(() => User, { nullable: true })
-  user?: User;
-
-  @Field(() => String, { nullable: true })
-  token?: string;
-}
+import { UserResponse, CredentialsInput } from "./types";
 
 @Resolver()
 export class UserResolver {
