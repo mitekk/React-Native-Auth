@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useFormContext} from 'react-hook-form';
 import {StyleSheet, TextInput, View} from 'react-native';
 import {Avatar} from 'react-native-elements';
@@ -20,6 +20,10 @@ export const ThemeForm = ({
 
   const [formAvatar, setFormAvatar] = useState(avatar);
   const [formColor, setFormColor] = useState(color);
+
+  useEffect(() => {
+    avatar && setFormAvatar(avatar);
+  }, [avatar]);
 
   const getAnotherAvatar = () => {
     const name = getAvatar();

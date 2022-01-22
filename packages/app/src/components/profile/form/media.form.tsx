@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Avatar} from 'react-native-elements';
-import {ImagePickerResponse} from 'react-native-image-picker';
 
 type MediaFormProps = {
   mediaUri: string;
@@ -11,12 +10,14 @@ type MediaFormProps = {
 export const MediaForm = ({mediaUri, openMedia}: MediaFormProps) => {
   return (
     <View style={{...style.mediaFormContainer}}>
-      <Avatar
-        rounded
-        size="xlarge"
-        source={{uri: mediaUri}}
-        onPress={openMedia}
-      />
+      {!!mediaUri && (
+        <Avatar
+          rounded
+          size="xlarge"
+          source={{uri: mediaUri}}
+          onPress={openMedia}
+        />
+      )}
     </View>
   );
 };

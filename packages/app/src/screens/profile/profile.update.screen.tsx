@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {View, StyleSheet} from 'react-native';
 import {useForm, FormProvider, SubmitHandler} from 'react-hook-form';
 import * as yup from 'yup';
@@ -9,8 +9,9 @@ import {ThemeForm} from '../../components/profile/form/theme.form';
 import {DetailsForm} from '../../components/profile/form/details.form';
 import {Stash} from '../../types/profile/stash.type';
 import {MediaForm} from '../../components/profile/form/media.form';
-import {allowanceUtil, avatarUtil, colorUtil} from '../../utils/form';
+import {allowanceUtil, colorUtil} from '../../utils/form';
 import {openImageGallery} from '../../utils/imageGallery';
+import {useProfileIcon} from '../../hooks/profileIcons.hook';
 
 const schema = yup.object().shape({
   nickname: yup.string().required('required field'),
@@ -28,20 +29,29 @@ type ProfileForm = {
 type preferredProfile = 'theme' | 'media';
 
 export const ProfileCreateScreen = () => {
-  const initialAvatar = avatarUtil.getAvatar();
+  const {randomIcon, isLoading} = useProfileIcon();
+
   const initialColor = colorUtil.getColor();
   const initialAllowance = allowanceUtil.getAllowance();
 
   const methods = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      nickname: '',
-      avatar: initialAvatar,
-      color: initialColor,
-      birthdate: new Date(),
-      allowance: initialAllowance,
-    },
+    defaultValues: useMemo(() => {
+      return {
+        nickname: '',
+        avatar: randomIcon(),
+        color: initialColor,
+        birthdate: new Date(),
+        allowance: initialAllowance,
+      };
+    }, [isLoading]),
   });
+
+  useEffect(() => {
+    methods.reset({
+      avatar: randomIcon(),
+    });
+  }, [isLoading]);
 
   const [preferredProfile, setPreferredProfile] =
     useState<preferredProfile>('theme');
@@ -92,7 +102,7 @@ export const ProfileCreateScreen = () => {
             theme: (
               <ThemeForm
                 avatar={methods.getValues('avatar')}
-                getAvatar={avatarUtil.getAvatar}
+                getAvatar={randomIcon}
                 color={methods.getValues('color')}
                 getColor={colorUtil.getColor}
               />
