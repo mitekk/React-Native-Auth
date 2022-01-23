@@ -1,18 +1,21 @@
-import { Entity, Enum, Property } from "@mikro-orm/core";
-import { Theme } from "../enums/theme.enum";
-import { Field, ObjectType } from "type-graphql";
+import {
+  Collection,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  Property,
+} from "@mikro-orm/core";
+import { Field, Int, ObjectType } from "type-graphql";
+import { Allowance } from "./Allowance.entity";
 import { BaseEntity } from "./Base.entity";
+import { User } from "./User.entity";
 
 @ObjectType()
 @Entity()
 export class Profile extends BaseEntity {
   @Field(() => String)
   @Property({ type: "text" })
-  nickname!: string;
-
-  @Field(() => String)
-  @Property({ type: "text" })
-  avatar: string;
+  name!: string;
 
   @Field(() => String)
   @Property({ type: "date" })
@@ -20,9 +23,29 @@ export class Profile extends BaseEntity {
 
   @Field(() => String)
   @Property({ type: "text" })
+  avatar!: string;
+
+  @Field(() => String)
+  @Property({ type: "text" })
   color!: string;
 
   @Field(() => String)
-  @Enum(() => Theme)
-  theme!: Theme;
+  @Property({ type: "text" })
+  mediaUri: string;
+
+  @Field(() => String)
+  @Property({ type: "text" })
+  themePref!: string;
+
+  @Field(() => Int)
+  @Property()
+  balance!: number;
+
+  @Field(() => User)
+  @ManyToOne(() => User)
+  user!: User;
+
+  @Field(() => Allowance)
+  @OneToMany(() => Allowance, (allowance) => allowance.profile)
+  allowances = new Collection<Allowance>(this);
 }

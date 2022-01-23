@@ -14,12 +14,12 @@ import {openImageGallery} from '../../utils/imageGallery';
 import {useProfileIcon} from '../../hooks/profileIcons.hook';
 
 const schema = yup.object().shape({
-  nickname: yup.string().required('required field'),
+  name: yup.string().required('required field'),
   allowance: yup.array().min(1),
 });
 
 type ProfileForm = {
-  nickname: string;
+  name: string;
   avatar: string;
   color: string;
   birthdate: Date;
@@ -38,7 +38,7 @@ export const ProfileCreateScreen = () => {
     resolver: yupResolver(schema),
     defaultValues: useMemo(() => {
       return {
-        nickname: '',
+        name: '',
         avatar: randomIcon(),
         color: initialColor,
         birthdate: new Date(),
@@ -57,8 +57,9 @@ export const ProfileCreateScreen = () => {
     useState<preferredProfile>('theme');
   const [mediaUri, setMediaUri] = useState<string>('');
 
-  const onSubmit: SubmitHandler<ProfileForm> = data =>
+  const onSubmit: SubmitHandler<ProfileForm> = data => {
     console.log('data submitted: ', data);
+  };
 
   const openMedia = async () => {
     const {assets} = await openImageGallery();

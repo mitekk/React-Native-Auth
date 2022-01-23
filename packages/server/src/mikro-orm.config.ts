@@ -2,6 +2,8 @@ import { __prod__ } from "./constants";
 import { MikroORM } from "@mikro-orm/core";
 import { Profile } from "./entities/Profile.entity";
 import { User } from "./entities/User.entity";
+import { Allowance } from "./entities/Allowance.entity";
+import { Perk } from "./entities/Perk.entity";
 import { ProfileIcon } from "./entities/ProfileIcon.entity";
 
 export default {
@@ -10,7 +12,7 @@ export default {
     pattern: /^[\w-]+\d+\.[tj]s$/,
     emit: "js",
   },
-  entities: [Profile, ProfileIcon, User],
+  entities: [Profile, ProfileIcon, User, Allowance, Perk],
   dbName: "bucket",
   type: "postgresql",
   user: "postgres",

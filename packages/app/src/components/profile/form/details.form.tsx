@@ -17,7 +17,7 @@ export const DetailsForm = ({}: DetailsFormProps) => {
   return (
     <View style={style.detailsForm}>
       <View style={style.inputFields}>
-        <FieldForm lable="Nickname">
+        <FieldForm lable="Name">
           <Controller
             control={control}
             render={({field: {onChange, value, onBlur}}) => (
@@ -26,10 +26,10 @@ export const DetailsForm = ({}: DetailsFormProps) => {
                 onBlur={onBlur}
                 onChangeText={value => onChange(value)}
                 errorStyle={{color: 'red', alignSelf: 'center'}}
-                errorMessage={errors?.nickname?.message}
+                errorMessage={errors?.name?.message}
               />
             )}
-            name="nickname"
+            name="name"
           />
         </FieldForm>
         <DateForm name="birthdate" label="Birthdate" />

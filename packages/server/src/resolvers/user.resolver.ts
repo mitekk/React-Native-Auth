@@ -11,7 +11,6 @@ export class UserResolver {
   @Query(() => UserResponse)
   async me(@Ctx() { em, user }: Context): Promise<UserResponse> {
     const foundUser = await em.findOneOrFail(User, { id: user?.id });
-
     return { user: foundUser };
   }
 
@@ -42,10 +41,9 @@ export class UserResolver {
       };
     }
 
-    const hashedPassword = await argon2.hash(password);
     const user = em.create(User, {
       email: email.toLocaleLowerCase(),
-      password: hashedPassword,
+      password,
     });
 
     try {

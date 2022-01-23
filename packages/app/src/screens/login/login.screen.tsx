@@ -30,15 +30,13 @@ const login_mut = gql`
 const schema = yup.object().shape({
   email: yup
     .string()
-    .email('Invalid email format')
+    // .email('Invalid email format')
     .required('Please Enter a email'),
-  password: yup
-    .string()
-    .required('Please Enter your password')
-    .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-      'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character',
-    ),
+  password: yup.string().required('Please Enter your password'),
+  // .matches(
+  //   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
+  //   'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character',
+  // ),
 });
 
 type LoginInput = {

@@ -1,7 +1,7 @@
 import {Stash} from './stash.type';
 
 export type Profile = {
-  nickname: string;
+  name: string;
   allowance: Stash[];
   avatar: string;
   birthdate: Date;

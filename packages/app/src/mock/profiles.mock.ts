@@ -15,6 +15,6 @@ export const PROFILES: Profile[] = [
     avatar: 'paw',
     birthdate: new Date('2022-01-05T20:20:59.513Z'),
     color: 'rgb(190,163,249)',
-    nickname: 'Aa',
+    name: 'Aa',
   },
 ];

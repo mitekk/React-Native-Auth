@@ -21,11 +21,11 @@ export class ProfileResolver {
 
   @Mutation(() => Profile)
   async createProfile(
-    @Arg("nickname") nickname: string,
+    @Arg("name") name: string,
     @Ctx() { em, user }: Context
   ): Promise<Profile> {
     if (!user) throw new Error("You are not authenticated!");
-    const profile = em.create(Profile, { nickname });
+    const profile = em.create(Profile, { name });
     await em.persistAndFlush(profile);
     return profile;
   }
@@ -33,7 +33,7 @@ export class ProfileResolver {
   @Mutation(() => Profile, { nullable: true })
   async updateProfile(
     @Arg("id") id: string,
-    @Arg("nickname") nickname: string,
+    @Arg("name") name: string,
     @Ctx() { em, user }: Context
   ): Promise<Profile | null> {
     if (!user) throw new Error("You are not authenticated!");
@@ -43,8 +43,8 @@ export class ProfileResolver {
       return null;
     }
 
-    if (typeof nickname !== "undefined") {
-      profile.nickname = nickname;
+    if (typeof name !== "undefined") {
+      profile.name = name;
       await em.persistAndFlush(profile);
     }
 

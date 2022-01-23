@@ -8,4 +8,12 @@ class FieldError {
   message: string;
 }
 
-export { FieldError };
+@ObjectType()
+class QueryError {
+  @Field()
+  code: number;
+  @Field()
+  message: string;
+}
+
+export { FieldError, QueryError };

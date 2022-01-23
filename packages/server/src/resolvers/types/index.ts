@@ -2,7 +2,7 @@ import { FieldError } from "./error";
 import {
   ProfileIconInput,
   FieldIcon,
-  ProfileIconsResponse,
+  ProfileIconResponse,
 } from "./profileIcon";
 import { CredentialsInput, UserResponse } from "./user";
 
@@ -11,6 +11,6 @@ export {
   ProfileIconInput,
   FieldIcon,
   CredentialsInput,
-  ProfileIconsResponse,
+  ProfileIconResponse,
   UserResponse,
 };
