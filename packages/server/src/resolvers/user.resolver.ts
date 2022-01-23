@@ -11,7 +11,6 @@ export class UserResolver {
   @Query(() => UserResponse)
   async me(@Ctx() { em, user }: Context): Promise<UserResponse> {
     const foundUser = await em.findOneOrFail(User, { id: user?.id });
-
     return { user: foundUser };
   }
 

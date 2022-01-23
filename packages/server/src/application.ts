@@ -9,7 +9,7 @@ import microConfig from "./mikro-orm.config";
 import { ProfileResolver } from "./resolvers/profile.resolver";
 import { UserResolver } from "./resolvers/user.resolver";
 import { Context } from "./types/types";
-import { ProfileIconsResolver } from "./resolvers/profileIcon.resolver";
+import { ProfileIconsResolver } from "./resolvers/profileIcons.resolver";
 
 export const Application = () => {
   let orm: MikroORM<IDatabaseDriver<Connection>>;

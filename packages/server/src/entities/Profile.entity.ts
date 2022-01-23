@@ -5,10 +5,9 @@ import {
   OneToMany,
   Property,
 } from "@mikro-orm/core";
-import { Field, ObjectType } from "type-graphql";
+import { Field, Int, ObjectType } from "type-graphql";
 import { Allowance } from "./Allowance.entity";
 import { BaseEntity } from "./Base.entity";
-import { Event } from "./Event.entity";
 import { User } from "./User.entity";
 
 @ObjectType()
@@ -38,13 +37,13 @@ export class Profile extends BaseEntity {
   @Property({ type: "text" })
   themePref!: string;
 
+  @Field(() => Int)
+  @Property()
+  balance!: number;
+
   @Field(() => User)
   @ManyToOne(() => User)
   user!: User;
-
-  @Field(() => Event)
-  @OneToMany(() => Event, (event) => event.profile)
-  events = new Collection<Event>(this);
 
   @Field(() => Allowance)
   @OneToMany(() => Allowance, (allowance) => allowance.profile)
