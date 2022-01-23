@@ -11,7 +11,7 @@ import { UserResolver } from "./resolvers/user.resolver";
 import { Context } from "./types/types";
 import { ProfileIconResolver } from "./resolvers/profileIcon.resolver";
 import { AllowanceResolver } from "./resolvers/allowance.resolver";
-import { PerksResolver } from "./resolvers/perks.resolver";
+import { PerksResolver } from "./resolvers/perk.resolver";
 
 export const Application = () => {
   let orm: MikroORM<IDatabaseDriver<Connection>>;

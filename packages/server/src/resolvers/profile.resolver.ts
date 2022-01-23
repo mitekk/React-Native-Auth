@@ -1,6 +1,7 @@
 import { Profile } from "../entities/Profile.entity";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Context } from "../types/types";
+import { ProfileInput, ProfileResponse } from "./types";
 
 @Resolver()
 export class ProfileResolver {
@@ -19,33 +20,40 @@ export class ProfileResolver {
     return em.findOne(Profile, { id });
   }
 
-  @Mutation(() => Profile)
+  @Mutation(() => ProfileResponse)
   async createProfile(
-    @Arg("name") name: string,
+    @Arg("profile") profile: ProfileInput,
     @Ctx() { em, user }: Context
-  ): Promise<Profile> {
+  ): Promise<ProfileResponse> {
     if (!user) throw new Error("You are not authenticated!");
-    const profile = em.create(Profile, { name });
-    await em.persistAndFlush(profile);
-    return profile;
+    const newProfile = em.create(Profile, profile);
+    await em.persistAndFlush(newProfile);
+    return { data: newProfile };
   }
 
-  @Mutation(() => Profile, { nullable: true })
+  @Mutation(() => ProfileResponse, { nullable: true })
   async updateProfile(
-    @Arg("id") id: string,
-    @Arg("name") name: string,
+    @Arg("profile") profile: ProfileInput,
     @Ctx() { em, user }: Context
-  ): Promise<Profile | null> {
+  ): Promise<ProfileResponse> {
     if (!user) throw new Error("You are not authenticated!");
-    const profile = await em.findOne(Profile, { id });
+    const existing = await em.findOne(Profile, { id: profile.id });
 
-    if (!profile) {
-      return null;
+    if (!existing) {
+      return {
+        errors: [
+          {
+            code: 404,
+            message: "profile does not exist",
+          },
+        ],
+      };
     }
 
-    if (typeof name !== "undefined") {
-      profile.name = name;
-      await em.persistAndFlush(profile);
+    if (typeof profile !== "undefined") {
+      const updatedProfile = { ...existing, profile };
+      await em.persistAndFlush(updatedProfile);
+      return { data: updatedProfile };
     }
 
     return profile;

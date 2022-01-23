@@ -22,7 +22,7 @@ class ProfileIconResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
   @Field(() => [FieldIcon], { nullable: true })
-  icons?: FieldIcon[];
+  data?: FieldIcon[];
 }
 
 export { ProfileIconInput, FieldIcon, ProfileIconResponse };
