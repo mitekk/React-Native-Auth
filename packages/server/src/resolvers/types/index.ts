@@ -5,6 +5,9 @@ import {
   ProfileIconResponse,
 } from "./profileIcon";
 import { CredentialsInput, UserResponse } from "./user";
+import { AllowanceInput, AllowanceResponse } from "./allowance";
+import { PerkResponse } from "./perk";
+import { ProfileInput, ProfileResponse } from "./profile";
 
 export {
   FieldError,
@@ -13,4 +16,9 @@ export {
   CredentialsInput,
   ProfileIconResponse,
   UserResponse,
+  AllowanceInput,
+  AllowanceResponse,
+  PerkResponse,
+  ProfileInput,
+  ProfileResponse,
 };
