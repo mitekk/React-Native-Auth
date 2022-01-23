@@ -18,11 +18,11 @@ class FieldIcon {
 }
 
 @ObjectType()
-class ProfileIconsResponse {
+class ProfileIconResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
   @Field(() => [FieldIcon], { nullable: true })
   icons?: FieldIcon[];
 }
 
-export { ProfileIconInput, FieldIcon, ProfileIconsResponse };
+export { ProfileIconInput, FieldIcon, ProfileIconResponse };
