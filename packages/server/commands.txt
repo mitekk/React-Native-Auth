@@ -1,0 +1,12 @@
+
+setup environment
+    docker-compose up -d
+
+setup db schema
+    npm run create:migration
+    
+build typescript to dist (-watch)
+    npm run watch
+    
+run application from dist (nodemon)
+    npm run dev
