@@ -3,7 +3,7 @@ import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
-import {FAB, Input} from 'react-native-elements';
+import {Button, TextInput} from 'react-native-paper';
 import * as yup from 'yup';
 import {FieldForm} from '../../components/profile/form/field.form';
 import {RootScreenNavigation} from '../../types/route.type';
@@ -46,24 +46,21 @@ export const PasswordScreen = () => {
             <Controller
               control={control}
               render={({field: {onChange, value, onBlur}}) => (
-                <Input
+                <TextInput
                   autoCapitalize="none"
                   value={value.toString()}
                   onBlur={onBlur}
                   onChangeText={value => onChange(value)}
                   style={{zIndex: 1}}
-                  errorStyle={{color: 'red', alignSelf: 'center'}}
-                  errorMessage={errors?.email?.message}
                 />
               )}
               name="email"
             />
           </FieldForm>
         </View>
-        <FAB
-          title="Send Email"
-          buttonStyle={styles.createButton}
-          onPress={handleSubmit(onSubmit)}></FAB>
+        <Button style={styles.createButton} onPress={handleSubmit(onSubmit)}>
+          Send Email
+        </Button>
       </View>
     </LoginLayout>
   );

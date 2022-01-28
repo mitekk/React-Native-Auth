@@ -1,6 +1,6 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Avatar, Text} from 'react-native-elements';
+import {StyleSheet, Text, View} from 'react-native';
+import {Avatar} from 'react-native-paper';
 type LoginLayoutProps = {
   title: string;
   subtitle: string;
@@ -16,14 +16,14 @@ export const LoginLayout = ({
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Avatar
+        <Avatar.Image
           size={200}
-          rounded
           source={{
             uri:
               uri ||
               'https://cdn.pixabay.com/photo/2019/11/03/20/11/portrait-4599553__340.jpg',
-          }}></Avatar>
+          }}
+        />
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.subtitle}>{subtitle}</Text>
       </View>

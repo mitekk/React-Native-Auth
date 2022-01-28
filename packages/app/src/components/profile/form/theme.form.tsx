@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {useFormContext} from 'react-hook-form';
 import {StyleSheet, TextInput, View} from 'react-native';
-import {Avatar} from 'react-native-elements';
+import {Avatar} from 'react-native-paper';
 
 type ThemeFormProps = {
   avatar: string;
@@ -43,12 +43,11 @@ export const ThemeForm = ({
       <View style={style.profileInput}>
         <TextInput {...register('avatar')} style={style.hidden} />
         <TextInput {...register('color')} style={style.hidden} />
-        <Avatar
-          rounded
-          size="xlarge"
-          icon={{name: formAvatar, type: 'font-awesome-5'}}
-          containerStyle={style.avatar}
-          onPress={getAnotherAvatar}
+        <Avatar.Icon
+          size={150}
+          icon={formAvatar}
+          style={style.avatar}
+          onTouchStart={getAnotherAvatar}
         />
       </View>
       <View style={style.colorField} onTouchStart={getAnotherColor}></View>

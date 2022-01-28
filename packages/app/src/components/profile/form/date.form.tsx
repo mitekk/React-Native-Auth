@@ -2,8 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import {useFormContext, Controller} from 'react-hook-form';
-import {Input} from 'react-native-elements';
 import {FieldForm} from './field.form';
+import {TextInput} from 'react-native-paper';
 
 type DateFormProps = {
   name: string;
@@ -35,12 +35,10 @@ export const DateForm = ({name, label}: DateFormProps) => {
         <Controller
           control={control}
           render={() => (
-            <Input
+            <TextInput
               disabled
-              disabledInputStyle={{opacity: 1}}
+              style={{opacity: 1}}
               value={formDate?.toLocaleDateString()}
-              errorStyle={{color: 'red'}}
-              errorMessage={errors?.birthdate?.message}
               onPressIn={() => {
                 setOpen(true);
               }}

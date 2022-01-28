@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useFormContext} from 'react-hook-form';
-import {StyleSheet, View, FlatList, TouchableOpacity} from 'react-native';
-import {Text} from 'react-native-elements';
+import {StyleSheet, View, FlatList, TouchableOpacity, Text} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {pullAt} from 'lodash';
 import {Stash} from '../../../types/profile/stash.type';

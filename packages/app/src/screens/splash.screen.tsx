@@ -1,6 +1,5 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
-import {Text} from 'react-native-elements';
+import {StyleSheet, Text, View} from 'react-native';
 
 export const SplashScreen = () => {
   return (

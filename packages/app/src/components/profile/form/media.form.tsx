@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Avatar} from 'react-native-elements';
+import {Avatar} from 'react-native-paper';
 
 type MediaFormProps = {
   mediaUri: string;
@@ -11,11 +11,10 @@ export const MediaForm = ({mediaUri, openMedia}: MediaFormProps) => {
   return (
     <View style={{...style.mediaFormContainer}}>
       {!!mediaUri && (
-        <Avatar
-          rounded
-          size="xlarge"
+        <Avatar.Image
+          size={150}
           source={{uri: mediaUri}}
-          onPress={openMedia}
+          onTouchStart={openMedia}
         />
       )}
     </View>

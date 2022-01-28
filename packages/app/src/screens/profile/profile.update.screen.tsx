@@ -3,7 +3,6 @@ import {View, StyleSheet} from 'react-native';
 import {useForm, FormProvider, SubmitHandler} from 'react-hook-form';
 import * as yup from 'yup';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {Divider, FAB} from 'react-native-elements';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {ThemeForm} from '../../components/profile/form/theme.form';
 import {DetailsForm} from '../../components/profile/form/details.form';
@@ -12,6 +11,7 @@ import {MediaForm} from '../../components/profile/form/media.form';
 import {allowanceUtil, colorUtil} from '../../utils/form';
 import {openImageGallery} from '../../utils/imageGallery';
 import {useProfileIcon} from '../../hooks/profileIcons.hook';
+import {Button, Divider} from 'react-native-paper';
 
 const schema = yup.object().shape({
   name: yup.string().required('required field'),
@@ -112,13 +112,14 @@ export const ProfileCreateScreen = () => {
           }[preferredProfile]
         }
 
-        <Divider orientation="horizontal" />
+        <Divider />
         <DetailsForm />
       </FormProvider>
-      <FAB
-        title="Create"
-        buttonStyle={style.createButton}
-        onPress={methods.handleSubmit(onSubmit)}></FAB>
+      <Button
+        style={style.createButton}
+        onPress={methods.handleSubmit(onSubmit)}>
+        Create
+      </Button>
     </View>
   );
 };

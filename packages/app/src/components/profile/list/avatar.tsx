@@ -1,5 +1,4 @@
 import React from 'react';
-import {Avatar as RNAvatar} from 'react-native-elements';
 import {StyleSheet, View} from 'react-native';
 
 type AvatarProps = {
@@ -8,17 +7,7 @@ type AvatarProps = {
 };
 
 export const Avatar = ({name, onPress}: AvatarProps) => {
-  return (
-    <View style={style.container}>
-      <RNAvatar
-        size="medium"
-        overlayContainerStyle={style.overlayContainerStyle}
-        rounded
-        title={name}
-        onPress={onPress}
-      />
-    </View>
-  );
+  return <View style={style.container}></View>;
 };
 
 const style = StyleSheet.create({
