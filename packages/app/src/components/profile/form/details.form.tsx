@@ -1,10 +1,10 @@
 import React from 'react';
 import {Controller, useFormContext} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
-import {Input} from 'react-native-elements';
 import {DateForm} from './date.form';
 import {FieldForm} from './field.form';
 import {AllowanceForm} from './allowance.form';
+import {TextInput} from 'react-native-paper';
 
 type DetailsFormProps = {};
 
@@ -21,12 +21,10 @@ export const DetailsForm = ({}: DetailsFormProps) => {
           <Controller
             control={control}
             render={({field: {onChange, value, onBlur}}) => (
-              <Input
+              <TextInput
                 value={value}
                 onBlur={onBlur}
                 onChangeText={value => onChange(value)}
-                errorStyle={{color: 'red', alignSelf: 'center'}}
-                errorMessage={errors?.name?.message}
               />
             )}
             name="name"

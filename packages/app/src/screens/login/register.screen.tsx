@@ -3,7 +3,7 @@ import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
-import {FAB, Input} from 'react-native-elements';
+import {Button, TextInput} from 'react-native-paper';
 import {gql, useMutation} from 'urql';
 import * as yup from 'yup';
 import {FieldForm} from '../../components/profile/form/field.form';
@@ -66,6 +66,7 @@ export const RegisterScreen = () => {
   const onSubmit: SubmitHandler<RegisterInput> = async credentials => {
     const {data} = await register(credentials);
     const token = data?.register?.token;
+    console.log(data);
 
     if (!token) {
       // TODO:: alert login failed
@@ -82,14 +83,12 @@ export const RegisterScreen = () => {
             <Controller
               control={control}
               render={({field: {onChange, value, onBlur}}) => (
-                <Input
+                <TextInput
                   autoCapitalize="none"
                   value={value.toString()}
                   onBlur={onBlur}
                   onChangeText={value => onChange(value)}
                   style={{zIndex: 1}}
-                  errorStyle={{color: 'red', alignSelf: 'center'}}
-                  errorMessage={errors?.email?.message}
                 />
               )}
               name="email"
@@ -99,25 +98,22 @@ export const RegisterScreen = () => {
             <Controller
               control={control}
               render={({field: {onChange, value, onBlur}}) => (
-                <Input
+                <TextInput
                   secureTextEntry={true}
                   autoCapitalize="none"
                   value={value.toString()}
                   onBlur={onBlur}
                   onChangeText={value => onChange(value)}
                   style={{zIndex: 1}}
-                  errorStyle={{color: 'red', alignSelf: 'center'}}
-                  errorMessage={errors?.password?.message}
                 />
               )}
               name="password"
             />
           </FieldForm>
         </View>
-        <FAB
-          title="Sign Up"
-          buttonStyle={styles.createButton}
-          onPress={handleSubmit(onSubmit)}></FAB>
+        <Button style={styles.createButton} onPress={handleSubmit(onSubmit)}>
+          Sign Up
+        </Button>
       </View>
     </LoginLayout>
   );

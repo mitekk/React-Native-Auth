@@ -1,122 +1,36 @@
 import {yupResolver} from '@hookform/resolvers/yup';
 import React from 'react';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
-import {StyleSheet, View} from 'react-native';
-import {FAB, Input} from 'react-native-elements';
+import {StyleSheet, Text, View} from 'react-native';
+import {useTheme} from 'react-native-paper';
 import {gql, useMutation} from 'urql';
 import * as yup from 'yup';
-import {FieldForm} from '../../components/profile/form/field.form';
+import {MainLayout} from '../../layouts/main.layout';
 import {useAuth} from '../../utils/auth/auth';
-import {LoginLayout} from './login.layout';
 
-const login_mut = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(credentials: {email: $email, password: $password}) {
-      errors {
-        field
-        message
-      }
-      user {
-        id
-        createdAt
-        updatedAt
-        email
-      }
-      token
-    }
-  }
-`;
-
-const schema = yup.object().shape({
-  email: yup
-    .string()
-    // .email('Invalid email format')
-    .required('Please Enter a email'),
-  password: yup.string().required('Please Enter your password'),
-  // .matches(
-  //   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-  //   'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character',
-  // ),
+const headerStyles = StyleSheet.create({
+  title: {},
+  subTitle: {},
 });
 
-type LoginInput = {
-  email: string;
-  password: string;
-};
+const header = (
+  <View>
+    <Text style={headerStyles.title}>bucket</Text>
+    <Text style={headerStyles.subTitle}>lets start</Text>
+  </View>
+);
 
 export const LoginScreen = () => {
-  const {signIn} = useAuth();
-  const [{}, login] = useMutation(login_mut);
-
-  const {
-    control,
-    handleSubmit,
-    formState: {errors},
-  } = useForm<LoginInput>({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
-  });
-
-  const onSubmit: SubmitHandler<LoginInput> = async credentials => {
-    const {data} = await login(credentials);
-    const token = data?.login?.token;
-
-    if (!token) {
-      // TODO:: alert login failed
-    } else {
-      signIn(token);
-    }
-  };
+  const {colors, fonts} = useTheme();
+  console.log(fonts);
 
   return (
-    <LoginLayout title="Bucket" subtitle="The easiest way to manage allowance">
-      <View style={styles.body}>
-        <View style={{flex: 1}}>
-          <FieldForm lable="Email">
-            <Controller
-              control={control}
-              render={({field: {onChange, value, onBlur}}) => (
-                <Input
-                  autoCapitalize="none"
-                  value={value.toString()}
-                  onBlur={onBlur}
-                  onChangeText={value => onChange(value)}
-                  style={{zIndex: 1}}
-                  errorStyle={{color: 'red', alignSelf: 'center'}}
-                  errorMessage={errors?.email?.message}
-                />
-              )}
-              name="email"
-            />
-          </FieldForm>
-          <FieldForm lable="Password">
-            <Controller
-              control={control}
-              render={({field: {onChange, value, onBlur}}) => (
-                <Input
-                  autoCapitalize="none"
-                  secureTextEntry={true}
-                  value={value.toString()}
-                  onBlur={onBlur}
-                  onChangeText={value => onChange(value)}
-                  style={{zIndex: 1}}
-                  errorStyle={{color: 'red', alignSelf: 'center'}}
-                  errorMessage={errors?.password?.message}
-                />
-              )}
-              name="password"
-            />
-          </FieldForm>
-        </View>
-        <FAB
-          title="Login"
-          buttonStyle={styles.createButton}
-          onPress={handleSubmit(onSubmit)}></FAB>
-      </View>
-    </LoginLayout>
+    <MainLayout
+      header={header}
+      headerStyle={{...styles.headerStyle, backgroundColor: colors.flamingo}}
+      showBack={false}>
+      <Text style={{fontSize: 50, fontFamily: fonts.thin.fontFamily}}>aaa</Text>
+    </MainLayout>
   );
 };
 
@@ -128,4 +42,8 @@ const styles = StyleSheet.create({
     marginVertical: 50,
   },
   createButton: {backgroundColor: 'navy'},
+  headerStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

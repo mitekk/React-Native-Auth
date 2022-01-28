@@ -1,7 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {Button} from 'react-native-elements';
+import {Button} from 'react-native-paper';
 import {RootScreenNavigation} from '../../types/route.type';
 import {LoginLayout} from './login.layout';
 
@@ -11,31 +11,31 @@ export const IntoScreen = () => {
     <LoginLayout title="Bucket" subtitle="The easiest way to manage allowance">
       <View style={styles.body}>
         <Button
-          title="Login"
-          buttonStyle={{
+          style={{
             backgroundColor: 'rgba(39, 39, 39, 1)',
             borderRadius: 10,
           }}
-          containerStyle={{
+          contentStyle={{
             width: '80%',
             marginVertical: 10,
           }}
-          titleStyle={{color: 'white', marginHorizontal: 20}}
-          onPress={() => navigation.navigate('Login')}
-        />
+          labelStyle={{color: 'white', marginHorizontal: 20}}
+          onPress={() => navigation.navigate('Login')}>
+          Login
+        </Button>
         <Button
-          title="Sign Up"
-          buttonStyle={{
+          style={{
             backgroundColor: 'rgba(39, 39, 39, 1)',
             borderRadius: 10,
           }}
-          containerStyle={{
+          contentStyle={{
             width: '80%',
             marginVertical: 10,
           }}
-          titleStyle={{color: 'white', marginHorizontal: 20}}
-          onPress={() => navigation.navigate('Register')}
-        />
+          labelStyle={{color: 'white', marginHorizontal: 20}}
+          onPress={() => navigation.navigate('Register')}>
+          Sign Up
+        </Button>
       </View>
     </LoginLayout>
   );

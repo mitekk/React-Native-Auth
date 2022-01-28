@@ -14,7 +14,6 @@ import {
   SplashScreen,
 } from './screens';
 import {useAuth} from './utils/auth/auth';
-import {Theme} from './theme';
 
 const {Navigator, Screen} = createNativeStackNavigator<RootStackParamList>();
 
@@ -26,7 +25,7 @@ export const Routes = () => {
   }
 
   return (
-    <NavigationContainer theme={Theme}>
+    <NavigationContainer>
       {token ? (
         <Navigator
           initialRouteName={'Home'}
@@ -39,14 +38,14 @@ export const Routes = () => {
         </Navigator>
       ) : (
         <Navigator
-          initialRouteName={'Intro'}
+          initialRouteName={'Login'}
           screenOptions={{
             headerShown: false,
           }}>
-          <Screen name="Intro" component={IntoScreen} />
+          {/* <Screen name="Intro" component={IntoScreen} /> */}
           <Screen name="Login" component={LoginScreen} />
-          <Screen name="Register" component={RegisterScreen} />
-          <Screen name="Password" component={PasswordScreen} />
+          {/* <Screen name="Register" component={RegisterScreen} />
+          <Screen name="Password" component={PasswordScreen} /> */}
         </Navigator>
       )}
     </NavigationContainer>

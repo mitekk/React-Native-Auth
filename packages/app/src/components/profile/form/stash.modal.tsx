@@ -6,10 +6,9 @@ import {Stash} from '../../../types/profile/stash.type';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {FieldForm} from './field.form';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {Input} from 'react-native-elements/dist/Input';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import DatePicker from 'react-native-date-picker';
-import {Avatar, FAB} from 'react-native-elements';
+import {Avatar, Button, TextInput} from 'react-native-paper';
 
 const schema = yup.object().shape({
   interval: yup.string().required('required field'),
@@ -125,11 +124,10 @@ export const StashModal = ({
           />
 
           <View style={style.header}>
-            <Avatar
-              rounded
+            <Avatar.Icon
               size={125}
-              icon={{name: 'piggy-bank', type: 'font-awesome-5'}}
-              containerStyle={{backgroundColor: color}}
+              icon="piggy-bank"
+              style={{backgroundColor: color}}
             />
           </View>
           <View style={style.body}>
@@ -158,13 +156,11 @@ export const StashModal = ({
               <Controller
                 control={control}
                 render={({field: {onChange, value, onBlur}}) => (
-                  <Input
+                  <TextInput
                     value={value.toString()}
                     onBlur={onBlur}
                     onChangeText={value => onChange(value)}
                     style={{zIndex: 1}}
-                    errorStyle={{color: 'red', alignSelf: 'center'}}
-                    errorMessage={errors?.amount?.message}
                   />
                 )}
                 name="amount"
@@ -175,12 +171,10 @@ export const StashModal = ({
                 <Controller
                   control={control}
                   render={() => (
-                    <Input
+                    <TextInput
                       disabled
-                      disabledInputStyle={{opacity: 1}}
+                      style={{opacity: 1}}
                       value={formDate?.toLocaleDateString()}
-                      errorStyle={{color: 'red'}}
-                      errorMessage={errors?.start?.message}
                       onPressIn={() => {
                         setOpenStart(true);
                       }}
@@ -210,23 +204,20 @@ export const StashModal = ({
               <Controller
                 control={control}
                 render={({field: {onChange, value, onBlur}}) => (
-                  <Input
+                  <TextInput
                     value={value.toString()}
                     onBlur={onBlur}
                     onChangeText={value => onChange(value)}
                     style={{zIndex: 1}}
-                    errorStyle={{color: 'red', alignSelf: 'center'}}
-                    errorMessage={errors?.amount?.message}
                   />
                 )}
                 name="balance"
               />
             </FieldForm>
           </View>
-          <FAB
-            title={stashToEdit ? 'Update' : 'Create'}
-            buttonStyle={style.createButton}
-            onPress={handleSubmit(onSubmit)}></FAB>
+          <Button style={style.createButton} onPress={handleSubmit(onSubmit)}>
+            {stashToEdit ? 'Update' : 'Create'}
+          </Button>
         </View>
       </View>
     </Modal>
