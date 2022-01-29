@@ -5,9 +5,9 @@ import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {StyleSheet, View} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import * as yup from 'yup';
-import {FieldForm} from '../../components/profile/form/field.form';
-import {RootScreenNavigation} from '../../types/route.type';
-import {LoginLayout} from './login.layout';
+import {FieldForm} from '../../../components/profile/form/field.form';
+import {MainLayout} from '../../../layouts/main.layout';
+import {RootScreenNavigation} from '../../../types/route.type';
 
 const schema = yup.object().shape({
   email: yup
@@ -39,30 +39,31 @@ export const PasswordScreen = () => {
   };
 
   return (
-    <LoginLayout title="Bucket" subtitle="The easiest way to manage allowance">
-      <View style={styles.body}>
-        <View style={{flex: 1}}>
-          <FieldForm lable="Email">
-            <Controller
-              control={control}
-              render={({field: {onChange, value, onBlur}}) => (
-                <TextInput
-                  autoCapitalize="none"
-                  value={value.toString()}
-                  onBlur={onBlur}
-                  onChangeText={value => onChange(value)}
-                  style={{zIndex: 1}}
-                />
-              )}
-              name="email"
-            />
-          </FieldForm>
-        </View>
-        <Button style={styles.createButton} onPress={handleSubmit(onSubmit)}>
-          Send Email
-        </Button>
-      </View>
-    </LoginLayout>
+    <MainLayout></MainLayout>
+    // <LoginLayout title="Bucket" subtitle="The easiest way to manage allowance">
+    //   <View style={styles.body}>
+    //     <View style={{flex: 1}}>
+    //       <FieldForm lable="Email">
+    //         <Controller
+    //           control={control}
+    //           render={({field: {onChange, value, onBlur}}) => (
+    //             <TextInput
+    //               autoCapitalize="none"
+    //               value={value.toString()}
+    //               onBlur={onBlur}
+    //               onChangeText={value => onChange(value)}
+    //               style={{zIndex: 1}}
+    //             />
+    //           )}
+    //           name="email"
+    //         />
+    //       </FieldForm>
+    //     </View>
+    //     <Button style={styles.createButton} onPress={handleSubmit(onSubmit)}>
+    //       Send Email
+    //     </Button>
+    //   </View>
+    // </LoginLayout>
   );
 };
 

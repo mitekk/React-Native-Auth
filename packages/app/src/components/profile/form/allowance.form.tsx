@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import {useFormContext} from 'react-hook-form';
-import {StyleSheet, View, FlatList, TouchableOpacity, Text} from 'react-native';
+import {StyleSheet, View, FlatList, TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import {pullAt} from 'lodash';
 import {Stash} from '../../../types/profile/stash.type';
 import {uuid} from '../../../utils/uuid';
 import {FieldForm} from './field.form';
 import {StashModal, StashResponse} from './stash.modal';
+import {Text} from 'react-native-paper';
 
 type AllowanceFormProps = {};
 
