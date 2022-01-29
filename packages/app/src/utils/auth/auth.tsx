@@ -89,7 +89,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         await setToken(token);
       },
       signOut: async () => {
-        await removeToken(); // TODO: use Vars
+        await removeToken();
         dispatch({type: 'SIGN_OUT'});
       },
     }),

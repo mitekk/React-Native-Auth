@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     flex: 7,
     borderTopStartRadius: 10,
     borderTopEndRadius: 10,
+    padding: 45,
   },
 });
 

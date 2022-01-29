@@ -6,10 +6,10 @@ import {StyleSheet, View} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import {gql, useMutation} from 'urql';
 import * as yup from 'yup';
-import {FieldForm} from '../../components/profile/form/field.form';
-import {RootScreenNavigation} from '../../types/route.type';
-import {useAuth} from '../../utils/auth/auth';
-import {LoginLayout} from './login.layout';
+import {FieldForm} from '../../../components/profile/form/field.form';
+import {MainLayout} from '../../../layouts/main.layout';
+import {RootScreenNavigation} from '../../../types/route.type';
+import {useAuth} from '../../../utils/auth/auth';
 
 const register_mut = gql`
   mutation Register($email: String!, $password: String!) {
@@ -76,46 +76,47 @@ export const RegisterScreen = () => {
   };
 
   return (
-    <LoginLayout title="Bucket" subtitle="The easiest way to manage allowance">
-      <View style={styles.body}>
-        <View style={{flex: 1}}>
-          <FieldForm lable="Email">
-            <Controller
-              control={control}
-              render={({field: {onChange, value, onBlur}}) => (
-                <TextInput
-                  autoCapitalize="none"
-                  value={value.toString()}
-                  onBlur={onBlur}
-                  onChangeText={value => onChange(value)}
-                  style={{zIndex: 1}}
-                />
-              )}
-              name="email"
-            />
-          </FieldForm>
-          <FieldForm lable="Password">
-            <Controller
-              control={control}
-              render={({field: {onChange, value, onBlur}}) => (
-                <TextInput
-                  secureTextEntry={true}
-                  autoCapitalize="none"
-                  value={value.toString()}
-                  onBlur={onBlur}
-                  onChangeText={value => onChange(value)}
-                  style={{zIndex: 1}}
-                />
-              )}
-              name="password"
-            />
-          </FieldForm>
-        </View>
-        <Button style={styles.createButton} onPress={handleSubmit(onSubmit)}>
-          Sign Up
-        </Button>
-      </View>
-    </LoginLayout>
+    <MainLayout></MainLayout>
+    // <LoginLayout title="Bucket" subtitle="The easiest way to manage allowance">
+    //   <View style={styles.body}>
+    //     <View style={{flex: 1}}>
+    //       <FieldForm lable="Email">
+    //         <Controller
+    //           control={control}
+    //           render={({field: {onChange, value, onBlur}}) => (
+    //             <TextInput
+    //               autoCapitalize="none"
+    //               value={value.toString()}
+    //               onBlur={onBlur}
+    //               onChangeText={value => onChange(value)}
+    //               style={{zIndex: 1}}
+    //             />
+    //           )}
+    //           name="email"
+    //         />
+    //       </FieldForm>
+    //       <FieldForm lable="Password">
+    //         <Controller
+    //           control={control}
+    //           render={({field: {onChange, value, onBlur}}) => (
+    //             <TextInput
+    //               secureTextEntry={true}
+    //               autoCapitalize="none"
+    //               value={value.toString()}
+    //               onBlur={onBlur}
+    //               onChangeText={value => onChange(value)}
+    //               style={{zIndex: 1}}
+    //             />
+    //           )}
+    //           name="password"
+    //         />
+    //       </FieldForm>
+    //     </View>
+    //     <Button style={styles.createButton} onPress={handleSubmit(onSubmit)}>
+    //       Sign Up
+    //     </Button>
+    //   </View>
+    // </LoginLayout>
   );
 };
 

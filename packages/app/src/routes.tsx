@@ -4,7 +4,6 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootStackParamList} from './types/route.type';
 
 import {
-  IntoScreen,
   LoginScreen,
   RegisterScreen,
   PasswordScreen,
@@ -42,7 +41,6 @@ export const Routes = () => {
           screenOptions={{
             headerShown: false,
           }}>
-          {/* <Screen name="Intro" component={IntoScreen} /> */}
           <Screen name="Login" component={LoginScreen} />
           {/* <Screen name="Register" component={RegisterScreen} />
           <Screen name="Password" component={PasswordScreen} /> */}

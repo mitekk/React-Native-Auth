@@ -1,12 +1,6 @@
 import React from 'react';
-import {
-  StyleProp,
-  StyleSheet,
-  Text,
-  TextStyle,
-  View,
-  ViewStyle,
-} from 'react-native';
+import {StyleProp, StyleSheet, TextStyle, View, ViewStyle} from 'react-native';
+import {Text} from 'react-native-paper';
 
 type FieldFormProps = {
   lable: string;
