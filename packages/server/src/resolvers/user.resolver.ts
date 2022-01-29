@@ -30,12 +30,12 @@ export class UserResolver {
       };
     }
 
-    if (password?.length <= 5) {
+    if (password?.length <= 1) {
       return {
         errors: [
           {
             field: "password",
-            message: "minimum length is 6",
+            message: "minimum length is 1",
           },
         ],
       };

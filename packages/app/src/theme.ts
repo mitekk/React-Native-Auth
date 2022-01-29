@@ -85,6 +85,7 @@ declare global {
       flamingo: string;
       anzac: string;
       rangitoto: string;
+      nickel: string;
     }
     interface Theme {
       dark: boolean;
@@ -95,7 +96,7 @@ declare global {
       animation: ThemeAnimation;
     }
     interface ThemeFonts {
-      header: ThemeFont;
+      header?: ThemeFont;
     }
   }
 }
@@ -118,6 +119,7 @@ const bucketTheme = {
     flamingo: '#EB5937',
     anzac: '#DABE45',
     rangitoto: '#312F23',
+    nickel: '#727272',
   },
   roundness: 20,
 };

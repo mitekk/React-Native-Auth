@@ -29,7 +29,7 @@ export const LoginBody = ({onSubmit}: LoginBodyProps) => {
           render={({field: {onChange, value, onBlur}}) => (
             <View>
               <TextInput
-                activeUnderlineColor={theme?.colors?.rangitoto}
+                activeUnderlineColor={theme?.colors?.nickel}
                 autoCapitalize="none"
                 autoCorrect={false}
                 textContentType="name"
@@ -54,6 +54,7 @@ export const LoginBody = ({onSubmit}: LoginBodyProps) => {
           render={({field: {onChange, value, onBlur}}) => (
             <View>
               <TextInput
+                activeUnderlineColor={theme?.colors?.nickel}
                 autoCapitalize="none"
                 autoCorrect={false}
                 textContentType="emailAddress"
@@ -79,6 +80,7 @@ export const LoginBody = ({onSubmit}: LoginBodyProps) => {
             <View>
               <TextInput
                 autoCapitalize="none"
+                activeUnderlineColor={theme?.colors?.nickel}
                 autoCorrect={false}
                 textContentType="newPassword"
                 autoComplete="password"
