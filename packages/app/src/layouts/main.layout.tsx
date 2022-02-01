@@ -3,7 +3,7 @@ import React from 'react';
 import {StyleSheet, TouchableOpacity, View, ViewStyle} from 'react-native';
 import {Avatar, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {RootScreenNavigation} from '../types/route.type';
+import {RegisterScreenNavigationProp} from '../screens/auth/login/login.screen';
 
 type LayoutProps = {
   header?: JSX.Element;
@@ -29,7 +29,7 @@ const MainLayout = ({
   bodyStyle,
   optionClick,
 }: LayoutProps) => {
-  const {goBack} = useNavigation<RootScreenNavigation>();
+  const {goBack} = useNavigation<RegisterScreenNavigationProp>();
   const {colors} = useTheme();
 
   return (
