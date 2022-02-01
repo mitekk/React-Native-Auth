@@ -9,16 +9,17 @@ import {
   TextInput,
   useTheme,
 } from 'react-native-paper';
-import {RegisterScreenNavigationProp} from './login.screen';
+import {RegisterScreenNavigationProp} from './register.screen';
 
-type LoginBodyProps = {
+type RegisterBodyProps = {
   onSubmit: () => void;
 };
 
-export const LoginBody = ({onSubmit}: LoginBodyProps) => {
+export const RegisterBody = ({onSubmit}: RegisterBodyProps) => {
   const theme = useTheme();
-  const {navigate} = useNavigation<RegisterScreenNavigationProp>();
   const [passwordSecured, setPasswordSecured] = useState(false);
+  const {navigate} = useNavigation<RegisterScreenNavigationProp>();
+
   const {
     control,
     formState: {errors},
@@ -27,6 +28,31 @@ export const LoginBody = ({onSubmit}: LoginBodyProps) => {
   return (
     <View>
       <View>
+        <Controller
+          control={control}
+          render={({field: {onChange, value, onBlur}}) => (
+            <View>
+              <TextInput
+                activeUnderlineColor={theme?.colors?.nickel}
+                autoCapitalize="none"
+                autoCorrect={false}
+                textContentType="name"
+                autoComplete="name"
+                label={'Name'}
+                value={value}
+                onBlur={onBlur}
+                onChangeText={value => onChange(value)}
+                style={{backgroundColor: theme.colors.background}}
+                theme={theme}
+              />
+              <HelperText theme={theme} type="error" visible={!!errors?.name}>
+                {errors?.name?.message}
+              </HelperText>
+            </View>
+          )}
+          name="name"
+        />
+
         <Controller
           control={control}
           render={({field: {onChange, value, onBlur}}) => (
@@ -102,7 +128,7 @@ export const LoginBody = ({onSubmit}: LoginBodyProps) => {
           style={{backgroundColor: theme.colors.anzac, marginVertical: 15}}
           labelStyle={{fontFamily: theme.fonts.regular.fontFamily}}
           onPress={onSubmit}>
-          Sign in
+          Sign up
         </Button>
         <View
           style={{
@@ -116,12 +142,12 @@ export const LoginBody = ({onSubmit}: LoginBodyProps) => {
               marginVertical: 15,
               fontSize: 16,
             }}>
-            Forgot password?{' '}
+            Have an account?{' '}
           </Text>
 
           <TouchableOpacity
             onPress={() => {
-              navigate('Password');
+              navigate('Login');
             }}>
             <Text
               style={{
@@ -129,7 +155,7 @@ export const LoginBody = ({onSubmit}: LoginBodyProps) => {
                 fontFamily: theme?.fonts?.medium?.fontFamily,
                 fontSize: 17,
               }}>
-              Reset
+              Sign in
             </Text>
           </TouchableOpacity>
         </View>

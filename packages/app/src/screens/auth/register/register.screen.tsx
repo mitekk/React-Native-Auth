@@ -1,122 +1,50 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import {useNavigation} from '@react-navigation/native';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import React from 'react';
-import {Controller, SubmitHandler, useForm} from 'react-hook-form';
-import {StyleSheet, View} from 'react-native';
-import {Button, TextInput} from 'react-native-paper';
-import {gql, useMutation} from 'urql';
-import * as yup from 'yup';
-import {FieldForm} from '../../../components/profile/form/field.form';
+import {FormProvider, useForm} from 'react-hook-form';
+import {StyleSheet} from 'react-native';
+import {useTheme} from 'react-native-paper';
 import {MainLayout} from '../../../layouts/main.layout';
-import {RootScreenNavigation} from '../../../types/route.type';
-import {useAuth} from '../../../utils/auth/auth';
+import {AuthStackParams} from '../../../types/route.type';
+import {registerSchema} from '../../../utils/validation/schemas';
+import {AuthHeader} from '../components/header.login';
+import {RegisterBody} from './register.body';
+import {useRegister} from './register.hook';
 
-const register_mut = gql`
-  mutation Register($email: String!, $password: String!) {
-    register(credentials: {email: $email, password: $password}) {
-      errors {
-        field
-        message
-      }
-      user {
-        id
-        createdAt
-        updatedAt
-        email
-      }
-      token
-    }
-  }
-`;
+export type RegisterScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParams,
+  'Register'
+>;
 
-const schema = yup.object().shape({
-  email: yup
-    .string()
-    // .email('Invalid email format')
-    .required('Please Enter a email'),
-  password: yup.string().required('Please Enter your password'),
-  // .matches(
-  //   /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/,
-  //   'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number and one special case Character',
-  // ),
-});
-
-type RegisterInput = {
+export type RegisterInput = {
+  name: string;
   email: string;
   password: string;
 };
 
-export const RegisterScreen = () => {
-  const navigation = useNavigation<RootScreenNavigation>();
-  const {signIn} = useAuth();
-  const [{}, register] = useMutation(register_mut);
+const defaultLoginValues: RegisterInput = {
+  name: '',
+  email: '',
+  password: '',
+};
 
-  const {
-    control,
-    handleSubmit,
-    formState: {errors},
-  } = useForm<RegisterInput>({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      email: '',
-      password: '',
-    },
+export const RegisterScreen = () => {
+  const {onSubmit} = useRegister();
+  const {colors} = useTheme();
+  const methods = useForm<RegisterInput>({
+    resolver: yupResolver(registerSchema),
+    defaultValues: defaultLoginValues,
   });
 
-  const onSubmit: SubmitHandler<RegisterInput> = async credentials => {
-    const {data} = await register(credentials);
-    const token = data?.register?.token;
-    console.log(data);
-
-    if (!token) {
-      // TODO:: alert login failed
-    } else {
-      signIn(token);
-    }
-  };
-
   return (
-    <MainLayout></MainLayout>
-    // <LoginLayout title="Bucket" subtitle="The easiest way to manage allowance">
-    //   <View style={styles.body}>
-    //     <View style={{flex: 1}}>
-    //       <FieldForm lable="Email">
-    //         <Controller
-    //           control={control}
-    //           render={({field: {onChange, value, onBlur}}) => (
-    //             <TextInput
-    //               autoCapitalize="none"
-    //               value={value.toString()}
-    //               onBlur={onBlur}
-    //               onChangeText={value => onChange(value)}
-    //               style={{zIndex: 1}}
-    //             />
-    //           )}
-    //           name="email"
-    //         />
-    //       </FieldForm>
-    //       <FieldForm lable="Password">
-    //         <Controller
-    //           control={control}
-    //           render={({field: {onChange, value, onBlur}}) => (
-    //             <TextInput
-    //               secureTextEntry={true}
-    //               autoCapitalize="none"
-    //               value={value.toString()}
-    //               onBlur={onBlur}
-    //               onChangeText={value => onChange(value)}
-    //               style={{zIndex: 1}}
-    //             />
-    //           )}
-    //           name="password"
-    //         />
-    //       </FieldForm>
-    //     </View>
-    //     <Button style={styles.createButton} onPress={handleSubmit(onSubmit)}>
-    //       Sign Up
-    //     </Button>
-    //   </View>
-    // </LoginLayout>
+    <FormProvider {...methods}>
+      <MainLayout
+        header={<AuthHeader />}
+        headerStyle={{...styles.headerStyle, backgroundColor: colors.roseWhite}}
+        showBack={false}>
+        <RegisterBody onSubmit={methods.handleSubmit(onSubmit)} />
+      </MainLayout>
+    </FormProvider>
   );
 };
 
@@ -127,5 +55,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 50,
     marginVertical: 50,
   },
-  createButton: {backgroundColor: 'navy'},
+  headerStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

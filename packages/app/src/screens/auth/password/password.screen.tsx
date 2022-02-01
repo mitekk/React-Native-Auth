@@ -1,69 +1,39 @@
 import {yupResolver} from '@hookform/resolvers/yup';
-import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {Controller, SubmitHandler, useForm} from 'react-hook-form';
-import {StyleSheet, View} from 'react-native';
-import {Button, TextInput} from 'react-native-paper';
-import * as yup from 'yup';
-import {FieldForm} from '../../../components/profile/form/field.form';
+import {FormProvider, useForm} from 'react-hook-form';
+import {StyleSheet} from 'react-native';
+import {useTheme} from 'react-native-paper';
 import {MainLayout} from '../../../layouts/main.layout';
-import {RootScreenNavigation} from '../../../types/route.type';
+import {passwordSchema} from '../../../utils/validation/schemas';
+import {AuthHeader} from '../components/header.login';
+import {PasswordBody} from './password.body';
+import {usePassword} from './password.hook';
 
-const schema = yup.object().shape({
-  email: yup
-    .string()
-    .email('Invalid email format')
-    .required('Please Enter a email'),
-});
-
-type PasswordInput = {
+export type PasswordInput = {
   email: string;
 };
 
-export const PasswordScreen = () => {
-  const navigation = useNavigation<RootScreenNavigation>();
+const defaultLoginValues: PasswordInput = {
+  email: '',
+};
 
-  const {
-    control,
-    handleSubmit,
-    formState: {errors},
-  } = useForm<PasswordInput>({
-    resolver: yupResolver(schema),
-    defaultValues: {
-      email: '',
-    },
+export const PasswordScreen = () => {
+  const {colors} = useTheme();
+  const {onSubmit} = usePassword();
+  const methods = useForm<PasswordInput>({
+    resolver: yupResolver(passwordSchema),
+    defaultValues: defaultLoginValues,
   });
 
-  const onSubmit: SubmitHandler<PasswordInput> = data => {
-    navigation.navigate('Home');
-  };
-
   return (
-    <MainLayout></MainLayout>
-    // <LoginLayout title="Bucket" subtitle="The easiest way to manage allowance">
-    //   <View style={styles.body}>
-    //     <View style={{flex: 1}}>
-    //       <FieldForm lable="Email">
-    //         <Controller
-    //           control={control}
-    //           render={({field: {onChange, value, onBlur}}) => (
-    //             <TextInput
-    //               autoCapitalize="none"
-    //               value={value.toString()}
-    //               onBlur={onBlur}
-    //               onChangeText={value => onChange(value)}
-    //               style={{zIndex: 1}}
-    //             />
-    //           )}
-    //           name="email"
-    //         />
-    //       </FieldForm>
-    //     </View>
-    //     <Button style={styles.createButton} onPress={handleSubmit(onSubmit)}>
-    //       Send Email
-    //     </Button>
-    //   </View>
-    // </LoginLayout>
+    <FormProvider {...methods}>
+      <MainLayout
+        header={<AuthHeader />}
+        headerStyle={{...styles.headerStyle, backgroundColor: colors.roseWhite}}
+        showBack={false}>
+        <PasswordBody onSubmit={methods.handleSubmit(onSubmit)} />
+      </MainLayout>
+    </FormProvider>
   );
 };
 
@@ -74,5 +44,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 50,
     marginVertical: 50,
   },
-  createButton: {backgroundColor: 'navy'},
+  headerStyle: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

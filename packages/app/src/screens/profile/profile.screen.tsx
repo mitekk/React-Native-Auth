@@ -1,9 +1,12 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import {ProfileProps} from '../../types/route.type';
+import {MainStackParams} from '../../types/route.type';
+import {RouteProp} from '@react-navigation/native';
 
-export const ProfileScreen = ({route}: ProfileProps) => {
-  const {id} = route.params;
+type ProfileScreenRouteProp = RouteProp<MainStackParams, 'Profile'>;
+
+export const ProfileScreen = ({params}: ProfileScreenRouteProp) => {
+  const {id} = params;
   return (
     <View>
       <Text>Profile {id}</Text>

@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useTheme, Text} from 'react-native-paper';
 
-export const LoginHeader = () => {
+export const AuthHeader = () => {
   const {colors, fonts} = useTheme();
 
   return (
@@ -10,12 +10,15 @@ export const LoginHeader = () => {
       <Text
         style={[
           headerStyles.title,
-          {fontFamily: fonts.header.fontFamily, color: colors.anzac},
+          {fontFamily: fonts?.header?.fontFamily, color: colors.anzac},
         ]}>
         POCKET
       </Text>
       <Text
-        style={[headerStyles.subTitle, {fontFamily: fonts.header.fontFamily}]}>
+        style={[
+          headerStyles.subTitle,
+          {fontFamily: fonts?.header?.fontFamily},
+        ]}>
         let's start
       </Text>
     </View>

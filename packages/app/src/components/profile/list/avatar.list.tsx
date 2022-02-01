@@ -1,17 +1,23 @@
 import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {RouteProp, useNavigation} from '@react-navigation/native';
 import {Avatar} from './avatar';
-import {RootScreenNavigation} from '../../../types/route.type';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {Profile} from '../../../types/profile/profile.type';
+import {MainStackParams} from '../../../types/route.type';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+
+type ProfileScreenNavigationProp = NativeStackNavigationProp<
+  MainStackParams,
+  'Profile'
+>;
 
 type AvatarListProps = {
   profiles: Profile[];
 };
 
 export const AvatarList = ({profiles}: AvatarListProps) => {
-  const navigation = useNavigation<RootScreenNavigation>();
+  const {navigate} = useNavigation<ProfileScreenNavigationProp>();
   return (
     <View style={style.listContainer}>
       <FlatList
@@ -23,8 +29,8 @@ export const AvatarList = ({profiles}: AvatarListProps) => {
           <Avatar
             name={item.name}
             onPress={() =>
-              navigation.navigate('Profile', {
-                id: Math.floor(Math.random() * 100),
+              navigate('Profile', {
+                id: Math.floor(Math.random() * 100).toString(),
               })
             }
           />
@@ -32,7 +38,7 @@ export const AvatarList = ({profiles}: AvatarListProps) => {
       />
       <Icon
         name="user-plus"
-        onPress={() => navigation.navigate('ProfileCreate')}
+        onPress={() => navigate('ProfileEdit')}
         size={30}
         style={style.addProfile}
       />
