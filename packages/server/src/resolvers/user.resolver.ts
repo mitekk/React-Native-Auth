@@ -111,4 +111,17 @@ export class UserResolver {
 
     return { user, token };
   }
+
+  @Mutation(() => String)
+  async sendVerificationEmail(
+    @Arg("email") email: string,
+    @Ctx() { em }: Context
+  ): Promise<string> {
+    const user = await em.findOne(User, { email: email.toLocaleLowerCase() });
+
+    if (user) {
+    }
+
+    return "Verification email was sent";
+  }
 }
