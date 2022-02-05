@@ -49,8 +49,12 @@ export const PasswordBody = ({onSubmit}: PasswordBodyProps) => {
         }}>
         <Button
           theme={theme}
+          uppercase={false}
           style={{backgroundColor: theme.colors.anzac, marginVertical: 15}}
-          labelStyle={{fontFamily: theme.fonts.regular.fontFamily}}
+          labelStyle={{
+            fontFamily: theme.fonts.regular.fontFamily,
+            fontSize: 17,
+          }}
           onPress={onSubmit}>
           Send email
         </Button>

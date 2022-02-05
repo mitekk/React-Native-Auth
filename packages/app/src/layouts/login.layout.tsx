@@ -20,7 +20,7 @@ const defaultProps: LayoutProps = {
   showOption: false,
 };
 
-const MainLayout = ({
+const LoginLayout = ({
   header,
   children,
   showBack,
@@ -39,22 +39,22 @@ const MainLayout = ({
         styles.container,
         {backgroundColor: headerStyle?.backgroundColor || colors.mossGreen},
       ]}>
-      <View style={[styles.topSection, headerStyle]}>
+      <View style={[headerStyle, styles.topSection]}>
         {showBack && (
-          <TouchableOpacity onPress={goBack}>
+          <TouchableOpacity onPress={goBack} style={styles.navBack}>
             <Avatar.Icon
               size={45}
               icon="arrow-left"
-              style={[styles.navBack, {backgroundColor: colors.roseWhite}]}
+              style={[{backgroundColor: colors.roseWhite}]}
             />
           </TouchableOpacity>
         )}
         {showOption && (
-          <TouchableOpacity onPress={optionClick}>
+          <TouchableOpacity onPress={optionClick} style={styles.options}>
             <Avatar.Icon
               size={45}
               icon="camera-outline"
-              style={[styles.options, {backgroundColor: colors.roseWhite}]}
+              style={[{backgroundColor: colors.roseWhite}]}
             />
           </TouchableOpacity>
         )}
@@ -83,13 +83,13 @@ const styles = StyleSheet.create({
   },
   navBack: {
     position: 'absolute',
-    top: 15,
-    left: 15,
+    top: 10,
+    left: 10,
   },
   options: {
     position: 'absolute',
-    top: 15,
-    right: 15,
+    top: 10,
+    right: 10,
   },
   contentSection: {
     flex: 7,
@@ -99,6 +99,6 @@ const styles = StyleSheet.create({
   },
 });
 
-MainLayout.defaultProps = defaultProps;
+LoginLayout.defaultProps = defaultProps;
 
-export {MainLayout};
+export {LoginLayout};

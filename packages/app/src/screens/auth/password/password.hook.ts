@@ -1,15 +1,14 @@
 import {SubmitHandler} from 'react-hook-form';
 import {useMutation} from 'urql';
-import {login_mutation} from '../../../api/schemas';
-import {useAuth} from '../../../utils/auth/auth';
+import {restorePassword_mutation} from '../../../api/schemas';
 import {PasswordInput} from './password.screen';
 
 export const usePassword = () => {
   // const {signIn} = useAuth();
-  // const [{}, login] = useMutation(login_mutation);
+  const [{}, restorePassword] = useMutation(restorePassword_mutation);
 
-  const onSubmit: SubmitHandler<PasswordInput> = async ({email}) => {
-    console.log(`send email to ${email}`);
+  const onSubmit: SubmitHandler<PasswordInput> = async input => {
+    restorePassword(input);
   };
 
   return {onSubmit};

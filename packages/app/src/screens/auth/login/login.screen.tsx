@@ -4,7 +4,7 @@ import React from 'react';
 import {FormProvider, useForm} from 'react-hook-form';
 import {StyleSheet} from 'react-native';
 import {useTheme} from 'react-native-paper';
-import {MainLayout} from '../../../layouts/main.layout';
+import {LoginLayout} from '../../../layouts/login.layout';
 import {AuthStackParams} from '../../../types/route.type';
 import {loginSchema} from '../../../utils/validation/schemas';
 import {AuthHeader} from '../components/header.login';
@@ -36,12 +36,12 @@ export const LoginScreen = () => {
 
   return (
     <FormProvider {...methods}>
-      <MainLayout
+      <LoginLayout
         header={<AuthHeader />}
         headerStyle={{...styles.headerStyle, backgroundColor: colors.roseWhite}}
-        showBack={false}>
+        showBack>
         <LoginBody onSubmit={methods.handleSubmit(onSubmit)} />
-      </MainLayout>
+      </LoginLayout>
     </FormProvider>
   );
 };
