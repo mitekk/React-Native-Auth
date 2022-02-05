@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { Context } from "../types/types";
 import { jwt_secret } from "../constants";
 import { UserResponse, CredentialsInput } from "./types";
+import { Email } from "../handlers/email.handler";
 
 @Resolver()
 export class UserResolver {
@@ -113,13 +114,15 @@ export class UserResolver {
   }
 
   @Mutation(() => String)
-  async sendVerificationEmail(
+  async sendRestorePasswordEmail(
     @Arg("email") email: string,
     @Ctx() { em }: Context
   ): Promise<string> {
+    const { sendPasswordRestore } = Email();
     const user = await em.findOne(User, { email: email.toLocaleLowerCase() });
 
     if (user) {
+      sendPasswordRestore();
     }
 
     return "Verification email was sent";

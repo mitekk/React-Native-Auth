@@ -15,6 +15,7 @@
   "devDependencies": {
     "@types/express": "4.17.13",
     "@types/jsonwebtoken": "^8.5.7",
+    "@types/nodemailer": "^6.4.4",
     "@types/uuid": "8.3.4",
     "nodemon": "2.0.15"
   },
@@ -30,6 +31,7 @@
     "express": "4.17.2",
     "graphql": "15.3.0",
     "jsonwebtoken": "^8.5.1",
+    "nodemailer": "^6.7.2",
     "pg": "8.7.1",
     "redis": "v3",
     "reflect-metadata": "^0.1.13",

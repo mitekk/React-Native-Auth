@@ -28,6 +28,6 @@ export const loginSchema = yup.object().shape({
 export const passwordSchema = yup.object().shape({
   email: yup
     .string()
-    // .email('Invalid email format')
+    .email('Invalid email format')
     .required('Please enter an email'),
 });

@@ -35,3 +35,9 @@ export const login_mutation = gql`
     }
   }
 `;
+
+export const restorePassword_mutation = gql`
+  mutation SendRestorePasswordEmail($email: String!) {
+    sendRestorePasswordEmail(email: $email)
+  }
+`;
