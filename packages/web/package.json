@@ -14,12 +14,14 @@
     "@emotion/react": "latest",
     "@emotion/server": "latest",
     "@emotion/styled": "latest",
+    "@hookform/resolvers": "^2.8.8",
     "@mui/icons-material": "latest",
     "@mui/material": "latest",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "react-hook-form": "^7.26.0"
+    "react-hook-form": "^7.26.0",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/node": "^17.0.15",
