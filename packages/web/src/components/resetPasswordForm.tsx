@@ -6,8 +6,9 @@ import { css } from "@emotion/react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 type ResetPasswordFields = {
+  email: string;
   password: string;
-  passwordVerify: string;
+  passwordConfirm: string;
 };
 
 export default function () {
@@ -17,8 +18,8 @@ export default function () {
   });
   const { handleSubmit } = useForm<ResetPasswordFields>();
 
-  const onSubmit = handleSubmit(({ password, passwordVerify }) => {
-    console.log(password, passwordVerify);
+  const onSubmit = handleSubmit(({ email, password, passwordConfirm }) => {
+    console.log(email, password, passwordConfirm);
   }); //
 
   const handleClickShowPassword = () => {
