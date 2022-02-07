@@ -70,7 +70,6 @@ export default function ({ onSubmit }: ResetPasswordFormProps) {
         render={({
           field: { onChange, onBlur, value },
           fieldState: { error },
-          formState,
         }) => (
           <TextField
             label="email"
@@ -80,6 +79,8 @@ export default function ({ onSubmit }: ResetPasswordFormProps) {
             onChange={onChange}
             value={value}
             onBlur={onBlur}
+            error={!!error}
+            helperText={error?.message}
           />
         )}
       />
@@ -90,7 +91,6 @@ export default function ({ onSubmit }: ResetPasswordFormProps) {
         render={({
           field: { onChange, onBlur, value },
           fieldState: { error },
-          formState,
         }) => (
           <TextField
             label="new password"
@@ -102,6 +102,8 @@ export default function ({ onSubmit }: ResetPasswordFormProps) {
             onChange={onChange}
             value={value}
             onBlur={onBlur}
+            error={!!error}
+            helperText={error?.message}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
@@ -129,7 +131,6 @@ export default function ({ onSubmit }: ResetPasswordFormProps) {
         render={({
           field: { onChange, onBlur, value },
           fieldState: { error },
-          formState,
         }) => (
           <TextField
             label="comfirm new password"
@@ -141,6 +142,8 @@ export default function ({ onSubmit }: ResetPasswordFormProps) {
             onChange={onChange}
             value={value}
             onBlur={onBlur}
+            error={!!error}
+            helperText={error?.message}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
