@@ -1,7 +1,8 @@
 import React from 'react';
-import {Controller, useFormContext} from 'react-hook-form';
+import {useFormContext} from 'react-hook-form';
 import {View} from 'react-native';
-import {Button, HelperText, TextInput, useTheme} from 'react-native-paper';
+import {Button, useTheme} from 'react-native-paper';
+import {TextField} from '../../../components/formFields';
 
 type PasswordBodyProps = {
   onSubmit: () => void;
@@ -9,37 +10,17 @@ type PasswordBodyProps = {
 
 export const PasswordBody = ({onSubmit}: PasswordBodyProps) => {
   const theme = useTheme();
-  const {
-    control,
-    formState: {errors},
-  } = useFormContext();
+  const {control} = useFormContext();
 
   return (
     <View>
       <View>
-        <Controller
-          control={control}
-          render={({field: {onChange, value, onBlur}}) => (
-            <View>
-              <TextInput
-                activeUnderlineColor={theme?.colors?.nickel}
-                autoCapitalize="none"
-                autoCorrect={false}
-                textContentType="emailAddress"
-                autoComplete="email"
-                label={'Email'}
-                value={value}
-                onBlur={onBlur}
-                onChangeText={value => onChange(value)}
-                style={{backgroundColor: theme.colors.background}}
-                theme={theme}
-              />
-              <HelperText theme={theme} type="error" visible={!!errors?.email}>
-                {errors?.email?.message}
-              </HelperText>
-            </View>
-          )}
+        <TextField
           name="email"
+          control={control}
+          label="Email"
+          textContentType="emailAddress"
+          autocomplete="email"
         />
       </View>
       <View
