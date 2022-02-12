@@ -1,14 +1,9 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
-import {Controller, useFormContext} from 'react-hook-form';
+import React from 'react';
+import {useFormContext} from 'react-hook-form';
 import {TouchableOpacity, View} from 'react-native';
-import {
-  Button,
-  HelperText,
-  Text,
-  TextInput,
-  useTheme,
-} from 'react-native-paper';
+import {Button, Text, useTheme} from 'react-native-paper';
+import {PasswordField, TextField} from '../../../components/formFields';
 import {RegisterScreenNavigationProp} from './login.screen';
 
 type LoginBodyProps = {
@@ -18,78 +13,25 @@ type LoginBodyProps = {
 export const LoginBody = ({onSubmit}: LoginBodyProps) => {
   const theme = useTheme();
   const {navigate} = useNavigation<RegisterScreenNavigationProp>();
-  const [passwordSecured, setPasswordSecured] = useState(false);
-  const {
-    control,
-    formState: {errors},
-  } = useFormContext();
+  const {control} = useFormContext();
 
   return (
     <View>
       <View>
-        <Controller
-          control={control}
-          render={({field: {onChange, value, onBlur}}) => (
-            <View>
-              <TextInput
-                activeUnderlineColor={theme?.colors?.nickel}
-                autoCapitalize="none"
-                autoCorrect={false}
-                textContentType="emailAddress"
-                autoComplete="email"
-                label={'Email'}
-                value={value}
-                onBlur={onBlur}
-                onChangeText={value => onChange(value)}
-                style={{backgroundColor: theme.colors.background}}
-                theme={theme}
-              />
-              <HelperText theme={theme} type="error" visible={!!errors?.email}>
-                {errors?.email?.message}
-              </HelperText>
-            </View>
-          )}
+        <TextField
           name="email"
+          control={control}
+          label="Email"
+          textContentType="emailAddress"
+          autocomplete="email"
         />
 
-        <Controller
-          control={control}
-          render={({field: {onChange, value, onBlur}}) => (
-            <View>
-              <TextInput
-                autoCapitalize="none"
-                activeUnderlineColor={theme?.colors?.nickel}
-                autoCorrect={false}
-                textContentType="newPassword"
-                autoComplete="password"
-                secureTextEntry={!passwordSecured}
-                label={'Password'}
-                value={value}
-                onBlur={() => {
-                  setPasswordSecured(false);
-                  onBlur();
-                }}
-                onChangeText={value => onChange(value)}
-                style={{backgroundColor: theme.colors.background}}
-                theme={theme}
-                right={
-                  <TextInput.Icon
-                    color={theme.colors.anzac}
-                    theme={theme}
-                    name="eye"
-                    onPress={() => setPasswordSecured(!passwordSecured)}
-                  />
-                }
-              />
-              <HelperText
-                theme={theme}
-                type="error"
-                visible={!!errors?.password}>
-                {errors?.password?.message}
-              </HelperText>
-            </View>
-          )}
+        <PasswordField
           name="password"
+          control={control}
+          label="Password"
+          textContentType="newPassword"
+          autocomplete="password"
         />
       </View>
       <View
