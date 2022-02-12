@@ -1,14 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Box } from "@mui/system";
-import {
-  Button,
-  IconButton,
-  InputAdornment,
-  TextField as MUITextField,
-} from "@mui/material";
+import { Button } from "@mui/material";
 import { css } from "@emotion/react";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { useFormContext, Controller } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import TextField from "./formFields/text.field";
 import PasswordField from "./formFields/password.field";
 
@@ -17,40 +11,7 @@ type ResetPasswordFormProps = {
 };
 
 export default function ({ onSubmit }: ResetPasswordFormProps) {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useFormContext();
-  const [passwordVisibility, setPasswordVisibility] = useState({
-    showPassword: false,
-    showComfirmPassword: false,
-  });
-
-  const handleClickShowPassword = () => {
-    setPasswordVisibility({
-      ...passwordVisibility,
-      showPassword: !passwordVisibility.showPassword,
-    });
-  };
-  const handleClickShowComfirmPassword = () => {
-    setPasswordVisibility({
-      ...passwordVisibility,
-      showComfirmPassword: !passwordVisibility.showComfirmPassword,
-    });
-  };
-
-  const handleMouseDownPassword = (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    event.preventDefault();
-  };
-
-  const styles = {
-    fields: css`
-      width: 50%;
-    `,
-  };
+  const { control } = useFormContext();
 
   return (
     <Box
@@ -63,7 +24,7 @@ export default function ({ onSubmit }: ResetPasswordFormProps) {
       `}
       autoCapitalize="false"
     >
-      <TextField control={control} name="email" label="Email"></TextField>
+      <TextField control={control} name="email" label="email"></TextField>
 
       <PasswordField
         control={control}
