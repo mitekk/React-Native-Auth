@@ -117,12 +117,15 @@ export class UserResolver {
     return { user, token };
   }
 
-  @Mutation(() => String)
+  @Mutation(() => UserResponse)
   async sendRestorePasswordEmail(
     @Arg("email") email: string,
     @Ctx() { em }: Context
-  ): Promise<string> {
+  ): Promise<UserResponse> {
+    console.log(email);
+
     const user = await em.findOne(User, { email: email.toLocaleLowerCase() });
+
     if (user) {
       const { sendPasswordRestore } = Email();
       const token = jwt.sign({ id: user.id }, jwt_secret, {
@@ -131,7 +134,7 @@ export class UserResolver {
       sendPasswordRestore({ to: email, token });
     }
 
-    return "Verification email was sent";
+    return {};
   }
 
   @Mutation(() => UserResponse)
@@ -166,11 +169,14 @@ export class UserResolver {
     const { id } = jwt.decode(token) as resetPasswordJWT;
 
     const user = await em.findOne(User, { id });
+
     if (user?.email === email) {
-      em;
-      // update password
+      user.password = await argon2.hash(password);
+      await em.flush();
     }
 
-    return { user: undefined };
+    console.log(user);
+
+    return {};
   }
 }

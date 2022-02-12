@@ -8,8 +8,8 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 
 const reset_password_mutation = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(credentials: { email: $email, password: $password }) {
+  mutation ResetPassword($email: String!, $password: String!, $token: String!) {
+    resetPassword(email: $email, password: $password, token: $token) {
       errors {
         field
         message
@@ -62,16 +62,12 @@ const Home: NextPage = () => {
 
   const { token } = query;
 
-  const onSubmit: SubmitHandler<ResetPasswordFields> = ({
+  const onSubmit: SubmitHandler<ResetPasswordFields> = async ({
     email,
     password,
   }) => {
-    console.log({
-      email,
-      password,
-      token,
-    });
-    resetPassword({ email, password, token });
+    const result = await resetPassword({ email, password, token });
+    console.log("result", result);
   };
 
   return (
