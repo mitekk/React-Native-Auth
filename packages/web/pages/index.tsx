@@ -1,9 +1,29 @@
 import type { NextPage } from "next";
+import { useMutation, gql } from "urql";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import Layout from "../src/layout";
 import ResetPasswordForm from "../src/components/resetPasswordForm";
-import { FieldValues, FormProvider, useForm } from "react-hook-form";
+import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
+import { useRouter } from "next/router";
+
+const reset_password_mutation = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(credentials: { email: $email, password: $password }) {
+      errors {
+        field
+        message
+      }
+      user {
+        id
+        createdAt
+        updatedAt
+        email
+      }
+      token
+    }
+  }
+`;
 
 export const loginSchema = yup.object().shape({
   email: yup
@@ -33,17 +53,33 @@ const defaultLoginValues: ResetPasswordFields = {
 };
 
 const Home: NextPage = () => {
+  const { query } = useRouter();
+  const [{}, resetPassword] = useMutation(reset_password_mutation);
   const methods = useForm<ResetPasswordFields>({
     resolver: yupResolver(loginSchema),
     defaultValues: defaultLoginValues,
   });
 
-  const onSubmit = (data: FieldValues) => console.log(data);
+  const { token } = query;
+
+  const onSubmit: SubmitHandler<ResetPasswordFields> = ({
+    email,
+    password,
+  }) => {
+    console.log({
+      email,
+      password,
+      token,
+    });
+    resetPassword({ email, password, token });
+  };
 
   return (
     <Layout>
       <FormProvider {...methods}>
-        <ResetPasswordForm onSubmit={onSubmit}></ResetPasswordForm>
+        <ResetPasswordForm
+          onSubmit={methods.handleSubmit(onSubmit)}
+        ></ResetPasswordForm>
       </FormProvider>
     </Layout>
   );

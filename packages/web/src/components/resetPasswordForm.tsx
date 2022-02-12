@@ -3,16 +3,10 @@ import { Box } from "@mui/system";
 import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
 import { css } from "@emotion/react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import {
-  useFormContext,
-  Controller,
-  SubmitHandler,
-  FieldValues,
-} from "react-hook-form";
-import { ResetPasswordFields } from "../../pages";
+import { useFormContext, Controller } from "react-hook-form";
 
 type ResetPasswordFormProps = {
-  onSubmit: (data: FieldValues) => void;
+  onSubmit: () => void;
 };
 
 export default function ({ onSubmit }: ResetPasswordFormProps) {
@@ -25,8 +19,6 @@ export default function ({ onSubmit }: ResetPasswordFormProps) {
     showPassword: false,
     showComfirmPassword: false,
   });
-
-  console.log(errors);
 
   const handleClickShowPassword = () => {
     setPasswordVisibility({
@@ -171,7 +163,7 @@ export default function ({ onSubmit }: ResetPasswordFormProps) {
           width: 25%;
           margin: 50px;
         `}
-        onClick={handleSubmit(onSubmit)}
+        onClick={onSubmit}
       >
         Reset
       </Button>
