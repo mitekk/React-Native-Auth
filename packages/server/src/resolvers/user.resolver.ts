@@ -7,6 +7,10 @@ import { jwt_secret } from "../constants";
 import { UserResponse, CredentialsInput } from "./types";
 import { Email } from "../handlers/email.handler";
 
+type resetPasswordJWT = {
+  id: string;
+};
+
 @Resolver()
 export class UserResolver {
   @Query(() => UserResponse)
@@ -113,18 +117,66 @@ export class UserResolver {
     return { user, token };
   }
 
-  @Mutation(() => String)
+  @Mutation(() => UserResponse)
   async sendRestorePasswordEmail(
     @Arg("email") email: string,
     @Ctx() { em }: Context
-  ): Promise<string> {
-    const { sendPasswordRestore } = Email();
+  ): Promise<UserResponse> {
+    console.log(email);
+
     const user = await em.findOne(User, { email: email.toLocaleLowerCase() });
 
     if (user) {
-      sendPasswordRestore();
+      const { sendPasswordRestore } = Email();
+      const token = jwt.sign({ id: user.id }, jwt_secret, {
+        expiresIn: "1h",
+      });
+      sendPasswordRestore({ to: email, token });
     }
 
-    return "Verification email was sent";
+    return {};
+  }
+
+  @Mutation(() => UserResponse)
+  async resetPassword(
+    @Arg("email") email: string,
+    @Arg("password") password: string,
+    @Arg("token") token: string,
+    @Ctx() { em }: Context
+  ): Promise<UserResponse> {
+    if (email?.length <= 1) {
+      return {
+        errors: [
+          {
+            field: "email",
+            message: "minimum length is 1",
+          },
+        ],
+      };
+    }
+
+    if (password?.length <= 1) {
+      return {
+        errors: [
+          {
+            field: "password",
+            message: "minimum length is 1",
+          },
+        ],
+      };
+    }
+
+    const { id } = jwt.decode(token) as resetPasswordJWT;
+
+    const user = await em.findOne(User, { id });
+
+    if (user?.email === email) {
+      user.password = await argon2.hash(password);
+      await em.flush();
+    }
+
+    console.log(user);
+
+    return {};
   }
 }

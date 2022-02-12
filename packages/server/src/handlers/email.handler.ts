@@ -22,7 +22,9 @@ export const Email = () => {
       html: `<div>
       <h1>Password restore for pocket account</h1>
       <span>Please follow the link to reset your password</span>
-      <span></span>
+      <span>
+      <a href="http://localhost:3000/?token=${token}" target="_blank">Reset password</a>
+      </span>
       </div>`, // html body
     });
 

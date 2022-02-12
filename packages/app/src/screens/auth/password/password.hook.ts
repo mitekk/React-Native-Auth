@@ -4,11 +4,13 @@ import {restorePassword_mutation} from '../../../api/schemas';
 import {PasswordInput} from './password.screen';
 
 export const usePassword = () => {
-  // const {signIn} = useAuth();
   const [{}, restorePassword] = useMutation(restorePassword_mutation);
 
   const onSubmit: SubmitHandler<PasswordInput> = async input => {
-    restorePassword(input);
+    console.log(input);
+
+    const result = await restorePassword(input);
+    console.log('result', result);
   };
 
   return {onSubmit};
