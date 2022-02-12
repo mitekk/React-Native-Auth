@@ -1,9 +1,16 @@
 import React, { useState } from "react";
 import { Box } from "@mui/system";
-import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
+import {
+  Button,
+  IconButton,
+  InputAdornment,
+  TextField as MUITextField,
+} from "@mui/material";
 import { css } from "@emotion/react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useFormContext, Controller } from "react-hook-form";
+import TextField from "./formFields/text.field";
+import PasswordField from "./formFields/password.field";
 
 type ResetPasswordFormProps = {
   onSubmit: () => void;
@@ -56,106 +63,19 @@ export default function ({ onSubmit }: ResetPasswordFormProps) {
       `}
       autoCapitalize="false"
     >
-      <Controller
-        control={control}
-        name="email"
-        render={({
-          field: { onChange, onBlur, value },
-          fieldState: { error },
-        }) => (
-          <TextField
-            label="email"
-            variant="standard"
-            margin="normal"
-            css={styles.fields}
-            onChange={onChange}
-            value={value}
-            onBlur={onBlur}
-            error={!!error}
-            helperText={error?.message}
-          />
-        )}
-      />
+      <TextField control={control} name="email" label="Email"></TextField>
 
-      <Controller
+      <PasswordField
         control={control}
         name="password"
-        render={({
-          field: { onChange, onBlur, value },
-          fieldState: { error },
-        }) => (
-          <TextField
-            label="new password"
-            variant="standard"
-            margin="normal"
-            type={passwordVisibility.showPassword ? "text" : "password"}
-            autoComplete="current-password"
-            css={styles.fields}
-            onChange={onChange}
-            value={value}
-            onBlur={onBlur}
-            error={!!error}
-            helperText={error?.message}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {passwordVisibility.showPassword ? (
-                      <VisibilityOff />
-                    ) : (
-                      <Visibility />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        )}
-      />
+        label="new password"
+      ></PasswordField>
 
-      <Controller
+      <PasswordField
         control={control}
         name="passwordConfirm"
-        render={({
-          field: { onChange, onBlur, value },
-          fieldState: { error },
-        }) => (
-          <TextField
-            label="comfirm new password"
-            variant="standard"
-            margin="normal"
-            type={passwordVisibility.showComfirmPassword ? "text" : "password"}
-            autoComplete="current-password"
-            css={styles.fields}
-            onChange={onChange}
-            value={value}
-            onBlur={onBlur}
-            error={!!error}
-            helperText={error?.message}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowComfirmPassword}
-                    onMouseDown={handleMouseDownPassword}
-                  >
-                    {passwordVisibility.showComfirmPassword ? (
-                      <VisibilityOff />
-                    ) : (
-                      <Visibility />
-                    )}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        )}
-      />
+        label="confirm new password"
+      ></PasswordField>
 
       <Button
         variant="contained"
