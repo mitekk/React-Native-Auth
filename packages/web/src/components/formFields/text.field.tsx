@@ -4,7 +4,7 @@ import { TextField as MUITextField } from "@mui/material";
 import { css } from "@emotion/react";
 
 type TextFieldProps = {
-  control: Control<FieldValues, object>;
+  control: Control<any, object>;
   label: string;
   name: string;
 };
@@ -21,6 +21,7 @@ export default function TextField({ name, control, label }: TextFieldProps) {
 
   return (
     <MUITextField
+      {...field}
       label={label}
       variant="standard"
       margin="normal"
