@@ -7,8 +7,6 @@ import {
   RegisterScreen,
   PasswordScreen,
   HomeScreen,
-  ProfileScreen,
-  ProfileCreateScreen,
   SplashScreen,
 } from './screens';
 import {useAuth} from './utils/auth/auth';
@@ -25,11 +23,6 @@ export const Routes = () => {
       {token ? (
         <MainStack.Navigator>
           <MainStack.Screen name="Home" component={HomeScreen} />
-          <MainStack.Screen name="Profile" component={ProfileScreen} />
-          <MainStack.Screen
-            name="ProfileEdit"
-            component={ProfileCreateScreen}
-          />
         </MainStack.Navigator>
       ) : (
         <AuthStack.Navigator screenOptions={{headerShown: false}}>
