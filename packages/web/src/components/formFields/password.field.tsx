@@ -14,7 +14,7 @@ import { VisibilityOff, Visibility } from "@mui/icons-material";
 import { css } from "@emotion/react";
 
 type PasswordFieldProps = {
-  control: Control<FieldValues, object>;
+  control: Control<any, object>;
   label: string;
   name: string;
 };
