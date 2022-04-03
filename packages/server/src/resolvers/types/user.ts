@@ -30,6 +30,9 @@ class UserResponse {
 
   @Field(() => String, { nullable: true })
   token?: string;
+
+  @Field(() => String, { nullable: true })
+  message?: string;
 }
 
 export { RegisterInput, LoginInput, UserResponse };

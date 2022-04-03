@@ -19,7 +19,7 @@ const defaultLoginValues: PasswordInput = {
 
 export const PasswordScreen = () => {
   const {colors} = useTheme();
-  const {onSubmit} = usePassword();
+  const {data, onSubmit} = usePassword();
   const methods = useForm<PasswordInput>({
     resolver: yupResolver(passwordSchema),
     defaultValues: defaultLoginValues,
@@ -31,7 +31,7 @@ export const PasswordScreen = () => {
         header={<AuthHeader />}
         headerStyle={{...styles.headerStyle, backgroundColor: colors.roseWhite}}
         showBack>
-        <PasswordBody onSubmit={methods.handleSubmit(onSubmit)} />
+        <PasswordBody onSubmit={methods.handleSubmit(onSubmit)} data={data} />
       </LoginLayout>
     </FormProvider>
   );
