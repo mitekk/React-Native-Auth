@@ -2,15 +2,17 @@ import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {useFormContext} from 'react-hook-form';
 import {TouchableOpacity, View} from 'react-native';
-import {Button, Text, useTheme} from 'react-native-paper';
+import {Button, HelperText, Text, useTheme} from 'react-native-paper';
 import {PasswordField, TextField} from '../../../components/formFields';
+import {UserRegisterResponse} from '../../../types/user/register.response.type';
 import {RegisterScreenNavigationProp} from './register.screen';
 
 type RegisterBodyProps = {
   onSubmit: () => void;
+  data: UserRegisterResponse;
 };
 
-export const RegisterBody = ({onSubmit}: RegisterBodyProps) => {
+export const RegisterBody = ({onSubmit, data}: RegisterBodyProps) => {
   const theme = useTheme();
   const {navigate} = useNavigation<RegisterScreenNavigationProp>();
   const {control} = useFormContext();
@@ -47,6 +49,18 @@ export const RegisterBody = ({onSubmit}: RegisterBodyProps) => {
           justifyContent: 'space-around',
           paddingVertical: 15,
         }}>
+        {data?.register?.errors?.map(({message}) => (
+          <HelperText
+            style={{
+              alignSelf: 'center',
+            }}
+            theme={theme}
+            type="error"
+            visible={true}>
+            {message}
+          </HelperText>
+        ))}
+
         <Button
           theme={theme}
           uppercase={false}
