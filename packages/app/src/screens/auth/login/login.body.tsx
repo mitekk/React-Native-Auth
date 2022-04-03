@@ -4,7 +4,7 @@ import {useFormContext} from 'react-hook-form';
 import {TouchableOpacity, View} from 'react-native';
 import {Button, HelperText, Text, useTheme} from 'react-native-paper';
 import {PasswordField, TextField} from '../../../components/formFields';
-import {UserLoginResponse} from '../../../types/user/register.response.type';
+import {UserLoginResponse} from '../../../types/user/response.type';
 import {RegisterScreenNavigationProp} from './login.screen';
 
 type LoginBodyProps = {

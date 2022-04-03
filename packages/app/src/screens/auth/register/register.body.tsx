@@ -4,7 +4,7 @@ import {useFormContext} from 'react-hook-form';
 import {TouchableOpacity, View} from 'react-native';
 import {Button, HelperText, Text, useTheme} from 'react-native-paper';
 import {PasswordField, TextField} from '../../../components/formFields';
-import {UserRegisterResponse} from '../../../types/user/register.response.type';
+import {UserRegisterResponse} from '../../../types/user/response.type';
 import {RegisterScreenNavigationProp} from './register.screen';
 
 type RegisterBodyProps = {

@@ -135,15 +135,13 @@ export class UserResolver {
   ): Promise<UserResponse> {
     const user = await em.findOne(User, { email: email.toLocaleLowerCase() });
 
-    if (user) {
-      const { sendPasswordRestore } = Email();
-      const token = jwt.sign({ id: user.id }, jwt_secret, {
-        expiresIn: "1h",
-      });
-      sendPasswordRestore({ to: email, token });
-    }
+    const { sendPasswordRestore } = Email();
+    const token = jwt.sign({ id: user?.id || 0 }, jwt_secret, {
+      expiresIn: "1h",
+    });
+    sendPasswordRestore({ to: email, token }).catch(() => {});
 
-    return {};
+    return { message: `Email was sent to ${email}` };
   }
 
   @Mutation(() => UserResponse)
@@ -164,7 +162,7 @@ export class UserResolver {
       };
     }
 
-    if (password?.length <= 1) {
+    if (password?.length < 1) {
       return {
         errors: [
           {

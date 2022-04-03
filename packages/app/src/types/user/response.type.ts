@@ -13,3 +13,9 @@ export type UserLoginResponse = {
     errors: ResponseError[];
   };
 };
+
+export type UserRestorePasswordResponse = {
+  sendRestorePasswordEmail: {
+    message: string;
+  };
+};

@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {SubmitHandler} from 'react-hook-form';
 import {useMutation} from 'urql';
 import {register_mutation} from '../../../api/schemas';
-import {UserRegisterResponse} from '../../../types/user/register.response.type';
+import {UserRegisterResponse} from '../../../types/user/response.type';
 import {useAuth} from '../../../utils/auth/auth';
 import {RegisterInput} from './register.screen';
 
