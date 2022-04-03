@@ -42,7 +42,6 @@ const ResetPassword: NextPage = () => {
     password,
   }) => {
     const result = await resetPassword({ email, password, token });
-    console.log("result", result);
   };
 
   return (

@@ -7,3 +7,9 @@ export type UserRegisterResponse = {
     errors: ResponseError[];
   };
 };
+
+export type UserLoginResponse = {
+  login: {
+    errors: ResponseError[];
+  };
+};

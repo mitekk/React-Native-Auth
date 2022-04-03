@@ -4,8 +4,9 @@ import argon2 from "argon2";
 import jwt from "jsonwebtoken";
 import { Context } from "../types/types";
 import { jwt_secret } from "../constants";
-import { UserResponse, CredentialsInput } from "./types";
+import { UserResponse } from "./types";
 import { Email } from "../handlers/email.handler";
+import { LoginInput, RegisterInput } from "./types/user";
 
 type resetPasswordJWT = {
   id: string;
@@ -21,11 +22,9 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async register(
-    @Arg("credentials") { name, email, password }: CredentialsInput,
+    @Arg("credentials") { name, email, password }: RegisterInput,
     @Ctx() { em }: Context
   ): Promise<UserResponse> {
-    console.log("asdas");
-
     if (name?.length < 1) {
       return {
         errors: [
@@ -37,12 +36,12 @@ export class UserResolver {
       };
     }
 
-    if (email?.length <= 1) {
+    if (email?.length < 1) {
       return {
         errors: [
           {
             field: "email",
-            message: "minimum length is 2",
+            message: "minimum length is 1",
           },
         ],
       };
@@ -73,7 +72,7 @@ export class UserResolver {
           errors: [
             {
               field: "email",
-              message: "email already exists",
+              message: "Email already exists",
             },
           ],
         };
@@ -98,37 +97,35 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async login(
-    @Arg("credentials") { email, password }: CredentialsInput,
+    @Arg("credentials") { email, password }: LoginInput,
     @Ctx() { em }: Context
   ): Promise<UserResponse> {
     const user = await em.findOne(User, { email: email.toLocaleLowerCase() });
-    if (!user) {
-      return {
-        errors: [
-          {
-            field: "email",
-            message: "email doesn't exist",
-          },
-        ],
-      };
-    }
-    const valid = await argon2.verify(user.password, password);
-    if (!valid) {
-      return {
-        errors: [
-          {
-            field: "password",
-            message: "password doesn't match",
-          },
-        ],
-      };
-    }
 
-    const token = jwt.sign({ id: user.id }, jwt_secret, {
-      expiresIn: "1y",
-    });
+    const errorResponse = {
+      errors: [
+        {
+          field: "email or password",
+          message: "The email or password is incorrect",
+        },
+      ],
+    };
 
-    return { user, token };
+    return argon2
+      .verify(user?.password || "", password)
+      .then((valid) => {
+        if (!user || !valid) {
+          return errorResponse;
+        }
+
+        const token = jwt.sign({ id: user.id }, jwt_secret, {
+          expiresIn: "1y",
+        });
+        return { user, token };
+      })
+      .catch(() => {
+        return errorResponse;
+      });
   }
 
   @Mutation(() => UserResponse)
@@ -136,8 +133,6 @@ export class UserResolver {
     @Arg("email") email: string,
     @Ctx() { em }: Context
   ): Promise<UserResponse> {
-    console.log(email);
-
     const user = await em.findOne(User, { email: email.toLocaleLowerCase() });
 
     if (user) {
@@ -188,8 +183,6 @@ export class UserResolver {
       user.password = await argon2.hash(password);
       await em.flush();
     }
-
-    console.log(user);
 
     return {};
   }

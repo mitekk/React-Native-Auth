@@ -19,15 +19,14 @@ export const useRegister = () => {
 
   const onSubmit: SubmitHandler<RegisterInput> = async credentials => {
     const {data} = await signup(credentials);
-    console.log(data.register.errors);
 
     setData(data);
     const token = data?.register?.token;
 
-    if (!token) {
+    if (token) {
       signIn(token);
     }
   };
 
-  return {onSubmit, data};
+  return {data, onSubmit};
 };
