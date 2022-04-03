@@ -29,7 +29,7 @@ const defaultLoginValues: RegisterInput = {
 };
 
 export const RegisterScreen = () => {
-  const {onSubmit} = useRegister();
+  const {data, onSubmit} = useRegister();
   const {colors} = useTheme();
   const methods = useForm<RegisterInput>({
     resolver: yupResolver(registerSchema),
@@ -42,7 +42,7 @@ export const RegisterScreen = () => {
         header={<AuthHeader />}
         headerStyle={{...styles.headerStyle, backgroundColor: colors.roseWhite}}
         showBack={false}>
-        <RegisterBody onSubmit={methods.handleSubmit(onSubmit)} />
+        <RegisterBody onSubmit={methods.handleSubmit(onSubmit)} data={data} />
       </LoginLayout>
     </FormProvider>
   );
