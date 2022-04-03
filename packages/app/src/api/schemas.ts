@@ -1,17 +1,18 @@
 import {gql} from 'urql';
 
 export const register_mutation = gql`
-  mutation Register($email: String!, $password: String!) {
-    register(credentials: {email: $email, password: $password}) {
+  mutation Register($name: String!, $email: String!, $password: String!) {
+    register(credentials: {name: $name, email: $email, password: $password}) {
       errors {
         field
         message
       }
       user {
         id
+        name
+        email
         createdAt
         updatedAt
-        email
       }
       token
     }
@@ -27,9 +28,10 @@ export const login_mutation = gql`
       }
       user {
         id
+        name
+        email
         createdAt
         updatedAt
-        email
       }
       token
     }

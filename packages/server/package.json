@@ -6,7 +6,8 @@
   "scripts": {
     "watch": "tsc -w",
     "dev": "nodemon dist/index.js",
-    "create:migration": "mikro-orm migration:create",
+    "migration:create": "mikro-orm migration:create",
+    "migration:update": "mikro-orm migration:up",
     "seed:profile_icon": "mikro-orm database:import profile_icon.sql"
   },
   "keywords": [],
