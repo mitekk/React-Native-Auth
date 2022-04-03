@@ -5,6 +5,8 @@ import { FieldError } from ".";
 @InputType()
 class CredentialsInput {
   @Field()
+  name!: string;
+  @Field()
   email!: string;
   @Field()
   password!: string;

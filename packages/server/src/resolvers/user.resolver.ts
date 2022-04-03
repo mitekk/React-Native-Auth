@@ -21,9 +21,22 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async register(
-    @Arg("credentials") { email, password }: CredentialsInput,
+    @Arg("credentials") { name, email, password }: CredentialsInput,
     @Ctx() { em }: Context
   ): Promise<UserResponse> {
+    console.log("asdas");
+
+    if (name?.length < 1) {
+      return {
+        errors: [
+          {
+            field: "name",
+            message: "minimum length is 1",
+          },
+        ],
+      };
+    }
+
     if (email?.length <= 1) {
       return {
         errors: [
@@ -35,7 +48,7 @@ export class UserResolver {
       };
     }
 
-    if (password?.length <= 1) {
+    if (password?.length < 1) {
       return {
         errors: [
           {
@@ -47,6 +60,7 @@ export class UserResolver {
     }
 
     const user = em.create(User, {
+      name,
       email: email.toLocaleLowerCase(),
       password,
     });
@@ -59,7 +73,7 @@ export class UserResolver {
           errors: [
             {
               field: "email",
-              message: "already exists",
+              message: "email already exists",
             },
           ],
         };

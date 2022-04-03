@@ -14,6 +14,10 @@ import { Profile } from "./Profile.entity";
 @Entity()
 export class User extends BaseEntity {
   @Field(() => String)
+  @Property({ type: "text" })
+  name!: string;
+
+  @Field(() => String)
   @Property({ type: "text", unique: true })
   email!: string;
 
