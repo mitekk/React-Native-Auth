@@ -3,9 +3,17 @@ import { InputType, Field, ObjectType } from "type-graphql";
 import { FieldError } from ".";
 
 @InputType()
-class CredentialsInput {
+class RegisterInput {
   @Field()
   name!: string;
+  @Field()
+  email!: string;
+  @Field()
+  password!: string;
+}
+
+@InputType()
+class LoginInput {
   @Field()
   email!: string;
   @Field()
@@ -24,4 +32,4 @@ class UserResponse {
   token?: string;
 }
 
-export { CredentialsInput, UserResponse };
+export { RegisterInput, LoginInput, UserResponse };

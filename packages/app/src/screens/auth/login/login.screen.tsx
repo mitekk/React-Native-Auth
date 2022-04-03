@@ -27,7 +27,7 @@ const defaultLoginValues: LoginInput = {
 };
 
 export const LoginScreen = () => {
-  const {onSubmit} = useLogin();
+  const {data, onSubmit} = useLogin();
   const {colors} = useTheme();
   const methods = useForm<LoginInput>({
     resolver: yupResolver(loginSchema),
@@ -40,7 +40,7 @@ export const LoginScreen = () => {
         header={<AuthHeader />}
         headerStyle={{...styles.headerStyle, backgroundColor: colors.roseWhite}}
         showBack>
-        <LoginBody onSubmit={methods.handleSubmit(onSubmit)} />
+        <LoginBody onSubmit={methods.handleSubmit(onSubmit)} data={data} />
       </LoginLayout>
     </FormProvider>
   );

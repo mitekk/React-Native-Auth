@@ -4,7 +4,7 @@ import {
   FieldIcon,
   ProfileIconResponse,
 } from "./profileIcon";
-import { CredentialsInput, UserResponse } from "./user";
+import { LoginInput, RegisterInput, UserResponse } from "./user";
 import { AllowanceInput, AllowanceResponse } from "./allowance";
 import { PerkResponse } from "./perk";
 import { ProfileInput, ProfileResponse } from "./profile";
@@ -13,7 +13,8 @@ export {
   FieldError,
   ProfileIconInput,
   FieldIcon,
-  CredentialsInput,
+  LoginInput,
+  RegisterInput,
   ProfileIconResponse,
   UserResponse,
   AllowanceInput,
