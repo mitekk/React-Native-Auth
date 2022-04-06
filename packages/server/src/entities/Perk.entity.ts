@@ -6,10 +6,10 @@ import { BaseEntity } from "./Base.entity";
 @Entity()
 export class Perk extends BaseEntity {
   @Field(() => String)
-  @Property({ type: "text" })
+  @Property()
   title!: string;
 
   @Field(() => String)
-  @Property({ type: "text" })
+  @Property()
   icon!: string;
 }

@@ -15,11 +15,11 @@ export class Allowance extends BaseEntity {
   initBalance!: number;
 
   @Field(() => String)
-  @Property({ type: "text" })
+  @Property()
   interval!: string;
 
   @Field(() => String)
-  @Property({ type: "date" })
+  @Property()
   startFrom!: Date;
 
   @Field(() => Profile)
