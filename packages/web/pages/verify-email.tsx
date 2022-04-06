@@ -59,6 +59,11 @@ const ResetPassword: NextPage = () => {
           `}
         >
           <Box>{data?.verifyEmail?.message}</Box>
+          {data?.verifyEmail?.errors?.map(
+            ({ message }: { message: string }) => (
+              <Box>{message}</Box>
+            )
+          )}
         </Box>
       ) : (
         <Box
