@@ -92,6 +92,9 @@ export class UserResolver {
       expiresIn: "1y",
     });
 
+    const { sendVerifyEmail } = Email();
+    sendVerifyEmail({ to: email, name, token });
+
     return { user, token };
   }
 
@@ -139,7 +142,7 @@ export class UserResolver {
     const token = jwt.sign({ id: user?.id || 0 }, jwt_secret, {
       expiresIn: "1h",
     });
-    sendPasswordRestore({ to: email, token }).catch(() => {});
+    sendPasswordRestore({ to: email, token });
 
     return { message: `Email was sent to ${email}` };
   }
@@ -182,6 +185,49 @@ export class UserResolver {
       await em.flush();
     }
 
-    return {};
+    return {
+      message: "",
+    };
+  }
+
+  @Mutation(() => UserResponse)
+  async verifyEmail(
+    @Arg("token") token: string,
+    @Ctx() { em }: Context
+  ): Promise<UserResponse> {
+    const errorMessage = "something went wrong, please retry";
+    let decoded;
+
+    try {
+      decoded = jwt.verify(token, jwt_secret);
+    } catch (err) {
+      return {
+        errors: [
+          {
+            message: errorMessage,
+          },
+        ],
+      };
+    }
+
+    const { id } = decoded;
+    const user = await em.findOne(User, { id });
+
+    if (!user) {
+      return {
+        errors: [
+          {
+            message: errorMessage,
+          },
+        ],
+      };
+    }
+
+    user.verified = true;
+    await em.flush();
+
+    return {
+      message: "verified succesfully!",
+    };
   }
 }

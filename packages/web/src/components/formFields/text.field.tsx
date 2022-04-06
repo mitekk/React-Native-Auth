@@ -7,9 +7,15 @@ type TextFieldProps = {
   control: Control<any, object>;
   label: string;
   name: string;
+  disabled?: boolean;
 };
 
-export default function TextField({ name, control, label }: TextFieldProps) {
+export default function TextField({
+  name,
+  control,
+  label,
+  disabled,
+}: TextFieldProps) {
   const {
     field,
     formState: { errors },
@@ -28,6 +34,7 @@ export default function TextField({ name, control, label }: TextFieldProps) {
       css={css`
         width: 50%;
       `}
+      disabled
       error={!!errors?.[name]?.message}
       helperText={errors?.[name]?.message}
     />

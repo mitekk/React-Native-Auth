@@ -14,15 +14,19 @@ import { Profile } from "./Profile.entity";
 @Entity()
 export class User extends BaseEntity {
   @Field(() => String)
-  @Property({ type: "text" })
+  @Property()
   name!: string;
 
   @Field(() => String)
-  @Property({ type: "text", unique: true })
+  @Property({ unique: true })
   email!: string;
 
-  @Property({ type: "text" })
+  @Property()
   password!: string;
+
+  @Field(() => Boolean)
+  @Property({ default: false })
+  verified!: boolean;
 
   @Field(() => Profile)
   @OneToMany(() => Profile, (profile) => profile.user)

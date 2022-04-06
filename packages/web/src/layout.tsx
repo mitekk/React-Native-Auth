@@ -5,9 +5,10 @@ import { Box } from "@mui/system";
 
 type LayoutProps = {
   children: JSX.Element;
+  title: string;
 };
 
-export default function Layout({ children }: LayoutProps) {
+export default function Layout({ title, children }: LayoutProps) {
   return (
     <Container
       maxWidth="md"
@@ -33,7 +34,7 @@ export default function Layout({ children }: LayoutProps) {
         >
           Pocket
         </Box>
-        <Box>Reset Password</Box>
+        <Box>{title}</Box>
       </Box>
       <Box
         css={css`
