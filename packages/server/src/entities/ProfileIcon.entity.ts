@@ -6,10 +6,10 @@ import { BaseEntity } from "./Base.entity";
 @Entity()
 export class ProfileIcon extends BaseEntity {
   @Field(() => String)
-  @Property({ type: "text", unique: true })
+  @Property({ unique: true })
   name!: string;
 
   @Field(() => String)
-  @Property({ type: "text" })
+  @Property()
   type!: string;
 }

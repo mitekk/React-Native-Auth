@@ -14,7 +14,7 @@ import { User } from "./User.entity";
 @Entity()
 export class Profile extends BaseEntity {
   @Field(() => String)
-  @Property({ type: "text" })
+  @Property()
   name!: string;
 
   @Field(() => String)
@@ -22,19 +22,19 @@ export class Profile extends BaseEntity {
   birthdate!: Date;
 
   @Field(() => String)
-  @Property({ type: "text" })
+  @Property()
   avatar!: string;
 
   @Field(() => String)
-  @Property({ type: "text" })
+  @Property()
   color!: string;
 
   @Field(() => String)
-  @Property({ type: "text" })
+  @Property()
   mediaUri: string;
 
   @Field(() => String)
-  @Property({ type: "text" })
+  @Property()
   themePref!: string;
 
   @Field(() => Int)

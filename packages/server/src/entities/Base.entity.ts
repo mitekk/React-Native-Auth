@@ -5,14 +5,14 @@ import { v4 } from "uuid";
 @ObjectType()
 export abstract class BaseEntity {
   @Field(() => ID)
-  @PrimaryKey({ type: "uuid" })
+  @PrimaryKey()
   id: string = v4();
 
   @Field(() => String)
-  @Property({ type: "date" })
+  @Property()
   createdAt: Date = new Date();
 
   @Field(() => String)
-  @Property({ type: "date", onUpdate: () => new Date() })
+  @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date();
 }
