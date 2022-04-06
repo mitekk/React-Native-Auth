@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import type { NextPage } from "next";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
@@ -7,45 +7,47 @@ import { useMutation } from "urql";
 import { css } from "@emotion/react";
 import { Box } from "@mui/material";
 import LoadingButton from "@mui/lab/LoadingButton";
-import { reset_password_mutation } from "../src/urql/mutation.urql";
+import { verify_email_mutation } from "../src/urql/mutation.urql";
 import Layout from "../src/layout";
-import PasswordField from "../src/components/formFields/password.field";
 import TextField from "../src/components/formFields/text.field";
-import { resetPasswordSchema } from "../src/assert/resetPassword.schema";
+import { validateEmailSchema } from "../src/assert/resetPassword.schema";
 
-export type ResetPasswordFields = {
+export type VerifyEmailFields = {
   email: string;
-  password: string;
-  passwordConfirm: string;
 };
 
-const defaultLoginValues: ResetPasswordFields = {
+const defaultLoginValues: VerifyEmailFields = {
   email: "",
-  password: "",
-  passwordConfirm: "",
 };
 
 const ResetPassword: NextPage = () => {
   const { query } = useRouter();
-  const [{ data, error, fetching }, resetPassword] = useMutation(
-    reset_password_mutation
+  const [{ data, error, fetching }, verifyEmail] = useMutation(
+    verify_email_mutation
   );
-  const { control, handleSubmit } = useForm<ResetPasswordFields>({
-    resolver: yupResolver(resetPasswordSchema),
-    defaultValues: defaultLoginValues,
+
+  const { token, email } = query;
+
+  const { control, setValue, handleSubmit } = useForm<VerifyEmailFields>({
+    resolver: yupResolver(validateEmailSchema),
+    defaultValues: {
+      ...defaultLoginValues,
+    },
   });
 
-  const { token } = query;
+  useEffect(() => {
+    if (typeof email === "string" || email instanceof String) {
+      setValue("email", email.toString());
+    }
+  }, [email]);
 
-  const onSubmit: SubmitHandler<ResetPasswordFields> = async ({
-    email,
-    password,
-  }) => {
-    const result = await resetPassword({ email, password, token });
+  const onSubmit: SubmitHandler<VerifyEmailFields> = async () => {
+    await verifyEmail({ token });
+    console.log(data?.verifyEmail?.message);
   };
 
   return (
-    <Layout title="reset password">
+    <Layout title="verify e-mail">
       {data || error ? (
         <Box
           css={css`
@@ -56,8 +58,7 @@ const ResetPassword: NextPage = () => {
             margin: 50px;
           `}
         >
-          <Box>Request was submited successfully</Box>
-          <Box>Please try to login to Pocket application</Box>
+          <Box>{data?.verifyEmail?.message}</Box>
         </Box>
       ) : (
         <Box
@@ -70,19 +71,12 @@ const ResetPassword: NextPage = () => {
           `}
           autoCapitalize="false"
         >
-          <TextField control={control} name="email" label="email"></TextField>
-
-          <PasswordField
+          <TextField
             control={control}
-            name="password"
-            label="new password"
-          ></PasswordField>
-
-          <PasswordField
-            control={control}
-            name="passwordConfirm"
-            label="confirm password"
-          ></PasswordField>
+            name="email"
+            label="email"
+            disabled
+          ></TextField>
 
           <LoadingButton
             loading={fetching}
@@ -93,7 +87,7 @@ const ResetPassword: NextPage = () => {
             `}
             onClick={handleSubmit(onSubmit)}
           >
-            Reset
+            Verify
           </LoadingButton>
         </Box>
       )}
