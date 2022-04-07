@@ -34,7 +34,7 @@ export default function TextField({
       css={css`
         width: 50%;
       `}
-      disabled
+      disabled={disabled}
       error={!!errors?.[name]?.message}
       helperText={errors?.[name]?.message}
     />

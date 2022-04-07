@@ -1,4 +1,3 @@
-import { User } from "../../entities/User.entity";
 import { InputType, Field, ObjectType } from "type-graphql";
 import { FieldError } from ".";
 
@@ -20,19 +19,27 @@ class LoginInput {
   password!: string;
 }
 
+@InputType()
+class RefreshInput {
+  @Field()
+  token!: string;
+  @Field()
+  refreshToken!: string;
+}
+
 @ObjectType()
-class UserResponse {
+class AuthResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];
-
-  @Field(() => User, { nullable: true })
-  user?: User;
 
   @Field(() => String, { nullable: true })
   token?: string;
 
   @Field(() => String, { nullable: true })
+  refreshToken?: string;
+
+  @Field(() => String, { nullable: true })
   message?: string;
 }
 
-export { RegisterInput, LoginInput, UserResponse };
+export { RegisterInput, LoginInput, AuthResponse, RefreshInput };

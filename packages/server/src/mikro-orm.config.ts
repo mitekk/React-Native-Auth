@@ -5,6 +5,7 @@ import { User } from "./entities/User.entity";
 import { Allowance } from "./entities/Allowance.entity";
 import { Perk } from "./entities/Perk.entity";
 import { ProfileIcon } from "./entities/ProfileIcon.entity";
+import { RefreshToken } from "./entities/RefreshToken.entity";
 
 export default {
   migrations: {
@@ -12,7 +13,7 @@ export default {
     pattern: /^[\w-]+\d+\.[tj]s$/,
     emit: "js",
   },
-  entities: [Profile, ProfileIcon, User, Allowance, Perk],
+  entities: [Profile, ProfileIcon, User, Allowance, Perk, RefreshToken],
   dbName: "bucket",
   type: "postgresql",
   user: "postgres",

@@ -4,7 +4,7 @@ import {
   FieldIcon,
   ProfileIconResponse,
 } from "./profileIcon";
-import { LoginInput, RegisterInput, UserResponse } from "./user";
+import { LoginInput, RegisterInput, RefreshInput, AuthResponse } from "./auth";
 import { AllowanceInput, AllowanceResponse } from "./allowance";
 import { PerkResponse } from "./perk";
 import { ProfileInput, ProfileResponse } from "./profile";
@@ -15,8 +15,9 @@ export {
   FieldIcon,
   LoginInput,
   RegisterInput,
+  RefreshInput,
   ProfileIconResponse,
-  UserResponse,
+  AuthResponse,
   AllowanceInput,
   AllowanceResponse,
   PerkResponse,

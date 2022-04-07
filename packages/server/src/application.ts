@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import { jwt_secret, __prod__ } from "./constants";
 import microConfig from "./mikro-orm.config";
 import { ProfileResolver } from "./resolvers/profile.resolver";
-import { UserResolver } from "./resolvers/user.resolver";
+import { UserResolver } from "./resolvers/auth.resolver";
 import { Context } from "./types/types";
 import { ProfileIconResolver } from "./resolvers/profileIcon.resolver";
 import { AllowanceResolver } from "./resolvers/allowance.resolver";
