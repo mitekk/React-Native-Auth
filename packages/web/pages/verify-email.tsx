@@ -30,9 +30,7 @@ const ResetPassword: NextPage = () => {
 
   const { control, setValue, handleSubmit } = useForm<VerifyEmailFields>({
     resolver: yupResolver(validateEmailSchema),
-    defaultValues: {
-      ...defaultLoginValues,
-    },
+    defaultValues: defaultLoginValues,
   });
 
   useEffect(() => {
@@ -41,10 +39,8 @@ const ResetPassword: NextPage = () => {
     }
   }, [email]);
 
-  const onSubmit: SubmitHandler<VerifyEmailFields> = async () => {
-    await verifyEmail({ token });
-    console.log(data?.verifyEmail?.message);
-  };
+  const onSubmit: SubmitHandler<VerifyEmailFields> = () =>
+    verifyEmail({ token });
 
   return (
     <Layout title="verify e-mail">

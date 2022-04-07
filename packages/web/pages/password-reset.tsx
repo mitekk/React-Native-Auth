@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import type { NextPage } from "next";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useRouter } from "next/router";
@@ -30,19 +30,21 @@ const ResetPassword: NextPage = () => {
   const [{ data, error, fetching }, resetPassword] = useMutation(
     reset_password_mutation
   );
-  const { control, handleSubmit } = useForm<ResetPasswordFields>({
+  const { token, email } = query;
+
+  const { control, setValue, handleSubmit } = useForm<ResetPasswordFields>({
     resolver: yupResolver(resetPasswordSchema),
     defaultValues: defaultLoginValues,
   });
 
-  const { token } = query;
+  useEffect(() => {
+    if (typeof email === "string" || email instanceof String) {
+      setValue("email", email.toString());
+    }
+  }, [email]);
 
-  const onSubmit: SubmitHandler<ResetPasswordFields> = async ({
-    email,
-    password,
-  }) => {
-    const result = await resetPassword({ email, password, token });
-  };
+  const onSubmit: SubmitHandler<ResetPasswordFields> = ({ email, password }) =>
+    resetPassword({ email, password, token });
 
   return (
     <Layout title="reset password">
@@ -70,7 +72,12 @@ const ResetPassword: NextPage = () => {
           `}
           autoCapitalize="false"
         >
-          <TextField control={control} name="email" label="email"></TextField>
+          <TextField
+            control={control}
+            name="email"
+            label="email"
+            disabled
+          ></TextField>
 
           <PasswordField
             control={control}
