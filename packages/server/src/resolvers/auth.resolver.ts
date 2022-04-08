@@ -241,13 +241,12 @@ export class AuthResolver {
       return { errors };
     }
 
-    const refreshTokenObj = await em.findOne(RefreshToken, {
+    const refreshTokenEntity = await em.findOne(RefreshToken, {
       id: refreshTokenId,
     });
     const userObj = await em.findOne(User, { id: userId });
-    if (refreshTokenObj && userObj) {
-      const refreshToken = refreshTokenObj;
-      if (refreshToken.token === refreshTokenReceived) {
+    if (refreshTokenEntity && userObj) {
+      if (refreshTokenEntity.token === refreshTokenReceived) {
         const refreshToken = em.create(RefreshToken, {});
         try {
           await em.persistAndFlush(refreshToken);
@@ -264,12 +263,13 @@ export class AuthResolver {
 
         return { accessToken, refreshToken: refreshToken.token };
       }
+      em.removeAndFlush(refreshTokenEntity);
     }
 
     return {
       errors: [
         {
-          message: "Refresh token failed",
+          message: "Refresh token failed, please login",
         },
       ],
     };
