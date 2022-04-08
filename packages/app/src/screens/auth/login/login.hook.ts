@@ -2,12 +2,14 @@ import {useState} from 'react';
 import {SubmitHandler} from 'react-hook-form';
 import {useMutation} from 'urql';
 import {login_mutation} from '../../../api/schemas';
-import {UserLoginResponse} from '../../../types/user/response.type';
+import {AuthLoginResponse} from '../../../types/user/response.type';
 import {useAuth} from '../../../utils/auth/auth';
 import {LoginInput} from './login.screen';
 
-const initialUserLoginResponse: UserLoginResponse = {
+const initialUserLoginResponse: AuthLoginResponse = {
   login: {
+    accessToken: '',
+    refreshToken: '',
     errors: [],
   },
 };
@@ -19,11 +21,11 @@ export const useLogin = () => {
 
   const onSubmit: SubmitHandler<LoginInput> = async credentials => {
     const {data} = await login(credentials);
-    setData(data);
-    const token = data?.login?.token;
+    setData(data || initialUserLoginResponse);
+    const accessToken = data?.login?.accessToken;
 
-    if (token) {
-      signIn(token);
+    if (accessToken) {
+      signIn(accessToken);
     }
   };
 

@@ -2,20 +2,32 @@ export type ResponseError = {
   field: string;
   message: string;
 };
-export type UserRegisterResponse = {
+export type AuthRegisterResponse = {
   register: {
-    errors: ResponseError[];
+    accessToken?: string;
+    refreshToken?: string;
+    errors?: ResponseError[];
   };
 };
 
-export type UserLoginResponse = {
+export type AuthLoginResponse = {
   login: {
-    errors: ResponseError[];
+    accessToken?: string;
+    refreshToken?: string;
+    errors?: ResponseError[];
   };
 };
 
-export type UserRestorePasswordResponse = {
+export type AuthRestorePasswordResponse = {
   sendRestorePasswordEmail: {
     message: string;
+  };
+};
+
+export type AuthRefreshTokenResponse = {
+  refresh: {
+    accessToken?: string;
+    refreshToken?: string;
+    errors?: ResponseError[];
   };
 };

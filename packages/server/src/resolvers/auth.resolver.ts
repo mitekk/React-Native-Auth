@@ -9,7 +9,7 @@ import JwtUtil from "../utils/jwt.util";
 import { RefreshToken } from "../entities/RefreshToken.entity";
 
 @Resolver()
-export class UserResolver {
+export class AuthResolver {
   @Query(() => AuthResponse)
   async me(@Ctx() { em, user }: Context): Promise<AuthResponse> {
     const foundUser = await em.findOneOrFail(User, { id: user?.id });
@@ -88,12 +88,12 @@ export class UserResolver {
     }
 
     const { id, refreshToken } = em.create(RefreshToken, {});
-    const token = JwtUtil.sign(user.id, id);
+    const accessToken = JwtUtil.sign(user.id, id);
 
     const { sendVerifyEmail } = Email();
-    sendVerifyEmail({ to: email, name, token });
+    sendVerifyEmail({ to: email, name, token: accessToken });
 
-    return { token, refreshToken };
+    return { accessToken, refreshToken };
   }
 
   @Mutation(() => AuthResponse)
@@ -120,25 +120,17 @@ export class UserResolver {
         }
 
         const newRefreshToken = em.create(RefreshToken, {});
-        const token = JwtUtil.sign(user.id, newRefreshToken.id);
+        const accessToken = JwtUtil.sign(user.id, newRefreshToken.id);
 
-        try {
-          await em.persistAndFlush(newRefreshToken);
-        } catch (error) {
-          return {
-            errors: [
-              {
-                message: error.message,
-              },
-            ],
-          };
-        }
-
-        return { token, refreshToken: newRefreshToken.refreshToken };
+        return em
+          .persistAndFlush(newRefreshToken)
+          .then(() => ({
+            accessToken,
+            refreshToken: newRefreshToken.refreshToken,
+          }))
+          .catch(() => errorResponse);
       })
-      .catch(() => {
-        return errorResponse;
-      });
+      .catch(() => errorResponse);
   }
 
   @Mutation(() => AuthResponse)
@@ -149,8 +141,8 @@ export class UserResolver {
     const user = await em.findOne(User, { email: email.toLocaleLowerCase() });
 
     const { sendPasswordRestore } = Email();
-    const token = JwtUtil.sign(user?.id);
-    sendPasswordRestore({ to: email, token });
+    const accessToken = JwtUtil.sign(user?.id);
+    sendPasswordRestore({ to: email, token: accessToken });
 
     return { message: `Email was sent to ${email}` };
   }
@@ -228,7 +220,7 @@ export class UserResolver {
     await em.flush();
 
     return {
-      message: "verified succesfully!",
+      message: "verify request was received!",
     };
   }
 
@@ -261,9 +253,9 @@ export class UserResolver {
             ],
           };
         }
-        const token = JwtUtil.sign(userObj.id, newRefreshToken.id);
+        const accessToken = JwtUtil.sign(userObj.id, newRefreshToken.id);
 
-        return { token, refreshToken: newRefreshToken.refreshToken };
+        return { accessToken, refreshToken: newRefreshToken.refreshToken };
       }
     }
 

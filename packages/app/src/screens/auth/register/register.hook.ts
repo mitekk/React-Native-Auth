@@ -2,12 +2,14 @@ import {useState} from 'react';
 import {SubmitHandler} from 'react-hook-form';
 import {useMutation} from 'urql';
 import {register_mutation} from '../../../api/schemas';
-import {UserRegisterResponse} from '../../../types/user/response.type';
+import {AuthRegisterResponse} from '../../../types/user/response.type';
 import {useAuth} from '../../../utils/auth/auth';
 import {RegisterInput} from './register.screen';
 
-const initialUserRegisterResponse: UserRegisterResponse = {
+const initialUserRegisterResponse: AuthRegisterResponse = {
   register: {
+    accessToken: '',
+    refreshToken: '',
     errors: [],
   },
 };
@@ -20,11 +22,11 @@ export const useRegister = () => {
   const onSubmit: SubmitHandler<RegisterInput> = async credentials => {
     const {data} = await signup(credentials);
 
-    setData(data);
-    const token = data?.register?.token;
+    setData(data || initialUserRegisterResponse);
+    const accessToken = data?.register?.accessToken;
 
-    if (token) {
-      signIn(token);
+    if (accessToken) {
+      signIn(accessToken);
     }
   };
 
