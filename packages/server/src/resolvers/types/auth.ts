@@ -33,7 +33,7 @@ class AuthResponse {
   errors?: FieldError[];
 
   @Field(() => String, { nullable: true })
-  token?: string;
+  accessToken?: string;
 
   @Field(() => String, { nullable: true })
   refreshToken?: string;
