@@ -7,5 +7,5 @@ import { v4 } from "uuid";
 @Entity()
 export class RefreshToken extends BaseEntity {
   @Property()
-  refreshToken: string = v4();
+  token: string = v4();
 }

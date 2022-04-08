@@ -21,6 +21,7 @@ export const useLogin = () => {
 
   const onSubmit: SubmitHandler<LoginInput> = async credentials => {
     const {data} = await login(credentials);
+
     setData(data || initialUserLoginResponse);
     const accessToken = data?.login?.accessToken;
 

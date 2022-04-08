@@ -76,7 +76,6 @@ export class AuthResolver {
           ],
         };
       }
-
       return {
         errors: [
           {
@@ -87,13 +86,21 @@ export class AuthResolver {
       };
     }
 
-    const { id, refreshToken } = em.create(RefreshToken, {});
-    const accessToken = JwtUtil.sign(user.id, id);
+    const refreshToken = em.create(RefreshToken, {});
+    em.persistAndFlush(refreshToken)
+      .then(() => ({
+        accessToken,
+        refreshToken: refreshToken.token,
+      }))
+      .catch((error) => console.error(error));
 
+    const accessToken = JwtUtil.sign(user.id, refreshToken.id);
     const { sendVerifyEmail } = Email();
-    sendVerifyEmail({ to: email, name, token: accessToken });
+    sendVerifyEmail({ to: email, name, token: accessToken }).catch((error) =>
+      console.error(error)
+    );
 
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken: refreshToken.token };
   }
 
   @Mutation(() => AuthResponse)
@@ -119,14 +126,14 @@ export class AuthResolver {
           return errorResponse;
         }
 
-        const newRefreshToken = em.create(RefreshToken, {});
-        const accessToken = JwtUtil.sign(user.id, newRefreshToken.id);
+        const refreshToken = em.create(RefreshToken, {});
+        const accessToken = JwtUtil.sign(user.id, refreshToken.id);
 
         return em
-          .persistAndFlush(newRefreshToken)
+          .persistAndFlush(refreshToken)
           .then(() => ({
             accessToken,
-            refreshToken: newRefreshToken.refreshToken,
+            refreshToken: refreshToken.token,
           }))
           .catch(() => errorResponse);
       })
@@ -226,7 +233,7 @@ export class AuthResolver {
 
   @Mutation(() => AuthResponse)
   async refresh(
-    @Arg("tokens") { token, refreshToken }: RefreshInput,
+    @Arg("tokens") { token, refreshToken: refreshTokenReceived }: RefreshInput,
     @Ctx() { em }: Context
   ): Promise<AuthResponse> {
     const { id: userId, refreshTokenId, errors } = JwtUtil.verify(token);
@@ -239,11 +246,11 @@ export class AuthResolver {
     });
     const userObj = await em.findOne(User, { id: userId });
     if (refreshTokenObj && userObj) {
-      const { refreshToken: existingRefreshToken } = refreshTokenObj;
-      if (existingRefreshToken === refreshToken) {
-        const newRefreshToken = em.create(RefreshToken, {});
+      const refreshToken = refreshTokenObj;
+      if (refreshToken.token === refreshTokenReceived) {
+        const refreshToken = em.create(RefreshToken, {});
         try {
-          await em.persistAndFlush(newRefreshToken);
+          await em.persistAndFlush(refreshToken);
         } catch (error) {
           return {
             errors: [
@@ -253,9 +260,9 @@ export class AuthResolver {
             ],
           };
         }
-        const accessToken = JwtUtil.sign(userObj.id, newRefreshToken.id);
+        const accessToken = JwtUtil.sign(userObj.id, refreshToken.id);
 
-        return { accessToken, refreshToken: newRefreshToken.refreshToken };
+        return { accessToken, refreshToken: refreshToken.token };
       }
     }
 
