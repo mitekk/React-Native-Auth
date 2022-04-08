@@ -12,15 +12,9 @@ export const register_mutation = gql<AuthRegisterResponse>`
         field
         message
       }
-      user {
-        id
-        name
-        email
-        createdAt
-        updatedAt
-      }
-      refreshToken
       accessToken
+      refreshToken
+      message
     }
   }
 `;
@@ -29,17 +23,10 @@ export const login_mutation = gql<AuthLoginResponse>`
   mutation Login($email: String!, $password: String!) {
     login(credentials: {email: $email, password: $password}) {
       errors {
-        field
         message
       }
-      user {
-        id
-        name
-        email
-        createdAt
-        updatedAt
-      }
       refreshToken
+      message
       accessToken
     }
   }

@@ -1,12 +1,17 @@
 import jwt from "jsonwebtoken";
 import { jwt_secret } from "../constants";
 
-const expiresIn = "10m";
+const expiresInAccessToken = "15m";
+const expiresInRefreshToken = "7d";
 //: { errors: { message: string }[] }
 const JwtUtil = {
   sign: (id: string = "0", refreshTokenId?: string) =>
     jwt.sign({ id, refreshTokenId }, jwt_secret, {
-      expiresIn,
+      expiresIn: expiresInAccessToken,
+    }),
+  signRefreshToken: (id: string) =>
+    jwt.sign({ id }, jwt_secret, {
+      expiresIn: expiresInRefreshToken,
     }),
   verify: (token: string) => {
     try {
