@@ -12,6 +12,9 @@ export class RefreshToken {
   @Property()
   token: string;
 
+  @Property()
+  createdAt: Date = new Date();
+
   @BeforeCreate()
   async createTokenBeforeInsert() {
     const id = v4();

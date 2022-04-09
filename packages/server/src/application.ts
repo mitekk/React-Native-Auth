@@ -3,8 +3,7 @@ import { Connection, IDatabaseDriver, MikroORM } from "@mikro-orm/core";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
-import jwt from "jsonwebtoken";
-import { jwt_secret, __prod__ } from "./constants";
+import { __prod__ } from "./constants";
 import microConfig from "./mikro-orm.config";
 import { ProfileResolver } from "./resolvers/profile.resolver";
 import { AuthResolver } from "./resolvers/auth.resolver";
@@ -12,14 +11,16 @@ import { Context } from "./types/types";
 import { ProfileIconResolver } from "./resolvers/profileIcon.resolver";
 import { AllowanceResolver } from "./resolvers/allowance.resolver";
 import { PerksResolver } from "./resolvers/perk.resolver";
+import JwtUtil from "./utils/jwt.util";
 
 export const Application = () => {
   let orm: MikroORM<IDatabaseDriver<Connection>>;
 
   const getUser = (token?: string) => {
     try {
+      // TODO :: does it work?
       if (token) {
-        return jwt.verify(JSON.parse(token), jwt_secret);
+        return JwtUtil.verify(JSON.parse(token));
       }
       return null;
     } catch (error) {

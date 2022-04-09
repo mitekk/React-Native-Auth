@@ -22,7 +22,7 @@ class LoginInput {
 @InputType()
 class RefreshInput {
   @Field()
-  token!: string;
+  accessToken!: string;
   @Field()
   refreshToken!: string;
 }
