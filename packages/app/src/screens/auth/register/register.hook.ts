@@ -2,8 +2,8 @@ import {useState} from 'react';
 import {SubmitHandler} from 'react-hook-form';
 import {useMutation} from 'urql';
 import {register_mutation} from '../../../api/schemas';
+import {useAuth} from '../../../hooks/auth.hook';
 import {AuthRegisterResponse} from '../../../types/user/response.type';
-import {useAuth} from '../../../utils/auth/auth';
 import {RegisterInput} from './register.screen';
 
 const initialUserRegisterResponse: AuthRegisterResponse = {

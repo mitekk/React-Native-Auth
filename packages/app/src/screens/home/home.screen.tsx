@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Text} from 'react-native-paper';
-import {useAuth} from '../../utils/auth/auth';
+import {useAuth} from '../../hooks/auth.hook';
 
 export const HomeScreen = () => {
   const {signOut} = useAuth();

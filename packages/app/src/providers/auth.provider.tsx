@@ -4,9 +4,8 @@ import React, {
   useReducer,
   useEffect,
   useMemo,
-  useContext,
 } from 'react';
-import {getToken, removeToken, setToken} from './token';
+import {getToken, removeToken, setToken} from '../utils/auth/secure-store.util';
 
 type AuthAction =
   | {type: 'RESTORE_TOKEN'; token?: string | null}
@@ -26,9 +25,9 @@ interface AuthContextActions {
   signOut: () => void;
 }
 
-interface AuthContextType extends AuthState, AuthContextActions {}
+export interface AuthContextType extends AuthState, AuthContextActions {}
 
-const AuthContext = createContext<AuthContextType>({
+export const AuthContext = createContext<AuthContextType>({
   token: null,
   isLoading: true,
   isSignout: false,
@@ -101,12 +100,4 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = (): AuthContextType => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be inside an AuthProvider with a value');
-  }
-  return context;
 };

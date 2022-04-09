@@ -19,6 +19,98 @@ export class AuthResolver {
     return { message: `User not found` };
   }
 
+  @Query(() => AuthResponse)
+  async tryTokens(
+    @Arg("tokens") { accessToken, refreshToken }: RefreshInput,
+    @Ctx() { em }: Context
+  ): Promise<AuthResponse> {
+    const accessTokenVerify = JwtUtil.verify(accessToken);
+
+    if (accessTokenVerify.errors) {
+      const [{ message }] = accessTokenVerify.errors;
+
+      if (message === "TokenExpiredError") {
+        const refreshTokenVerify = JwtUtil.verifyRefreshToken(refreshToken);
+
+        if (refreshTokenVerify.errors) {
+          return {
+            errors: [
+              {
+                message: "invalid access/refresh token",
+              },
+            ],
+          };
+        }
+
+        const accessTokenDecoded = JwtUtil.decode(accessToken);
+
+        if (!accessTokenDecoded || accessTokenDecoded?.errors) {
+          return {
+            errors: [
+              {
+                message: "invalid access/refresh token",
+              },
+            ],
+          };
+        }
+
+        const { id } = refreshTokenVerify;
+        const { id: userId, refreshTokenId } = accessTokenDecoded;
+
+        if (refreshTokenId !== id) {
+          return {
+            errors: [{ message: "refresh token invalidated!" }],
+          };
+        }
+
+        const refreshTokenEntity = await em.findOneOrFail(RefreshToken, {
+          id: refreshTokenId,
+        });
+
+        if (refreshTokenEntity.token === refreshToken) {
+          const userEntity = await em.findOneOrFail(User, { id: userId });
+          const refreshToken = em.create(RefreshToken, {});
+          try {
+            await em.persistAndFlush(refreshToken);
+            em.removeAndFlush(refreshTokenEntity);
+          } catch (error) {
+            return {
+              errors: [
+                {
+                  message: error.message,
+                },
+              ],
+            };
+          }
+
+          if (userEntity && refreshToken) {
+            const accessToken = JwtUtil.sign(userEntity.id, refreshToken.id);
+
+            return {
+              message: `userId: ${userEntity.id}`,
+              accessToken,
+              refreshToken: refreshToken.token,
+            };
+          }
+        }
+      }
+
+      return {
+        errors: [
+          {
+            message: "invalid access/refresh token - final",
+          },
+        ],
+      };
+    }
+
+    return {
+      message: `userId: ${accessTokenVerify.id}`,
+      accessToken,
+      refreshToken,
+    };
+  }
+
   @Mutation(() => AuthResponse)
   async register(
     @Arg("credentials") { name, email, password }: RegisterInput,
@@ -63,44 +155,43 @@ export class AuthResolver {
       password,
     });
 
-    try {
-      await em.persistAndFlush(user);
-    } catch (error) {
-      if (error.code === "23505") {
+    const refreshToken = em.create(RefreshToken, {});
+
+    return em
+      .persistAndFlush([refreshToken, user])
+      .then(async () => {
+        // Since toknes are created on flush, we need to fetch it
+        const refreshTokenEntity = await em.findOneOrFail(RefreshToken, {
+          id: refreshToken.id,
+        });
+
+        const accessToken = JwtUtil.sign(user.id, refreshTokenEntity.id);
+        const { sendVerifyEmail } = Email();
+        sendVerifyEmail({ to: email, name, token: accessToken }).catch(
+          (error) => console.error(error)
+        );
+
+        return { accessToken, refreshToken: refreshTokenEntity.token };
+      })
+      .catch((error) => {
+        if (error.code === "23505") {
+          return {
+            errors: [
+              {
+                field: "email",
+                message: "Email already exists",
+              },
+            ],
+          };
+        }
         return {
           errors: [
             {
-              field: "email",
-              message: "Email already exists",
+              message: "an error occured, please retry",
             },
           ],
         };
-      }
-      return {
-        errors: [
-          {
-            field: "general",
-            message: error.message,
-          },
-        ],
-      };
-    }
-
-    const refreshToken = em.create(RefreshToken, {});
-    em.persistAndFlush(refreshToken)
-      .then(() => ({
-        accessToken,
-        refreshToken: refreshToken.token,
-      }))
-      .catch((error) => console.error(error));
-
-    const accessToken = JwtUtil.sign(user.id, refreshToken.id);
-    const { sendVerifyEmail } = Email();
-    sendVerifyEmail({ to: email, name, token: accessToken }).catch((error) =>
-      console.error(error)
-    );
-
-    return { accessToken, refreshToken: refreshToken.token };
+      });
   }
 
   @Mutation(() => AuthResponse)
@@ -233,10 +324,11 @@ export class AuthResolver {
 
   @Mutation(() => AuthResponse)
   async refresh(
-    @Arg("tokens") { token, refreshToken: refreshTokenReceived }: RefreshInput,
+    @Arg("tokens")
+    { accessToken, refreshToken: refreshTokenReceived }: RefreshInput,
     @Ctx() { em }: Context
   ): Promise<AuthResponse> {
-    const { id: userId, refreshTokenId, errors } = JwtUtil.verify(token);
+    const { id: userId, refreshTokenId, errors } = JwtUtil.verify(accessToken);
     if (errors) {
       return { errors };
     }
@@ -244,8 +336,8 @@ export class AuthResolver {
     const refreshTokenEntity = await em.findOne(RefreshToken, {
       id: refreshTokenId,
     });
-    const userObj = await em.findOne(User, { id: userId });
-    if (refreshTokenEntity && userObj) {
+    const userEntity = await em.findOne(User, { id: userId });
+    if (refreshTokenEntity && userEntity) {
       if (refreshTokenEntity.token === refreshTokenReceived) {
         const refreshToken = em.create(RefreshToken, {});
         try {
@@ -259,7 +351,7 @@ export class AuthResolver {
             ],
           };
         }
-        const accessToken = JwtUtil.sign(userObj.id, refreshToken.id);
+        const accessToken = JwtUtil.sign(userEntity.id, refreshToken.id);
 
         return { accessToken, refreshToken: refreshToken.token };
       }
