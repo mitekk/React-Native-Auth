@@ -2,8 +2,8 @@ import {useState} from 'react';
 import {SubmitHandler} from 'react-hook-form';
 import {useMutation} from 'urql';
 import {login_mutation} from '../../../api/schemas';
+import {useAuth} from '../../../hooks/auth.hook';
 import {AuthLoginResponse} from '../../../types/user/response.type';
-import {useAuth} from '../../../utils/auth/auth';
 import {LoginInput} from './login.screen';
 
 const initialUserLoginResponse: AuthLoginResponse = {

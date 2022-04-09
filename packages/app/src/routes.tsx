@@ -9,7 +9,7 @@ import {
   HomeScreen,
   SplashScreen,
 } from './screens';
-import {useAuth} from './utils/auth/auth';
+import {useAuth} from './hooks/auth.hook';
 
 export const Routes = () => {
   const {token, isLoading} = useAuth();
