@@ -1,6 +1,7 @@
 import { User } from "../entities/User.entity";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import argon2 from "argon2";
+import { capitalize } from "lodash";
 import { Context } from "../types/types";
 import { AuthResponse } from "./types";
 import { Email } from "../managers/email.manager";
@@ -26,7 +27,7 @@ export class AuthResolver {
   }
 
   @Query(() => AuthResponse)
-  async tryTokens(
+  async testRefreshTokens(
     @Arg("tokens") { accessToken, refreshToken }: RefreshInput,
     @Ctx() { em }: Context
   ): Promise<AuthResponse> {
@@ -113,7 +114,7 @@ export class AuthResolver {
       const { name, email, password } = registerInput;
 
       const user = em.create(User, {
-        name,
+        name: capitalize(name),
         email: email.toLocaleLowerCase(),
         password,
       });
