@@ -14,7 +14,7 @@ const JwtUtil = {
     }),
   verify: (token: string) => {
     try {
-      return jwt.verify(token, JWT_SECRET_ACCESS_TOKEN);
+      return jwt.verify(token, JWT_SECRET_ACCESS_TOKEN) as jwt.JwtPayload;
     } catch ({ name }) {
       return {
         errors: [
@@ -32,7 +32,7 @@ const JwtUtil = {
 
   verifyRefreshToken: (token: string) => {
     try {
-      return jwt.verify(token, JWT_SECRET_REFRESH_TOKEN);
+      return jwt.verify(token, JWT_SECRET_REFRESH_TOKEN) as jwt.JwtPayload;
     } catch ({ name }) {
       return {
         errors: [
