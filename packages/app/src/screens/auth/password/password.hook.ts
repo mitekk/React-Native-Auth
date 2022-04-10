@@ -1,20 +1,20 @@
 import {useState} from 'react';
 import {SubmitHandler} from 'react-hook-form';
 import {useMutation} from 'urql';
-import {restorePassword_mutation} from '../../../api/schemas';
-import {AuthRestorePasswordResponse} from '../../../types/user/response.type';
+import {resetPassword_mutation} from '../../../api/auth/reset-password.mutation';
+import {AuthResetPasswordResponse} from '../../../types/user/response.type';
 import {PasswordInput} from './password.screen';
 
-const initialUserRegisterResponse: AuthRestorePasswordResponse = {
-  sendRestorePasswordEmail: {message: ''},
+const initialUserRegisterResponse: AuthResetPasswordResponse = {
+  sendResetPasswordEmail: {message: ''},
 };
 
 export const usePassword = () => {
-  const [{}, restorePassword] = useMutation(restorePassword_mutation);
+  const [{}, resetPassword] = useMutation(resetPassword_mutation);
   const [data, setData] = useState(initialUserRegisterResponse);
 
   const onSubmit: SubmitHandler<PasswordInput> = async input => {
-    const {data} = await restorePassword(input);
+    const {data} = await resetPassword(input);
     setData(data || initialUserRegisterResponse);
   };
 

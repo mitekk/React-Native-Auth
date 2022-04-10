@@ -3,11 +3,11 @@ import {useFormContext} from 'react-hook-form';
 import {View} from 'react-native';
 import {Button, HelperText, Text, useTheme} from 'react-native-paper';
 import {TextField} from '../../../components/formFields';
-import {UserRestorePasswordResponse} from '../../../types/user/response.type';
+import {AuthResetPasswordResponse} from '../../../types/user/response.type';
 
 type PasswordBodyProps = {
   onSubmit: () => void;
-  data: UserRestorePasswordResponse;
+  data: AuthResetPasswordResponse;
 };
 
 export const PasswordBody = ({onSubmit, data}: PasswordBodyProps) => {
@@ -36,8 +36,8 @@ export const PasswordBody = ({onSubmit, data}: PasswordBodyProps) => {
           }}
           theme={theme}
           type="info"
-          visible={!!data?.sendRestorePasswordEmail?.message}>
-          {data?.sendRestorePasswordEmail?.message}
+          visible={!!data?.sendResetPasswordEmail?.message}>
+          {data?.sendResetPasswordEmail?.message}
         </HelperText>
         <Button
           theme={theme}

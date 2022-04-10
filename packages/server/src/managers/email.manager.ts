@@ -14,7 +14,7 @@ export const Email = () => {
 
   const from = '"Pocket 💰" <support@pocket.com>';
 
-  const sendPasswordRestore = ({ to, token }: { to: string; token: string }) =>
+  const sendPasswordReset = ({ to, token }: { to: string; token: string }) =>
     transporter
       .sendMail({
         from,
@@ -43,5 +43,5 @@ export const Email = () => {
       html: `<!DOCTYPE html><html><head><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Roboto+Slab&display=swap" rel="stylesheet"><style>body{background-color:#fffcfc;display:flex;flex-direction:column;align-items:center}.container{font-family:'Roboto Slab',serif;background-color:#a7d5b7;display:flex;flex-direction:column;align-items:center;width:500px;padding:25px 25px;border-radius:2px}.logo{padding-bottom:20px;font-size:50px;color:#dabe45}.box-container{display:flex;flex-direction:column;height:270px;width:95%;background-color:#5ccabe;align-items:center;margin:20px;padding:30px 0;border-radius:2px}.title{padding:5px;font-size:25px}.sub-title{padding:25px 50px;font-size:16px}.button{border:none;color:#fff;padding:15px 32px;text-align:center;text-decoration:none;display:inline-block;border-radius:5px;font-size:15px;margin:4px 2px;cursor:pointer;background-color:#dabe45}.link{text-decoration:none;color:#fffcfc}</style></head><body><div class="container"><span class="logo">Pocket</span><div class="box-container"><span class="title">Verify your e-mail address</span><div class="sub-title"><div style="margin:10px 0">Hey ${name}!</div><div style="margin:10px 0">Thank you for choosing Pocket application.</div><span>Please confirm that</span><b> ${to} </b><span>is your e-mail address by clicking the button bellow.</span></div><a class="link" href="http://localhost:3000/verify-email/?token=${token}&email=${to}"><div autofocus class="button">Verify</div></a></div></div></body></html>`,
     });
 
-  return { sendPasswordRestore, sendVerifyEmail };
+  return { sendPasswordReset, sendVerifyEmail };
 };

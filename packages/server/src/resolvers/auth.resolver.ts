@@ -3,10 +3,16 @@ import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import argon2 from "argon2";
 import { Context } from "../types/types";
 import { AuthResponse } from "./types";
-import { Email } from "../handlers/email.handler";
+import { Email } from "../managers/email.manager";
 import { LoginInput, RegisterInput, RefreshInput } from "./types/auth";
 import JwtUtil from "../utils/jwt.util";
 import { RefreshToken } from "../entities/RefreshToken.entity";
+import {
+  loginSchema,
+  passwordSchema,
+  registerSchema,
+  resetPasswordSchema,
+} from "./validation/auth.validation";
 
 @Resolver()
 export class AuthResolver {
@@ -26,223 +32,194 @@ export class AuthResolver {
   ): Promise<AuthResponse> {
     const accessTokenVerify = JwtUtil.verify(accessToken);
 
-    if (accessTokenVerify.errors) {
-      const [{ message }] = accessTokenVerify.errors;
+    try {
+      if (accessTokenVerify.errors) {
+        const [{ message }] = accessTokenVerify.errors;
 
-      if (message === "TokenExpiredError") {
-        const refreshTokenVerify = JwtUtil.verifyRefreshToken(refreshToken);
+        if (message === "TokenExpiredError") {
+          const refreshTokenVerify = JwtUtil.verifyRefreshToken(refreshToken);
 
-        if (refreshTokenVerify.errors) {
-          return {
-            errors: [
-              {
-                message: "invalid access/refresh token",
-              },
-            ],
-          };
-        }
+          if (refreshTokenVerify.errors) {
+            throw new Error("Verify refresh token failed");
+          }
 
-        const accessTokenDecoded = JwtUtil.decode(accessToken);
+          const accessTokenDecoded = JwtUtil.decode(accessToken);
 
-        if (!accessTokenDecoded || accessTokenDecoded?.errors) {
-          return {
-            errors: [
-              {
-                message: "invalid access/refresh token",
-              },
-            ],
-          };
-        }
+          if (!accessTokenDecoded || accessTokenDecoded?.errors) {
+            throw new Error("Decode access token failed");
+          }
 
-        const { id } = refreshTokenVerify;
-        const { id: userId, refreshTokenId } = accessTokenDecoded;
+          const { id } = refreshTokenVerify;
+          const { id: userId, refreshTokenId } = accessTokenDecoded;
 
-        if (refreshTokenId !== id) {
-          return {
-            errors: [{ message: "refresh token invalidated!" }],
-          };
-        }
+          if (refreshTokenId !== id) {
+            throw new Error("Refresh token was invalidated");
+          }
 
-        const refreshTokenEntity = await em.findOneOrFail(RefreshToken, {
-          id: refreshTokenId,
-        });
+          const refreshTokenEntity = await em.findOneOrFail(RefreshToken, {
+            id: refreshTokenId,
+          });
 
-        if (refreshTokenEntity.token === refreshToken) {
+          if (refreshTokenEntity.token !== refreshToken) {
+            throw new Error("Refresh token could not be validated");
+          }
+
           const userEntity = await em.findOneOrFail(User, { id: userId });
-          const refreshToken = em.create(RefreshToken, {});
-          try {
-            await em.persistAndFlush(refreshToken);
-            em.removeAndFlush(refreshTokenEntity);
-          } catch (error) {
-            return {
-              errors: [
-                {
-                  message: error.message,
-                },
-              ],
-            };
-          }
+          const newRefreshToken = em.create(RefreshToken, {});
+          await em.persistAndFlush(newRefreshToken);
+          em.removeAndFlush(refreshTokenEntity);
 
-          if (userEntity && refreshToken) {
-            const accessToken = JwtUtil.sign(userEntity.id, refreshToken.id);
-
-            return {
-              message: `userId: ${userEntity.id}`,
-              accessToken,
-              refreshToken: refreshToken.token,
-            };
+          if (!userEntity || !newRefreshToken) {
+            throw new Error("Failed to generate new refresh token");
           }
+          const newAccessToken = JwtUtil.sign(
+            userEntity.id,
+            newRefreshToken.id
+          );
+
+          return {
+            message: `userId: ${userEntity.id}`,
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken.token,
+          };
         }
+      }
+
+      return {
+        message: `userId: ${accessTokenVerify.id}`,
+        accessToken,
+        refreshToken,
+      };
+    } catch (error) {
+      console.error(error);
+
+      return {
+        errors: [
+          {
+            message: "Unauthorized",
+          },
+        ],
+      };
+    }
+  }
+
+  @Mutation(() => AuthResponse)
+  async register(
+    @Arg("credentials") registerInput: RegisterInput,
+    @Ctx() { em }: Context
+  ): Promise<AuthResponse> {
+    try {
+      await registerSchema.validate(registerInput);
+      const { name, email, password } = registerInput;
+
+      const user = em.create(User, {
+        name,
+        email: email.toLocaleLowerCase(),
+        password,
+      });
+
+      const refreshToken = em.create(RefreshToken, {});
+
+      await em.persistAndFlush([refreshToken, user]);
+      // Since toknes are created on flush, we need to fetch it
+      const refreshTokenEntity = await em.findOneOrFail(RefreshToken, {
+        id: refreshToken.id,
+      });
+
+      const accessToken = JwtUtil.sign(user.id, refreshTokenEntity.id);
+      const { sendVerifyEmail } = Email();
+      sendVerifyEmail({ to: email, name, token: accessToken });
+
+      return { accessToken, refreshToken: refreshTokenEntity.token };
+    } catch (error) {
+      console.error(error);
+
+      if (error.code === "23505") {
+        return {
+          errors: [
+            {
+              field: "email",
+              message: "Email already exists",
+            },
+          ],
+        };
       }
 
       return {
         errors: [
           {
-            message: "invalid access/refresh token - final",
+            message: "an error occured, please retry",
           },
         ],
       };
     }
-
-    return {
-      message: `userId: ${accessTokenVerify.id}`,
-      accessToken,
-      refreshToken,
-    };
-  }
-
-  @Mutation(() => AuthResponse)
-  async register(
-    @Arg("credentials") { name, email, password }: RegisterInput,
-    @Ctx() { em }: Context
-  ): Promise<AuthResponse> {
-    if (name?.length < 1) {
-      return {
-        errors: [
-          {
-            field: "name",
-            message: "minimum length is 1",
-          },
-        ],
-      };
-    }
-
-    if (email?.length < 1) {
-      return {
-        errors: [
-          {
-            field: "email",
-            message: "minimum length is 1",
-          },
-        ],
-      };
-    }
-
-    if (password?.length < 1) {
-      return {
-        errors: [
-          {
-            field: "password",
-            message: "minimum length is 1",
-          },
-        ],
-      };
-    }
-
-    const user = em.create(User, {
-      name,
-      email: email.toLocaleLowerCase(),
-      password,
-    });
-
-    const refreshToken = em.create(RefreshToken, {});
-
-    return em
-      .persistAndFlush([refreshToken, user])
-      .then(async () => {
-        // Since toknes are created on flush, we need to fetch it
-        const refreshTokenEntity = await em.findOneOrFail(RefreshToken, {
-          id: refreshToken.id,
-        });
-
-        const accessToken = JwtUtil.sign(user.id, refreshTokenEntity.id);
-        const { sendVerifyEmail } = Email();
-        sendVerifyEmail({ to: email, name, token: accessToken }).catch(
-          (error) => console.error(error)
-        );
-
-        return { accessToken, refreshToken: refreshTokenEntity.token };
-      })
-      .catch((error) => {
-        if (error.code === "23505") {
-          return {
-            errors: [
-              {
-                field: "email",
-                message: "Email already exists",
-              },
-            ],
-          };
-        }
-        return {
-          errors: [
-            {
-              message: "an error occured, please retry",
-            },
-          ],
-        };
-      });
   }
 
   @Mutation(() => AuthResponse)
   async login(
-    @Arg("credentials") { email, password }: LoginInput,
+    @Arg("credentials") loginInput: LoginInput,
     @Ctx() { em }: Context
   ): Promise<AuthResponse> {
-    const user = await em.findOne(User, { email: email.toLocaleLowerCase() });
+    try {
+      await loginSchema.validate(loginInput);
+      const { email, password } = loginInput;
 
-    const errorResponse = {
-      errors: [
-        {
-          field: "email or password",
-          message: "The email or password is incorrect",
-        },
-      ],
-    };
+      const user = await em.findOneOrFail(User, {
+        email: email.toLocaleLowerCase(),
+      });
 
-    return argon2
-      .verify(user?.password || "", password)
-      .then(async (valid) => {
-        if (!user || !valid) {
-          return errorResponse;
-        }
+      const valid = await argon2.verify(user?.password || "", password);
+      if (!valid) {
+        throw new Error("Invalid password");
+      }
 
-        const refreshToken = em.create(RefreshToken, {});
-        const accessToken = JwtUtil.sign(user.id, refreshToken.id);
+      const refreshToken = em.create(RefreshToken, {});
+      const accessToken = JwtUtil.sign(user.id, refreshToken.id);
 
-        return em
-          .persistAndFlush(refreshToken)
-          .then(() => ({
-            accessToken,
-            refreshToken: refreshToken.token,
-          }))
-          .catch(() => errorResponse);
-      })
-      .catch(() => errorResponse);
+      return em.persistAndFlush(refreshToken).then(() => ({
+        accessToken,
+        refreshToken: refreshToken.token,
+      }));
+    } catch (error) {
+      console.error(error);
+
+      return {
+        errors: [
+          {
+            message: "The email or password is incorrect",
+          },
+        ],
+      };
+    }
   }
 
   @Mutation(() => AuthResponse)
-  async sendRestorePasswordEmail(
+  async sendResetPasswordEmail(
     @Arg("email") email: string,
     @Ctx() { em }: Context
   ): Promise<AuthResponse> {
-    const user = await em.findOne(User, { email: email.toLocaleLowerCase() });
+    try {
+      await passwordSchema.validate({ email });
+      const user = await em.findOneOrFail(User, {
+        email: email.toLocaleLowerCase(),
+      });
 
-    const { sendPasswordRestore } = Email();
-    const accessToken = JwtUtil.sign(user?.id);
-    sendPasswordRestore({ to: email, token: accessToken });
+      const { sendPasswordReset } = Email();
+      const accessToken = JwtUtil.sign(user?.id);
+      sendPasswordReset({ to: email, token: accessToken });
 
-    return { message: `Email was sent to ${email}` };
+      return { message: `Email was sent to ${email}` };
+    } catch (error) {
+      console.error(error);
+
+      return {
+        errors: [
+          {
+            message: "Send reset password email failed",
+          },
+        ],
+      };
+    }
   }
 
   @Mutation(() => AuthResponse)
@@ -252,42 +229,30 @@ export class AuthResolver {
     @Arg("token") token: string,
     @Ctx() { em }: Context
   ): Promise<AuthResponse> {
-    if (email?.length <= 1) {
+    try {
+      resetPasswordSchema.validate({ email, password });
+      const { decoded, errors } = JwtUtil.verify(token);
+      if (errors) {
+        return { errors };
+      }
+      const { id } = decoded;
+      const user = await em.findOneOrFail(User, { id });
+
+      if (user.email === email) {
+        user.password = await argon2.hash(password);
+        await em.flush();
+      }
+
       return {
-        errors: [
-          {
-            field: "email",
-            message: "minimum length is 1",
-          },
-        ],
+        message: "Password was reset succesfully!",
+      };
+    } catch (error) {
+      console.error(error);
+
+      return {
+        errors: [{ message: "Password was reset failed" }],
       };
     }
-
-    if (password?.length < 1) {
-      return {
-        errors: [
-          {
-            field: "password",
-            message: "minimum length is 1",
-          },
-        ],
-      };
-    }
-    const { decoded, errors } = JwtUtil.verify(token);
-    if (errors) {
-      return { errors };
-    }
-    const { id } = decoded;
-    const user = await em.findOne(User, { id });
-
-    if (user?.email === email) {
-      user.password = await argon2.hash(password);
-      await em.flush();
-    }
-
-    return {
-      message: "Password was reset succesfully!",
-    };
   }
 
   @Mutation(() => AuthResponse)
@@ -295,75 +260,71 @@ export class AuthResolver {
     @Arg("token") token: string,
     @Ctx() { em }: Context
   ): Promise<AuthResponse> {
-    const errorMessage = "something went wrong, please retry";
-    const { decoded, errors } = JwtUtil.verify(token);
-    if (errors) {
-      return { errors };
-    }
+    try {
+      const { decoded, errors } = JwtUtil.verify(token);
+      if (errors) {
+        return { errors };
+      }
 
-    const { id } = decoded;
-    const user = await em.findOne(User, { id });
+      const { id } = decoded;
+      const user = await em.findOneOrFail(User, { id });
 
-    if (!user) {
+      user.verified = true;
+      await em.flush();
+
       return {
-        errors: [
-          {
-            message: errorMessage,
-          },
-        ],
+        message: "verify request was received!",
+      };
+    } catch (error) {
+      console.error(error);
+      return {
+        errors: [{ message: "something went wrong, please retry" }],
       };
     }
-
-    user.verified = true;
-    await em.flush();
-
-    return {
-      message: "verify request was received!",
-    };
   }
 
-  @Mutation(() => AuthResponse)
-  async refresh(
-    @Arg("tokens")
-    { accessToken, refreshToken: refreshTokenReceived }: RefreshInput,
-    @Ctx() { em }: Context
-  ): Promise<AuthResponse> {
-    const { id: userId, refreshTokenId, errors } = JwtUtil.verify(accessToken);
-    if (errors) {
-      return { errors };
-    }
+  // @Mutation(() => AuthResponse)
+  // async refresh(
+  //   @Arg("tokens")
+  //   { accessToken, refreshToken: refreshTokenReceived }: RefreshInput,
+  //   @Ctx() { em }: Context
+  // ): Promise<AuthResponse> {
+  //   const { id: userId, refreshTokenId, errors } = JwtUtil.verify(accessToken);
+  //   if (errors) {
+  //     return { errors };
+  //   }
 
-    const refreshTokenEntity = await em.findOne(RefreshToken, {
-      id: refreshTokenId,
-    });
-    const userEntity = await em.findOne(User, { id: userId });
-    if (refreshTokenEntity && userEntity) {
-      if (refreshTokenEntity.token === refreshTokenReceived) {
-        const refreshToken = em.create(RefreshToken, {});
-        try {
-          await em.persistAndFlush(refreshToken);
-        } catch (error) {
-          return {
-            errors: [
-              {
-                message: error.message,
-              },
-            ],
-          };
-        }
-        const accessToken = JwtUtil.sign(userEntity.id, refreshToken.id);
+  //   const refreshTokenEntity = await em.findOne(RefreshToken, {
+  //     id: refreshTokenId,
+  //   });
+  //   const userEntity = await em.findOne(User, { id: userId });
+  //   if (refreshTokenEntity && userEntity) {
+  //     if (refreshTokenEntity.token === refreshTokenReceived) {
+  //       const refreshToken = em.create(RefreshToken, {});
+  //       try {
+  //         await em.persistAndFlush(refreshToken);
+  //       } catch (error) {
+  //         return {
+  //           errors: [
+  //             {
+  //               message: error.message,
+  //             },
+  //           ],
+  //         };
+  //       }
+  //       const accessToken = JwtUtil.sign(userEntity.id, refreshToken.id);
 
-        return { accessToken, refreshToken: refreshToken.token };
-      }
-      em.removeAndFlush(refreshTokenEntity);
-    }
+  //       return { accessToken, refreshToken: refreshToken.token };
+  //     }
+  //     em.removeAndFlush(refreshTokenEntity);
+  //   }
 
-    return {
-      errors: [
-        {
-          message: "Refresh token failed, please login",
-        },
-      ],
-    };
-  }
+  //   return {
+  //     errors: [
+  //       {
+  //         message: "Refresh token failed, please login",
+  //       },
+  //     ],
+  //   };
+  // }
 }

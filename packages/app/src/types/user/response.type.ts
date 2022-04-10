@@ -18,8 +18,8 @@ export type AuthLoginResponse = {
   };
 };
 
-export type AuthRestorePasswordResponse = {
-  sendRestorePasswordEmail: {
+export type AuthResetPasswordResponse = {
+  sendResetPasswordEmail: {
     message: string;
   };
 };

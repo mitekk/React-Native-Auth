@@ -37,7 +37,8 @@
     "redis": "v3",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "1.1.1",
-    "uuid": "8.3.2"
+    "uuid": "8.3.2",
+    "yup": "^0.32.11"
   },
   "mikro-orm": {
     "useTsNode": true,
