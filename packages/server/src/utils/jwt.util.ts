@@ -4,13 +4,16 @@ import {
   JWT_SECRET_ACCESS_TOKEN,
 } from "../constants";
 
-const expiresInAccessToken = "15s";
-const expiresInRefreshToken = "7d";
+export enum ExpiresIn {
+  AccessToken = "15s",
+  RefreshToken = "7d",
+  ResetPassword = "1h",
+}
 
 const JwtUtil = {
-  sign: (id: string = "0", refreshTokenId?: string) =>
+  sign: (id: string = "0", expiresIn: ExpiresIn, refreshTokenId?: string) =>
     jwt.sign({ id, refreshTokenId }, JWT_SECRET_ACCESS_TOKEN, {
-      expiresIn: expiresInAccessToken,
+      expiresIn,
     }),
   verify: (token: string) => {
     try {
@@ -25,10 +28,6 @@ const JwtUtil = {
       };
     }
   },
-  signRefreshToken: (id: string) =>
-    jwt.sign({ id }, JWT_SECRET_REFRESH_TOKEN, {
-      expiresIn: expiresInRefreshToken,
-    }),
 
   verifyRefreshToken: (token: string) => {
     try {

@@ -24,9 +24,10 @@ export const useLogin = () => {
 
     setData(data || initialUserLoginResponse);
     const accessToken = data?.login?.accessToken;
+    const refreshToken = data?.login?.refreshToken;
 
-    if (accessToken) {
-      signIn(accessToken);
+    if (accessToken && refreshToken) {
+      signIn(accessToken, refreshToken);
     }
   };
 

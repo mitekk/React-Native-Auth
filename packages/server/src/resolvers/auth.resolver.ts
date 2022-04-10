@@ -5,8 +5,13 @@ import { capitalize } from "lodash";
 import { Context } from "../types/types";
 import { AuthResponse } from "./types";
 import { Email } from "../managers/email.manager";
-import { LoginInput, RegisterInput, RefreshInput } from "./types/auth";
-import JwtUtil from "../utils/jwt.util";
+import {
+  LoginInput,
+  RegisterInput,
+  RefreshInput,
+  ResetPasswordResponse,
+} from "./types/auth";
+import JwtUtil, { ExpiresIn } from "../utils/jwt.util";
 import { RefreshToken } from "../entities/RefreshToken.entity";
 import {
   loginSchema,
@@ -75,6 +80,7 @@ export class AuthResolver {
           }
           const newAccessToken = JwtUtil.sign(
             userEntity.id,
+            ExpiresIn.AccessToken,
             newRefreshToken.id
           );
 
@@ -127,7 +133,11 @@ export class AuthResolver {
         id: refreshToken.id,
       });
 
-      const accessToken = JwtUtil.sign(user.id, refreshTokenEntity.id);
+      const accessToken = JwtUtil.sign(
+        user.id,
+        ExpiresIn.AccessToken,
+        refreshTokenEntity.id
+      );
       const { sendVerifyEmail } = Email();
       sendVerifyEmail({ to: email, name, token: accessToken });
 
@@ -175,7 +185,11 @@ export class AuthResolver {
       }
 
       const refreshToken = em.create(RefreshToken, {});
-      const accessToken = JwtUtil.sign(user.id, refreshToken.id);
+      const accessToken = JwtUtil.sign(
+        user.id,
+        ExpiresIn.AccessToken,
+        refreshToken.id
+      );
 
       return em.persistAndFlush(refreshToken).then(() => ({
         accessToken,
@@ -194,11 +208,11 @@ export class AuthResolver {
     }
   }
 
-  @Mutation(() => AuthResponse)
+  @Mutation(() => ResetPasswordResponse)
   async sendResetPasswordEmail(
     @Arg("email") email: string,
     @Ctx() { em }: Context
-  ): Promise<AuthResponse> {
+  ): Promise<ResetPasswordResponse> {
     try {
       await passwordSchema.validate({ email });
       const user = await em.findOneOrFail(User, {
@@ -206,7 +220,7 @@ export class AuthResolver {
       });
 
       const { sendPasswordReset } = Email();
-      const accessToken = JwtUtil.sign(user?.id);
+      const accessToken = JwtUtil.sign(user?.id, ExpiresIn.ResetPassword);
       sendPasswordReset({ to: email, token: accessToken });
 
       return { message: `Email was sent to ${email}` };
@@ -262,6 +276,8 @@ export class AuthResolver {
     @Ctx() { em }: Context
   ): Promise<AuthResponse> {
     try {
+      console.log(token);
+
       const { decoded, errors } = JwtUtil.verify(token);
       if (errors) {
         return { errors };

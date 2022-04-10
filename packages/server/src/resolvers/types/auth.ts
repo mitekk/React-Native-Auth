@@ -42,4 +42,19 @@ class AuthResponse {
   message?: string;
 }
 
-export { RegisterInput, LoginInput, AuthResponse, RefreshInput };
+@ObjectType()
+class ResetPasswordResponse {
+  @Field(() => [FieldError], { nullable: true })
+  errors?: FieldError[];
+
+  @Field(() => String, { nullable: true })
+  message?: string;
+}
+
+export {
+  RegisterInput,
+  LoginInput,
+  AuthResponse,
+  RefreshInput,
+  ResetPasswordResponse,
+};
