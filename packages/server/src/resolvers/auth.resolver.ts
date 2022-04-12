@@ -300,48 +300,52 @@ export class AuthResolver {
     }
   }
 
-  // @Mutation(() => AuthResponse)
-  // async refresh(
-  //   @Arg("tokens")
-  //   { accessToken, refreshToken: refreshTokenReceived }: RefreshInput,
-  //   @Ctx() { em }: Context
-  // ): Promise<AuthResponse> {
-  //   const { id: userId, refreshTokenId, errors } = JwtUtil.verify(accessToken);
-  //   if (errors) {
-  //     return { errors };
-  //   }
+  @Mutation(() => AuthResponse)
+  async refresh(
+    @Arg("tokens")
+    { accessToken, refreshToken: refreshTokenReceived }: RefreshInput,
+    @Ctx() { em }: Context
+  ): Promise<AuthResponse> {
+    const { id: userId, refreshTokenId, errors } = JwtUtil.verify(accessToken);
+    if (errors) {
+      return { errors };
+    }
 
-  //   const refreshTokenEntity = await em.findOne(RefreshToken, {
-  //     id: refreshTokenId,
-  //   });
-  //   const userEntity = await em.findOne(User, { id: userId });
-  //   if (refreshTokenEntity && userEntity) {
-  //     if (refreshTokenEntity.token === refreshTokenReceived) {
-  //       const refreshToken = em.create(RefreshToken, {});
-  //       try {
-  //         await em.persistAndFlush(refreshToken);
-  //       } catch (error) {
-  //         return {
-  //           errors: [
-  //             {
-  //               message: error.message,
-  //             },
-  //           ],
-  //         };
-  //       }
-  //       const accessToken = JwtUtil.sign(userEntity.id, refreshToken.id);
+    const refreshTokenEntity = await em.findOne(RefreshToken, {
+      id: refreshTokenId,
+    });
+    const userEntity = await em.findOne(User, { id: userId });
+    if (refreshTokenEntity && userEntity) {
+      if (refreshTokenEntity.token === refreshTokenReceived) {
+        const refreshToken = em.create(RefreshToken, {});
+        try {
+          await em.persistAndFlush(refreshToken);
+        } catch (error) {
+          return {
+            errors: [
+              {
+                message: error.message,
+              },
+            ],
+          };
+        }
+        const accessToken = JwtUtil.sign(
+          userEntity.id,
+          ExpiresIn.AccessToken,
+          refreshToken.id
+        );
 
-  //       return { accessToken, refreshToken: refreshToken.token };
-  //     }
-  //     em.removeAndFlush(refreshTokenEntity);
-  //   }
+        return { accessToken, refreshToken: refreshToken.token };
+      }
+      em.removeAndFlush(refreshTokenEntity);
+    }
 
-  //   return {
-  //     errors: [
-  //       {
-  //         message: "Refresh token failed, please login",
-  //       },
-  //     ],
-  //   };
-  // }
+    return {
+      errors: [
+        {
+          message: "Refresh token failed, please login",
+        },
+      ],
+    };
+  }
 }

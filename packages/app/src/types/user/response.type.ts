@@ -20,7 +20,10 @@ export type AuthLoginResponse = {
 
 export type AuthResetPasswordResponse = {
   sendResetPasswordEmail: {
+    accessToken?: string;
+    refreshToken?: string;
     message: string;
+    errors?: ResponseError[];
   };
 };
 

@@ -12,7 +12,7 @@ import {
 import {useAuth} from './hooks/auth.hook';
 
 export const Routes = () => {
-  const {token, isLoading} = useAuth();
+  const {accessToken, isLoading} = useAuth();
 
   if (isLoading) {
     return <SplashScreen />;
@@ -20,7 +20,7 @@ export const Routes = () => {
 
   return (
     <NavigationContainer>
-      {token ? (
+      {accessToken ? (
         <MainStack.Navigator>
           <MainStack.Screen name="Home" component={HomeScreen} />
         </MainStack.Navigator>
