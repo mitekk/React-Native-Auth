@@ -2,11 +2,11 @@ import React from 'react';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {Provider as PaperProvider} from 'react-native-paper';
 import {useFonts} from 'expo-font';
-import {Routes} from './src/routes';
+import {AuthProvider} from './src/providers/auth.provider';
 import {UrqlProvider} from './src/providers/urql.provider';
+import {Routes} from './src/routes';
 import {bucketTheme} from './src/theme';
 import {SplashScreen} from './src/screens';
-import {AuthProvider} from './src/providers/auth.provider';
 
 const App = () => {
   let [fontsLoaded] = useFonts({

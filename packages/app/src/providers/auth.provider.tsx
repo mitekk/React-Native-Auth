@@ -15,33 +15,35 @@ import {
 } from '../utils/auth/secure-store.util';
 
 type AuthAction =
-  | {type: 'RESTORE_TOKEN'; token?: string | null; refreshToken?: string | null}
-  | {type: 'SIGN_IN'; token: string; refreshToken: string}
+  | {
+      type: 'RESTORE_TOKEN';
+      accessToken?: string | null;
+      refreshToken?: string | null;
+    }
+  | {type: 'SIGN_IN'; accessToken: string; refreshToken: string}
   | {type: 'SIGN_OUT'};
 
-type AuthPayload = string;
-
-interface AuthState {
-  token: string | undefined | null;
+export interface AuthState {
+  accessToken: string | undefined | null;
   refreshToken: string | undefined | null;
   isLoading: boolean;
   isSignout: boolean;
 }
 
 interface AuthContextActions {
-  signIn: (token: string, refreshToken: string) => void;
+  signIn: (accessToken: string, refreshToken: string) => void;
   signOut: () => void;
 }
 
 export interface AuthContextType extends AuthState, AuthContextActions {}
 
 export const AuthContext = createContext<AuthContextType>({
-  token: null,
+  accessToken: null,
   refreshToken: null,
   isLoading: true,
   isSignout: false,
-  signIn: () => {},
-  signOut: () => {},
+  signIn: async () => {},
+  signOut: async () => {},
 });
 
 const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
@@ -49,7 +51,7 @@ const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
     case 'RESTORE_TOKEN':
       return {
         ...prevState,
-        token: action.token,
+        accessToken: action.accessToken,
         refreshToken: action.refreshToken,
         isLoading: false,
         isSignout: false,
@@ -57,7 +59,7 @@ const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
     case 'SIGN_IN':
       return {
         ...prevState,
-        token: action.token,
+        accessToken: action.accessToken,
         refreshToken: action.refreshToken,
         isLoading: false,
         isSignout: false,
@@ -65,7 +67,8 @@ const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
     case 'SIGN_OUT':
       return {
         ...prevState,
-        token: null,
+        accessToken: null,
+        refreshToken: null,
         isLoading: false,
         isSignout: true,
       };
@@ -74,7 +77,7 @@ const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
 
 export const AuthProvider = ({children}: {children: ReactNode}) => {
   const [state, dispatch] = useReducer(AuthReducer, {
-    token: null,
+    accessToken: null,
     refreshToken: null,
     isLoading: true,
     isSignout: false,
@@ -82,17 +85,19 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
   useEffect(() => {
     const initState = async () => {
-      let token;
+      console.log('initState');
+
+      let accessToken;
       let refreshToken;
       try {
-        token = await getAccessToken();
+        accessToken = await getAccessToken();
         refreshToken = await getRefreshToken();
       } catch (e) {
         console.warn(e);
       }
 
       // TODO::After restoring token, we may need to validate it in production
-      dispatch({type: 'RESTORE_TOKEN', token, refreshToken});
+      dispatch({type: 'RESTORE_TOKEN', accessToken, refreshToken});
     };
 
     initState();
@@ -100,10 +105,10 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
   const authActions: AuthContextActions = useMemo(
     () => ({
-      signIn: async (token: string, refreshToken: string) => {
-        dispatch({type: 'SIGN_IN', token, refreshToken});
-        await setAccessToken(token);
-        await setRefreshToken(token);
+      signIn: async (accessToken: string, refreshToken: string) => {
+        dispatch({type: 'SIGN_IN', accessToken, refreshToken});
+        await setAccessToken(accessToken);
+        await setRefreshToken(refreshToken);
       },
       signOut: async () => {
         await removeAccessToken();
