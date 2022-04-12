@@ -18,7 +18,7 @@ import {refreshToken_mutation} from '../api/auth/reset-token.mutation';
 const getClient = () => {
   const {accessToken, refreshToken, signOut} = useAuth();
   return createClient({
-    url: 'http://localhost:1234/graphql',
+    url: 'http://localhost:4000/graphql',
     exchanges: [
       dedupExchange,
       cacheExchange,
