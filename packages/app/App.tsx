@@ -7,6 +7,7 @@ import {UrqlProvider} from './src/providers/urql.provider';
 import {Routes} from './src/routes';
 import {bucketTheme} from './src/theme';
 import {SplashScreen} from './src/screens';
+import {StoreProvider} from './src/providers/store.provider';
 
 const App = () => {
   let [fontsLoaded] = useFonts({
@@ -24,11 +25,13 @@ const App = () => {
   return (
     <AuthProvider>
       <UrqlProvider>
-        <SafeAreaProvider>
-          <PaperProvider theme={bucketTheme}>
-            <Routes />
-          </PaperProvider>
-        </SafeAreaProvider>
+        <StoreProvider>
+          <SafeAreaProvider>
+            <PaperProvider theme={bucketTheme}>
+              <Routes />
+            </PaperProvider>
+          </SafeAreaProvider>
+        </StoreProvider>
       </UrqlProvider>
     </AuthProvider>
   );

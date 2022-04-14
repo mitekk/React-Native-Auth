@@ -6,7 +6,7 @@ import {StyleSheet} from 'react-native';
 import {useTheme} from 'react-native-paper';
 import {LoginLayout} from '../../../layouts/login.layout';
 import {AuthStackParams} from '../../../types/route.type';
-import {registerSchema} from '../../../utils/validation/schemas';
+import {registerSchema} from '../../../utils/validation/register.validation';
 import {AuthHeader} from '../components/header.login';
 import {RegisterBody} from './register.body';
 import {useRegister} from './register.hook';
