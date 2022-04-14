@@ -4,7 +4,7 @@ import {FormProvider, useForm} from 'react-hook-form';
 import {StyleSheet} from 'react-native';
 import {useTheme} from 'react-native-paper';
 import {LoginLayout} from '../../../layouts/login.layout';
-import {passwordSchema} from '../../../utils/validation/schemas';
+import {passwordSchema} from '../../../utils/validation/password.validation';
 import {AuthHeader} from '../components/header.login';
 import {PasswordBody} from './password.body';
 import {usePassword} from './password.hook';

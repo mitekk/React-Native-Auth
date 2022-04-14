@@ -59,8 +59,6 @@ const getClient = () => {
           );
         },
         getAuth: async ({authState}) => {
-          console.log('getAuth');
-
           // for initial launch, fetch the auth state from storage (local storage, async storage etc)
           if (!authState) {
             if (accessToken && refreshToken) {
