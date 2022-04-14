@@ -85,8 +85,6 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
   useEffect(() => {
     const initState = async () => {
-      console.log('initState');
-
       let accessToken;
       let refreshToken;
       try {
