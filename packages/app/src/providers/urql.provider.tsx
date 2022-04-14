@@ -4,16 +4,11 @@ import {
   cacheExchange,
   createClient,
   dedupExchange,
-  errorExchange,
   fetchExchange,
-  useMutation,
-  Operation,
   makeOperation,
 } from 'urql';
 import {authExchange} from '@urql/exchange-auth';
 import {useAuth} from '../hooks/auth.hook';
-
-import {refreshToken_mutation} from '../api/auth/reset-token.mutation';
 
 const getClient = () => {
   const {accessToken, refreshToken, signOut} = useAuth();
