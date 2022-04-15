@@ -4,12 +4,12 @@ import {useFormContext} from 'react-hook-form';
 import {TouchableOpacity, View} from 'react-native';
 import {Button, HelperText, Text, useTheme} from 'react-native-paper';
 import {PasswordField, TextField} from '../../../components/formFields';
-import {UserLoginResponse} from '../../../types/user/response.type';
 import {RegisterScreenNavigationProp} from './login.screen';
+import {AuthLoginResponse} from '../../../types/user/response.type';
 
 type LoginBodyProps = {
   onSubmit: () => void;
-  data: UserLoginResponse;
+  data: AuthLoginResponse;
 };
 
 export const LoginBody = ({onSubmit, data}: LoginBodyProps) => {
@@ -41,8 +41,9 @@ export const LoginBody = ({onSubmit, data}: LoginBodyProps) => {
           justifyContent: 'space-around',
           paddingVertical: 15,
         }}>
-        {data?.login?.errors?.map(({message}) => (
+        {data?.login?.errors?.map(({message}, index) => (
           <HelperText
+            key={`${index}: ${message}`}
             style={{
               alignSelf: 'center',
             }}
