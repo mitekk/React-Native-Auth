@@ -245,11 +245,15 @@ export class AuthResolver {
         email: email.toLocaleLowerCase(),
       });
 
+      if (!user.verified) {
+        throw new Error("user is not verified");
+      }
       const { sendPasswordReset } = Email();
       const resetToken = JwtUtil.sign(
         { userId: user?.id },
         TokenType.ResetPassword
       );
+
       sendPasswordReset({ to: email, token: resetToken });
 
       return { message: `Email was sent to ${email}` };
