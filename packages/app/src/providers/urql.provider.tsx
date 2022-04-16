@@ -9,9 +9,10 @@ import {
 } from 'urql';
 import {authExchange} from '@urql/exchange-auth';
 import {useAuth} from '../hooks/auth.hook';
+import {AuthState} from './auth.provider';
 
 const getClient = () => {
-  const {accessToken, refreshToken, signOut} = useAuth();
+  const {accessToken, refreshToken, isLoading, isSignout, signOut} = useAuth();
   return createClient({
     url: 'http://localhost:4000/graphql',
     exchanges: [
@@ -22,11 +23,13 @@ const getClient = () => {
           authState,
           operation,
         }: {
-          authState: any;
+          authState: AuthState;
           operation: any;
         }) => {
+          console.log('authExchang', authState, operation);
+
           // the token isn't in the auth state, return the operation without changes
-          if (!authState || !authState.token) {
+          if (!authState || !authState.accessToken || !authState.refreshToken) {
             return operation;
           }
 
@@ -48,22 +51,31 @@ const getClient = () => {
           });
         },
         willAuthError: ({authState}) => {
-          if (!authState) return true;
+          console.log('willAuthError', authState);
+          if (!authState) {
+            console.log('failed');
+            return true;
+          }
           // e.g. check for expiration, existence of auth etc
+          console.log('passed');
           return false;
         },
         didAuthError: ({error}) => {
+          console.log('didAuthError', error);
           // check if the error was an auth error (this can be implemented in various ways, e.g. 401 or a special error code)
           return error.graphQLErrors.some(
             e => e.extensions?.code === 'FORBIDDEN',
           );
         },
-        getAuth: async ({authState}) => {
+        getAuth: async ({authState}): Promise<AuthState | null> => {
+          console.log('getAuth', authState);
+
           // for initial launch, fetch the auth state from storage (local storage, async storage etc)
           if (!authState) {
             if (accessToken && refreshToken) {
-              return {accessToken, refreshToken};
+              return {accessToken, refreshToken, isLoading, isSignout};
             }
+
             return null;
           }
 

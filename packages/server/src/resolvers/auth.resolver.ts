@@ -11,7 +11,7 @@ import {
   RefreshInput,
   ResetPasswordResponse,
 } from "./types/auth";
-import JwtUtil, { ExpiresIn } from "../utils/jwt.util";
+import JwtUtil, { TokenType } from "../utils/jwt.util";
 import { RefreshToken } from "../entities/RefreshToken.entity";
 import {
   loginSchema,
@@ -19,6 +19,7 @@ import {
   registerSchema,
   resetPasswordSchema,
 } from "./validation/auth.validation";
+import { v4 } from "uuid";
 
 @Resolver()
 export class AuthResolver {
@@ -31,84 +32,90 @@ export class AuthResolver {
     return { message: `User not found` };
   }
 
-  @Query(() => AuthResponse)
-  async testRefreshTokens(
-    @Arg("tokens") { accessToken, refreshToken }: RefreshInput,
-    @Ctx() { em }: Context
-  ): Promise<AuthResponse> {
-    const accessTokenVerify = JwtUtil.verify(accessToken);
+  // @Query(() => AuthResponse)
+  // async testRefreshTokens(
+  //   @Arg("tokens") { accessToken, refreshToken }: RefreshInput,
+  //   @Ctx() { em }: Context
+  // ): Promise<AuthResponse> {
+  //   const accessTokenVerify = JwtUtil.verify(
+  //     accessToken,
+  //     TokenType.AccessToken
+  //   );
 
-    try {
-      if (accessTokenVerify.errors) {
-        const [{ message }] = accessTokenVerify.errors;
+  //   try {
+  //     if (accessTokenVerify.errors) {
+  //       const [{ message }] = accessTokenVerify.errors;
 
-        if (message === "TokenExpiredError") {
-          const refreshTokenVerify = JwtUtil.verifyRefreshToken(refreshToken);
+  //       if (message === "TokenExpiredError") {
+  //         const refreshTokenVerify = JwtUtil.verify(
+  //           refreshToken,
+  //           TokenType.RefreshToken
+  //         );
 
-          if (refreshTokenVerify.errors) {
-            throw new Error("Verify refresh token failed");
-          }
+  //         if (refreshTokenVerify.errors) {
+  //           throw new Error("Verify refresh token failed");
+  //         }
 
-          const accessTokenDecoded = JwtUtil.decode(accessToken);
+  //         const accessTokenDecoded = JwtUtil.decode(accessToken);
 
-          if (!accessTokenDecoded || accessTokenDecoded?.errors) {
-            throw new Error("Decode access token failed");
-          }
+  //         if (!accessTokenDecoded || accessTokenDecoded?.errors) {
+  //           throw new Error("Decode access token failed");
+  //         }
 
-          const { id } = refreshTokenVerify;
-          const { id: userId, refreshTokenId } = accessTokenDecoded;
+  //         const { id } = refreshTokenVerify;
+  //         const { id: userId, refreshTokenId } = accessTokenDecoded;
 
-          if (refreshTokenId !== id) {
-            throw new Error("Refresh token was invalidated");
-          }
+  //         if (refreshTokenId !== id) {
+  //           throw new Error("Refresh token was invalidated");
+  //         }
 
-          const refreshTokenEntity = await em.findOneOrFail(RefreshToken, {
-            id: refreshTokenId,
-          });
+  //         const refreshTokenEntity = await em.findOneOrFail(RefreshToken, {
+  //           id: refreshTokenId,
+  //         });
 
-          if (refreshTokenEntity.token !== refreshToken) {
-            throw new Error("Refresh token could not be validated");
-          }
+  //         if (refreshTokenEntity.token !== refreshToken) {
+  //           throw new Error("Refresh token could not be validated");
+  //         }
 
-          const userEntity = await em.findOneOrFail(User, { id: userId });
-          const newRefreshToken = em.create(RefreshToken, {});
-          await em.persistAndFlush(newRefreshToken);
-          em.removeAndFlush(refreshTokenEntity);
+  //         const userEntity = await em.findOneOrFail(User, { id: userId });
+  //         const newRefreshToken = em.create(RefreshToken, {});
+  //         await em.persistAndFlush(newRefreshToken);
+  //         em.removeAndFlush(refreshTokenEntity);
 
-          if (!userEntity || !newRefreshToken) {
-            throw new Error("Failed to generate new refresh token");
-          }
-          const newAccessToken = JwtUtil.sign(
-            userEntity.id,
-            ExpiresIn.AccessToken,
-            newRefreshToken.id
-          );
+  //         if (!userEntity || !newRefreshToken) {
+  //           throw new Error("Failed to generate new refresh token");
+  //         }
+  //         const newAccessToken = JwtUtil.sign(
+  //           userEntity.id,
+  //           TokenType.AccessToken,
+  //           newRefreshToken.id
+  //         );
 
-          return {
-            message: `userId: ${userEntity.id}`,
-            accessToken: newAccessToken,
-            refreshToken: newRefreshToken.token,
-          };
-        }
-      }
+  //         return {
+  //           message: `userId: ${userEntity.id}`,
+  //           accessToken: newAccessToken,
+  //           refreshToken: newRefreshToken.token,
+  //         };
+  //       }
+  //     }
 
-      return {
-        message: `userId: ${accessTokenVerify.id}`,
-        accessToken,
-        refreshToken,
-      };
-    } catch (error) {
-      console.error(error);
+  //     return {
+  //       message: `userId: ${accessTokenVerify.id}`,
+  //       accessToken,
+  //       refreshToken,
+  //     };
+  //   } catch (error) {
+  //     console.error(error);
 
-      return {
-        errors: [
-          {
-            message: "Unauthorized",
-          },
-        ],
-      };
-    }
-  }
+  //     return {
+  //       errors: [
+  //         {
+  //           message: "Unauthorized",
+  //         },
+  //       ],
+  //     };
+  //   }
+  // }
 
   @Mutation(() => AuthResponse)
   async register(
@@ -125,23 +132,31 @@ export class AuthResolver {
         password,
       });
 
-      const refreshToken = em.create(RefreshToken, {});
+      const accessToken = JwtUtil.sign(
+        { userId: user.id },
+        TokenType.AccessToken
+      );
+
+      const refreshToken = JwtUtil.sign(
+        { userId: user.id },
+        TokenType.RefreshToken
+      );
+
+      const verifyToken = JwtUtil.sign(
+        { userId: user.id },
+        TokenType.VerifyEmail
+      );
+
+      console.log("user.id", user.id);
+
+      em.create(RefreshToken, { userId: user.id, token: refreshToken });
 
       await em.persistAndFlush([refreshToken, user]);
-      // Since toknes are created on flush, we need to fetch it
-      const refreshTokenEntity = await em.findOneOrFail(RefreshToken, {
-        id: refreshToken.id,
-      });
 
-      const accessToken = JwtUtil.sign(
-        user.id,
-        ExpiresIn.AccessToken,
-        refreshTokenEntity.id
-      );
       const { sendVerifyEmail } = Email();
-      sendVerifyEmail({ to: email, name, token: accessToken });
+      sendVerifyEmail({ to: email, name, token: verifyToken });
 
-      return { accessToken, refreshToken: refreshTokenEntity.token };
+      return { accessToken, refreshToken };
     } catch (error) {
       console.error(error);
 
@@ -184,17 +199,28 @@ export class AuthResolver {
         throw new Error("Invalid password");
       }
 
-      const refreshToken = em.create(RefreshToken, {});
-      const accessToken = JwtUtil.sign(
-        user.id,
-        ExpiresIn.AccessToken,
-        refreshToken.id
+      const refreshTokenId = v4();
+      const refreshToken = JwtUtil.sign(
+        { userId: user.id, refreshTokenId },
+        TokenType.RefreshToken
       );
 
-      return em.persistAndFlush(refreshToken).then(() => ({
+      const refreshTokenEntity = em.create(RefreshToken, {
+        id: refreshTokenId,
+        token: refreshToken,
+      });
+      await em.persistAndFlush(refreshTokenEntity);
+
+      const accessToken = JwtUtil.sign(
+        { userId: user.id },
+        TokenType.AccessToken
+      );
+
+      return {
         accessToken,
-        refreshToken: refreshToken.token,
-      }));
+        refreshToken,
+        message: "Login successful",
+      };
     } catch (error) {
       console.error(error);
 
@@ -220,8 +246,11 @@ export class AuthResolver {
       });
 
       const { sendPasswordReset } = Email();
-      const accessToken = JwtUtil.sign(user?.id, ExpiresIn.ResetPassword);
-      sendPasswordReset({ to: email, token: accessToken });
+      const resetToken = JwtUtil.sign(
+        { userId: user?.id },
+        TokenType.ResetPassword
+      );
+      sendPasswordReset({ to: email, token: resetToken });
 
       return { message: `Email was sent to ${email}` };
     } catch (error) {
@@ -246,12 +275,15 @@ export class AuthResolver {
   ): Promise<AuthResponse> {
     try {
       resetPasswordSchema.validate({ email, password });
-      const { decoded, errors } = JwtUtil.verify(token);
+      const { decoded, errors } = JwtUtil.verify(
+        token,
+        TokenType.ResetPassword
+      );
       if (errors) {
         return { errors };
       }
-      const { id } = decoded;
-      const user = await em.findOneOrFail(User, { id });
+      const { userId } = decoded;
+      const user = await em.findOneOrFail(User, { id: userId });
 
       if (user.email === email) {
         user.password = await argon2.hash(password);
@@ -276,15 +308,13 @@ export class AuthResolver {
     @Ctx() { em }: Context
   ): Promise<AuthResponse> {
     try {
-      console.log(token);
-
-      const { decoded, errors } = JwtUtil.verify(token);
+      const { decoded, errors } = JwtUtil.verify(token, TokenType.VerifyEmail);
       if (errors) {
         return { errors };
       }
 
-      const { id } = decoded;
-      const user = await em.findOneOrFail(User, { id });
+      const { userId } = decoded;
+      const user = await em.findOneOrFail(User, { id: userId });
 
       user.verified = true;
       await em.flush();
@@ -303,49 +333,45 @@ export class AuthResolver {
   @Mutation(() => AuthResponse)
   async refresh(
     @Arg("tokens")
-    { accessToken, refreshToken: refreshTokenReceived }: RefreshInput,
+    { refreshToken }: RefreshInput,
     @Ctx() { em }: Context
   ): Promise<AuthResponse> {
-    const { id: userId, refreshTokenId, errors } = JwtUtil.verify(accessToken);
-    if (errors) {
-      return { errors };
-    }
-
-    const refreshTokenEntity = await em.findOne(RefreshToken, {
-      id: refreshTokenId,
-    });
-    const userEntity = await em.findOne(User, { id: userId });
-    if (refreshTokenEntity && userEntity) {
-      if (refreshTokenEntity.token === refreshTokenReceived) {
-        const refreshToken = em.create(RefreshToken, {});
-        try {
-          await em.persistAndFlush(refreshToken);
-        } catch (error) {
-          return {
-            errors: [
-              {
-                message: error.message,
-              },
-            ],
-          };
-        }
-        const accessToken = JwtUtil.sign(
-          userEntity.id,
-          ExpiresIn.AccessToken,
-          refreshToken.id
-        );
-
-        return { accessToken, refreshToken: refreshToken.token };
+    try {
+      const { decoded, errors } = JwtUtil.verify(
+        refreshToken,
+        TokenType.RefreshToken
+      );
+      if (errors) {
+        throw new Error(errors[0]?.message);
       }
-      em.removeAndFlush(refreshTokenEntity);
-    }
 
-    return {
-      errors: [
-        {
-          message: "Refresh token failed, please login",
-        },
-      ],
-    };
+      const { userId, refreshTokenId } = decoded;
+
+      const refreshTokenEntity = await em.findOneOrFail(RefreshToken, {
+        id: refreshTokenId,
+      });
+
+      await em.findOneOrFail(User, {
+        id: userId,
+      });
+
+      if (refreshTokenEntity.token === refreshToken) {
+        const accessToken = JwtUtil.sign({ userId }, TokenType.AccessToken);
+
+        return { accessToken, refreshToken };
+      }
+
+      throw new Error("Tokens do not match");
+    } catch (error) {
+      console.error(error);
+
+      return {
+        errors: [
+          {
+            message: "Refresh token failed, please login",
+          },
+        ],
+      };
+    }
   }
 }

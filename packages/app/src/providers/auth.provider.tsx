@@ -94,6 +94,10 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         console.warn(e);
       }
 
+      console.log(
+        `got storage tokens - accessToken: ${accessToken}, refreshToken: ${refreshToken}`,
+      );
+
       // TODO::After restoring token, we may need to validate it in production
       dispatch({type: 'RESTORE_TOKEN', accessToken, refreshToken});
     };
@@ -107,6 +111,10 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         dispatch({type: 'SIGN_IN', accessToken, refreshToken});
         await setAccessToken(accessToken);
         await setRefreshToken(refreshToken);
+
+        console.log(
+          `tokens stored on storage - accessToken: ${accessToken}, refreshToken: ${refreshToken}`,
+        );
       },
       signOut: async () => {
         await removeAccessToken();

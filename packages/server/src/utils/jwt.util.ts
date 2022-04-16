@@ -1,49 +1,51 @@
-import jwt from "jsonwebtoken";
+import jwt, { DecodeOptions } from "jsonwebtoken";
 import {
-  JWT_SECRET_REFRESH_TOKEN,
-  JWT_SECRET_ACCESS_TOKEN,
+  JWT_SECRET_REFRESH_SECRET,
+  JWT_SECRET_ACCESS_SECRET,
+  JWT_SECRET_RESET_SECRET,
+  JWT_SECRET_VERIFY_SECRET,
 } from "../constants";
 
-export enum ExpiresIn {
+export enum TokenType {
   AccessToken = "15s",
   RefreshToken = "7d",
   ResetPassword = "1h",
+  VerifyEmail = "1h",
 }
 
-const JwtUtil = {
-  sign: (id: string = "0", expiresIn: ExpiresIn, refreshTokenId?: string) =>
-    jwt.sign({ id, refreshTokenId }, JWT_SECRET_ACCESS_TOKEN, {
-      expiresIn,
-    }),
-  verify: (token: string) => {
-    try {
-      return jwt.verify(token, JWT_SECRET_ACCESS_TOKEN) as jwt.JwtPayload;
-    } catch ({ name }) {
-      return {
-        errors: [
-          {
-            message: name,
-          },
-        ],
-      };
-    }
-  },
+const secret = {
+  [TokenType.AccessToken]: JWT_SECRET_ACCESS_SECRET,
+  [TokenType.RefreshToken]: JWT_SECRET_REFRESH_SECRET,
+  [TokenType.ResetPassword]: JWT_SECRET_RESET_SECRET,
+  [TokenType.VerifyEmail]: JWT_SECRET_VERIFY_SECRET,
+};
 
-  verifyRefreshToken: (token: string) => {
+type SignData = {
+  userId: string;
+  refreshTokenId?: string;
+};
+
+const JwtUtil = {
+  sign: (data: SignData, tokenType: TokenType) =>
+    jwt.sign(data, secret[tokenType], {
+      expiresIn: tokenType,
+    }),
+  verify: (token: string, tokenType: TokenType) => {
     try {
-      return jwt.verify(token, JWT_SECRET_REFRESH_TOKEN) as jwt.JwtPayload;
-    } catch ({ name }) {
+      return jwt.verify(token, secret[tokenType]) as jwt.JwtPayload;
+    } catch ({ name, message }) {
       return {
         errors: [
           {
-            message: name,
+            name,
+            message,
           },
         ],
       };
     }
   },
-  decode: (token: string) => {
-    const decoded = jwt.decode(token);
+  decode: (token: string, options?: DecodeOptions) => {
+    const decoded = jwt.decode(token, options);
     if (typeof decoded === "string" || typeof decoded === null) {
       return {
         errors: [

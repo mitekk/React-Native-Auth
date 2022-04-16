@@ -11,7 +11,7 @@ import { Context } from "./types/types";
 import { ProfileIconResolver } from "./resolvers/profileIcon.resolver";
 import { AllowanceResolver } from "./resolvers/allowance.resolver";
 import { PerksResolver } from "./resolvers/perk.resolver";
-import JwtUtil from "./utils/jwt.util";
+import JwtUtil, { TokenType } from "./utils/jwt.util";
 
 export const Application = () => {
   let orm: MikroORM<IDatabaseDriver<Connection>>;
@@ -20,7 +20,7 @@ export const Application = () => {
     try {
       // TODO :: does it work?
       if (token) {
-        return JwtUtil.verify(JSON.parse(token));
+        return JwtUtil.verify(token, TokenType.AccessToken);
       }
       return null;
     } catch (error) {
