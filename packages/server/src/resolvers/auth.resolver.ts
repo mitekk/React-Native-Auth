@@ -124,7 +124,7 @@ export class AuthResolver {
       );
 
       const refreshTokenEntity = em.create(RefreshToken, {
-        id: refreshTokenId,
+        userId: user.id,
         token: refreshToken,
       });
       await em.persistAndFlush(refreshTokenEntity);
