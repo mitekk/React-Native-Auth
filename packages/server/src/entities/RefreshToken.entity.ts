@@ -7,6 +7,6 @@ import { BaseEntity } from "./Base.entity";
 export class RefreshToken extends BaseEntity {
   @Property()
   userId: string;
-  @Property()
+  @Property({ length: 300 })
   token: string;
 }

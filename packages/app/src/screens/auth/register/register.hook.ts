@@ -24,9 +24,10 @@ export const useRegister = () => {
 
     setData(data || initialUserRegisterResponse);
     const accessToken = data?.register?.accessToken;
+    const refreshToken = data?.register?.refreshToken;
 
-    if (accessToken) {
-      signIn(accessToken);
+    if (accessToken && refreshToken) {
+      signIn(accessToken, refreshToken);
     }
   };
 

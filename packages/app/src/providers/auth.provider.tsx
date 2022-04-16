@@ -5,8 +5,9 @@ import React, {
   useEffect,
   useMemo,
 } from 'react';
+import {useMutation} from 'urql';
+import {refreshToken_mutation} from '../api/auth/reset-token.mutation';
 import {
-  getAccessToken,
   getRefreshToken,
   removeAccessToken,
   removeRefreshToken,
@@ -17,15 +18,15 @@ import {
 type AuthAction =
   | {
       type: 'RESTORE_TOKEN';
-      accessToken?: string | null;
-      refreshToken?: string | null;
+      accessToken: string;
+      refreshToken: string;
     }
   | {type: 'SIGN_IN'; accessToken: string; refreshToken: string}
   | {type: 'SIGN_OUT'};
 
 export interface AuthState {
-  accessToken: string | undefined | null;
-  refreshToken: string | undefined | null;
+  accessToken: string | null;
+  refreshToken: string | null;
   isLoading: boolean;
   isSignout: boolean;
 }
@@ -51,16 +52,16 @@ const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
     case 'RESTORE_TOKEN':
       return {
         ...prevState,
-        accessToken: action.accessToken,
-        refreshToken: action.refreshToken,
+        accessToken: action?.accessToken || null,
+        refreshToken: action?.refreshToken || null,
         isLoading: false,
         isSignout: false,
       };
     case 'SIGN_IN':
       return {
         ...prevState,
-        accessToken: action.accessToken,
-        refreshToken: action.refreshToken,
+        accessToken: action?.accessToken || null,
+        refreshToken: action?.refreshToken || null,
         isLoading: false,
         isSignout: false,
       };
@@ -76,6 +77,7 @@ const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
 };
 
 export const AuthProvider = ({children}: {children: ReactNode}) => {
+  const [{}, refreshTokens] = useMutation(refreshToken_mutation);
   const [state, dispatch] = useReducer(AuthReducer, {
     accessToken: null,
     refreshToken: null,
@@ -85,21 +87,31 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
   useEffect(() => {
     const initState = async () => {
-      let accessToken;
-      let refreshToken;
+      let storageRefreshToken;
+      let storageAccessToken;
       try {
-        accessToken = await getAccessToken();
-        refreshToken = await getRefreshToken();
+        storageRefreshToken = await getRefreshToken();
       } catch (e) {
         console.warn(e);
       }
 
       console.log(
-        `got storage tokens - accessToken: ${accessToken}, refreshToken: ${refreshToken}`,
+        `got storage tokens - accessToken: ${storageAccessToken}, refreshToken: ${storageRefreshToken}`,
       );
 
-      // TODO::After restoring token, we may need to validate it in production
-      dispatch({type: 'RESTORE_TOKEN', accessToken, refreshToken});
+      if (storageRefreshToken) {
+        const {data} = await refreshTokens({
+          refreshToken: storageRefreshToken,
+        });
+
+        const accessToken = data?.refresh?.accessToken;
+        const refreshToken = data?.refresh?.refreshToken;
+        if (accessToken && refreshToken) {
+          dispatch({type: 'RESTORE_TOKEN', accessToken, refreshToken});
+        }
+      }
+
+      dispatch({type: 'SIGN_OUT'});
     };
 
     initState();
