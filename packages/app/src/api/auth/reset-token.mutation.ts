@@ -1,9 +1,9 @@
 import {gql} from 'urql';
-import {AuthResetPasswordResponse} from '../../types/user/response.type';
+import {AuthRefreshTokenResponse} from '../../types/user/response.type';
 
-export const refreshToken_mutation = gql<AuthResetPasswordResponse>`
-  mutation Refresh($accessToken: String!, $refreshToken: String!) {
-    refresh(tokens: {accessToken: $accessToken, refreshToken: $refreshToken}) {
+export const refreshToken_mutation = gql<AuthRefreshTokenResponse>`
+  mutation Refresh($refreshToken: String!) {
+    refresh(tokens: {refreshToken: $refreshToken}) {
       errors {
         field
         message

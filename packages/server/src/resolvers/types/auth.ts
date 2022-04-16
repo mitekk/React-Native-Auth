@@ -22,8 +22,6 @@ class LoginInput {
 @InputType()
 class RefreshInput {
   @Field()
-  accessToken!: string;
-  @Field()
   refreshToken!: string;
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import {useFormContext} from 'react-hook-form';
 import {View} from 'react-native';
-import {Button, HelperText, Text, useTheme} from 'react-native-paper';
+import {Button, HelperText, useTheme} from 'react-native-paper';
 import {TextField} from '../../../components/formFields';
 import {AuthResetPasswordResponse} from '../../../types/user/response.type';
 

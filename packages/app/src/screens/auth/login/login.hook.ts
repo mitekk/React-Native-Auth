@@ -20,8 +20,9 @@ export const useLogin = () => {
   const [{}, login] = useMutation(login_mutation);
 
   const onSubmit: SubmitHandler<LoginInput> = async credentials => {
-    const {data} = await login(credentials);
+    console.log(`Loging in with credentials: ${JSON.stringify(credentials)}`);
 
+    const {data} = await login(credentials);
     setData(data || initialUserLoginResponse);
     const accessToken = data?.login?.accessToken;
     const refreshToken = data?.login?.refreshToken;

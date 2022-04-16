@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {MainStack, AuthStack} from './types/route.type';
 
@@ -10,9 +10,16 @@ import {
   SplashScreen,
 } from './screens';
 import {useAuth} from './hooks/auth.hook';
+// import {useMutation} from 'urql';
 
 export const Routes = () => {
-  const {accessToken, isLoading} = useAuth();
+  const {accessToken, isLoading, isSignout} = useAuth();
+
+  // useEffect(() => {
+  //   if (accessToken && !isSignout) {
+  //     const [{}, login] = useMutation(getUser_mutation);
+  //   }
+  // }, [accessToken]);
 
   if (isLoading) {
     return <SplashScreen />;

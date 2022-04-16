@@ -4,12 +4,12 @@ import {useFormContext} from 'react-hook-form';
 import {TouchableOpacity, View} from 'react-native';
 import {Button, HelperText, Text, useTheme} from 'react-native-paper';
 import {PasswordField, TextField} from '../../../components/formFields';
-import {UserRegisterResponse} from '../../../types/user/response.type';
+import {AuthRegisterResponse} from '../../../types/user/response.type';
 import {RegisterScreenNavigationProp} from './register.screen';
 
 type RegisterBodyProps = {
   onSubmit: () => void;
-  data: UserRegisterResponse;
+  data: AuthRegisterResponse;
 };
 
 export const RegisterBody = ({onSubmit, data}: RegisterBodyProps) => {
@@ -49,8 +49,9 @@ export const RegisterBody = ({onSubmit, data}: RegisterBodyProps) => {
           justifyContent: 'space-around',
           paddingVertical: 15,
         }}>
-        {data?.register?.errors?.map(({message}) => (
+        {data?.register?.errors?.map(({message}, index) => (
           <HelperText
+            key={`${index}: ${message}`}
             style={{
               alignSelf: 'center',
             }}
