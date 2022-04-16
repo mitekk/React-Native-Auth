@@ -14,6 +14,7 @@ import {useAuth} from './hooks/auth.hook';
 
 export const Routes = () => {
   const {accessToken, isLoading, isSignout} = useAuth();
+  console.log('Routes', isLoading, accessToken);
 
   // useEffect(() => {
   //   if (accessToken && !isSignout) {
