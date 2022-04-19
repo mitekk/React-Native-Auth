@@ -35,12 +35,10 @@ const JwtUtil = {
       return jwt.verify(token, secret[tokenType]) as jwt.JwtPayload;
     } catch ({ name, message }) {
       return {
-        errors: [
-          {
-            name,
-            message,
-          },
-        ],
+        error: {
+          name,
+          message,
+        },
       };
     }
   },

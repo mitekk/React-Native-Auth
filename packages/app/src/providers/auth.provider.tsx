@@ -106,6 +106,8 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
           refreshToken: storageRefreshToken,
         });
 
+        console.log('data', data);
+
         const accessToken = data?.refresh?.accessToken;
         const refreshToken = data?.refresh?.refreshToken;
         if (accessToken && refreshToken) {
@@ -127,7 +129,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         await setRefreshToken(refreshToken);
 
         console.log(
-          `tokens stored on storage - accessToken: ${accessToken}, refreshToken: ${refreshToken}`,
+          `tokens stored in storage - accessToken: ${accessToken}, refreshToken: ${refreshToken}`,
         );
       },
       signOut: async () => {

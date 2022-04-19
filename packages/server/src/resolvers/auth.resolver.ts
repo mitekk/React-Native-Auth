@@ -197,12 +197,9 @@ export class AuthResolver {
   ): Promise<AuthResponse> {
     try {
       resetPasswordSchema.validate({ email, password });
-      const { decoded, errors } = JwtUtil.verify(
-        token,
-        TokenType.ResetPassword
-      );
-      if (errors) {
-        return { errors };
+      const { decoded, error } = JwtUtil.verify(token, TokenType.ResetPassword);
+      if (error) {
+        throw new Error(error.message);
       }
       const { userId } = decoded;
       const user = await em.findOneOrFail(User, { id: userId });
@@ -230,9 +227,9 @@ export class AuthResolver {
     @Ctx() { em }: Context
   ): Promise<AuthResponse> {
     try {
-      const { decoded, errors } = JwtUtil.verify(token, TokenType.VerifyEmail);
-      if (errors) {
-        return { errors };
+      const { decoded, error } = JwtUtil.verify(token, TokenType.VerifyEmail);
+      if (error) {
+        throw new Error(error.message);
       }
 
       const { userId } = decoded;
@@ -259,13 +256,13 @@ export class AuthResolver {
     @Ctx() { em }: Context
   ): Promise<AuthResponse> {
     try {
-      const { userId, refreshTokenId, errors } = JwtUtil.verify(
+      const { userId, refreshTokenId, error } = JwtUtil.verify(
         refreshToken,
         TokenType.RefreshToken
       );
 
-      if (errors) {
-        throw new Error(errors[0]?.message);
+      if (error) {
+        throw new Error(error.message);
       }
 
       const refreshTokenEntity = await em.findOneOrFail(RefreshToken, {
@@ -279,17 +276,21 @@ export class AuthResolver {
       if (refreshTokenEntity.token === refreshToken) {
         const accessToken = JwtUtil.sign({ userId }, TokenType.AccessToken);
 
-        return { accessToken, refreshToken };
+        return {
+          accessToken,
+          refreshToken,
+          message: "access token was refreshed",
+        };
       }
 
-      throw new Error("Tokens do not match");
+      throw new Error("refresh token is not recognized");
     } catch (error) {
       console.error(error);
 
       return {
         errors: [
           {
-            message: "Refresh token failed, please login",
+            message: "refresh token failed, please login",
           },
         ],
       };
