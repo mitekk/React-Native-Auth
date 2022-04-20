@@ -22,7 +22,6 @@ export class Allowance extends BaseEntity {
   @Property()
   startFrom!: Date;
 
-  @Field(() => Profile)
   @ManyToOne(() => Profile)
   profile!: Profile;
 }

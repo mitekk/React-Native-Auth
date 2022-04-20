@@ -6,6 +6,6 @@ import { Context } from "../types/types";
 export class UserResolver {
   @Query(() => User)
   user(@Ctx() { em, userId }: Context): Promise<User> {
-    return em.findOneOrFail(User, { id: userId });
+    return em.findOneOrFail(User, { id: userId }, { populate: ["profiles"] });
   }
 }
