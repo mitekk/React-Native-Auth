@@ -8,6 +8,7 @@ import React, {
 import {useMutation} from 'urql';
 import {refreshToken_mutation} from '../api/auth/reset-token.mutation';
 import {
+  getAccessToken,
   getRefreshToken,
   removeAccessToken,
   removeRefreshToken,
@@ -90,6 +91,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       let storageRefreshToken;
       let storageAccessToken;
       try {
+        storageAccessToken = await getAccessToken();
         storageRefreshToken = await getRefreshToken();
       } catch (e) {
         console.warn(e);
@@ -104,14 +106,16 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
           refreshToken: storageRefreshToken,
         });
 
+        console.log('data', data);
+
         const accessToken = data?.refresh?.accessToken;
         const refreshToken = data?.refresh?.refreshToken;
         if (accessToken && refreshToken) {
           dispatch({type: 'RESTORE_TOKEN', accessToken, refreshToken});
+        } else {
+          dispatch({type: 'SIGN_OUT'});
         }
       }
-
-      dispatch({type: 'SIGN_OUT'});
     };
 
     initState();
@@ -125,7 +129,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
         await setRefreshToken(refreshToken);
 
         console.log(
-          `tokens stored on storage - accessToken: ${accessToken}, refreshToken: ${refreshToken}`,
+          `tokens stored in storage - accessToken: ${accessToken}, refreshToken: ${refreshToken}`,
         );
       },
       signOut: async () => {

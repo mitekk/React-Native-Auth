@@ -28,7 +28,7 @@ export class User extends BaseEntity {
   @Property({ default: false })
   verified!: boolean;
 
-  @Field(() => Profile)
+  @Field(() => [Profile], { nullable: "items" })
   @OneToMany(() => Profile, (profile) => profile.user)
   profiles = new Collection<Profile>(this);
 

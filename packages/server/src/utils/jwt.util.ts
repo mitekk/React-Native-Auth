@@ -7,7 +7,7 @@ import {
 } from "../constants";
 
 export enum TokenType {
-  AccessToken = "15s",
+  AccessToken = "15d",
   RefreshToken = "7d",
   ResetPassword = "1h",
   VerifyEmail = "1h",
@@ -35,12 +35,10 @@ const JwtUtil = {
       return jwt.verify(token, secret[tokenType]) as jwt.JwtPayload;
     } catch ({ name, message }) {
       return {
-        errors: [
-          {
-            name,
-            message,
-          },
-        ],
+        error: {
+          name,
+          message,
+        },
       };
     }
   },

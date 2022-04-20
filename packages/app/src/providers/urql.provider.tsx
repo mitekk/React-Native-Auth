@@ -6,6 +6,7 @@ import {
   dedupExchange,
   fetchExchange,
   makeOperation,
+  errorExchange,
 } from 'urql';
 import {authExchange} from '@urql/exchange-auth';
 import {useAuth} from '../hooks/auth.hook';
@@ -18,6 +19,19 @@ const getClient = () => {
     exchanges: [
       dedupExchange,
       cacheExchange,
+      errorExchange({
+        onError: error => {
+          const isAuthError = error.graphQLErrors.some(
+            e => e.extensions?.code === 'FORBIDDEN',
+          );
+
+          if (isAuthError) {
+            console.log('isAuthError', isAuthError);
+
+            signOut();
+          }
+        },
+      }),
       authExchange({
         addAuthToOperation: ({
           authState,
@@ -51,7 +65,6 @@ const getClient = () => {
           });
         },
         willAuthError: ({authState}) => {
-          console.log('willAuthError', authState);
           if (!authState) {
             console.log('failed');
             return true;
