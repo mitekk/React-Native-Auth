@@ -24,10 +24,10 @@ import { v4 } from "uuid";
 @Resolver()
 export class AuthResolver {
   @Query(() => AuthResponse)
-  async me(@Ctx() { em, user }: Context): Promise<AuthResponse> {
-    const foundUser = await em.findOneOrFail(User, { id: user?.id });
-    if (foundUser) {
-      return { message: `You are a user, known by id: ${foundUser.id}` };
+  async me(@Ctx() { em, userId }: Context): Promise<AuthResponse> {
+    const user = await em.findOneOrFail(User, { id: userId });
+    if (user) {
+      return { message: `You are a user, known by id: ${user.id}` };
     }
     return { message: `User not found` };
   }

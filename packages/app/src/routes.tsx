@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {MainStack, AuthStack} from './types/route.type';
 
@@ -18,7 +18,7 @@ export const Routes = () => {
 
   // useEffect(() => {
   //   if (accessToken && !isSignout) {
-  //     const [{}, login] = useMutation(getUser_mutation);
+  //     const [{}, login] = useMutation(user_query);
   //   }
   // }, [accessToken]);
 

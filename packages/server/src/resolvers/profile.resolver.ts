@@ -2,30 +2,37 @@ import { Profile } from "../entities/Profile.entity";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Context } from "../types/types";
 import { ProfileInput, ProfileResponse } from "./types";
+import { User } from "../entities/User.entity";
 
 @Resolver()
 export class ProfileResolver {
   @Query(() => [Profile])
-  profiles(@Ctx() { em, user }: Context): Promise<Profile[]> {
-    if (!user) throw new Error("You are not authenticated!");
+  async profiles(@Ctx() { em, userId }: Context): Promise<Profile[]> {
+    const user = await em.findOneOrFail(User, { id: userId });
+    console.log(user);
+
     return em.find(Profile, {});
   }
 
   @Query(() => Profile, { nullable: true })
-  profile(
+  async profile(
     @Arg("id") id: string,
-    @Ctx() { em, user }: Context
+    @Ctx() { em, userId }: Context
   ): Promise<Profile | null> {
-    if (!user) throw new Error("You are not authenticated!");
+    const user = await em.findOneOrFail(User, { id: userId });
+    console.log(user);
+
     return em.findOne(Profile, { id });
   }
 
   @Mutation(() => ProfileResponse)
   async createProfile(
     @Arg("profile") profile: ProfileInput,
-    @Ctx() { em, user }: Context
+    @Ctx() { em, userId }: Context
   ): Promise<ProfileResponse> {
-    if (!user) throw new Error("You are not authenticated!");
+    const user = await em.findOneOrFail(User, { id: userId });
+    console.log(user);
+
     const newProfile = em.create(Profile, profile);
     await em.persistAndFlush(newProfile);
     return { data: newProfile };
@@ -34,9 +41,11 @@ export class ProfileResolver {
   @Mutation(() => ProfileResponse, { nullable: true })
   async updateProfile(
     @Arg("profile") profile: ProfileInput,
-    @Ctx() { em, user }: Context
+    @Ctx() { em, userId }: Context
   ): Promise<ProfileResponse> {
-    if (!user) throw new Error("You are not authenticated!");
+    const user = await em.findOneOrFail(User, { id: userId });
+    console.log(user);
+
     const existing = await em.findOne(Profile, { id: profile.id });
 
     if (!existing) {
@@ -62,9 +71,11 @@ export class ProfileResolver {
   @Mutation(() => Boolean)
   async deleteProfile(
     @Arg("id") id: string,
-    @Ctx() { em, user }: Context
+    @Ctx() { em, userId }: Context
   ): Promise<boolean> {
-    if (!user) throw new Error("You are not authenticated!");
+    const user = await em.findOneOrFail(User, { id: userId });
+    console.log(user);
+
     await em.nativeDelete(Profile, { id });
     return true;
   }

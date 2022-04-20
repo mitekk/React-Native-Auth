@@ -8,11 +8,9 @@ export abstract class BaseEntity {
   @PrimaryKey()
   id: string = v4();
 
-  @Field(() => String)
   @Property()
   createdAt: Date = new Date();
 
-  @Field(() => String)
   @Property({ onUpdate: () => new Date() })
   updatedAt: Date = new Date();
 }

@@ -7,7 +7,7 @@ import {
 } from "../constants";
 
 export enum TokenType {
-  AccessToken = "15s",
+  AccessToken = "15d",
   RefreshToken = "7d",
   ResetPassword = "1h",
   VerifyEmail = "1h",

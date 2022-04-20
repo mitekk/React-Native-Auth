@@ -12,20 +12,20 @@ import { ProfileIconResolver } from "./resolvers/profileIcon.resolver";
 import { AllowanceResolver } from "./resolvers/allowance.resolver";
 import { PerksResolver } from "./resolvers/perk.resolver";
 import JwtUtil, { TokenType } from "./utils/jwt.util";
+import { UserResolver } from "./resolvers/user.resolver";
 
 export const Application = () => {
   let orm: MikroORM<IDatabaseDriver<Connection>>;
 
   const getUser = (token?: string) => {
     try {
-      // TODO :: does it work?
       if (token) {
         return JwtUtil.verify(token, TokenType.AccessToken);
       }
-      return null;
     } catch (error) {
-      return null;
+      console.error(error);
     }
+    return {};
   };
 
   return {
@@ -53,13 +53,15 @@ export const Application = () => {
               ProfileIconResolver,
               AllowanceResolver,
               PerksResolver,
+              UserResolver,
             ],
             validate: false,
           }),
           context: ({ req, res }: Context) => {
             const token = req.headers.authorization;
-            const user = getUser(token?.replace("Bearer", ""));
-            return { em: orm.em, req, res, user };
+            const { userId } = getUser(token?.replace("Bearer", ""));
+
+            return { em: orm.em, req, res, userId };
           },
         });
 

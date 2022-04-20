@@ -2,12 +2,15 @@ import { Allowance } from "../entities/Allowance.entity";
 import { Arg, Ctx, Mutation, Query, Resolver } from "type-graphql";
 import { Context } from "../types/types";
 import { AllowanceInput, AllowanceResponse } from "./types";
+import { User } from "../entities/User.entity";
 
 @Resolver()
 export class AllowanceResolver {
   @Query(() => [AllowanceResponse])
-  async profiles(@Ctx() { em, user }: Context): Promise<AllowanceResponse> {
-    if (!user) throw new Error("You are not authenticated!");
+  async profiles(@Ctx() { em, userId }: Context): Promise<AllowanceResponse> {
+    const user = await em.findOneOrFail(User, { id: userId });
+    console.log(user);
+
     const allowance = await em.find(Allowance, {});
     return { data: allowance };
   }
@@ -15,9 +18,11 @@ export class AllowanceResolver {
   @Query(() => AllowanceResponse, { nullable: true })
   async profile(
     @Arg("id") id: string,
-    @Ctx() { em, user }: Context
+    @Ctx() { em, userId }: Context
   ): Promise<AllowanceResponse | null> {
-    if (!user) throw new Error("You are not authenticated!");
+    const user = await em.findOneOrFail(User, { id: userId });
+    console.log(user);
+
     const allowance = await em.findOne(Allowance, { id });
     return { data: allowance };
   }
@@ -25,9 +30,11 @@ export class AllowanceResolver {
   @Mutation(() => AllowanceResponse)
   async createAllowance(
     @Arg("allowance") allowance: AllowanceInput,
-    @Ctx() { em, user }: Context
+    @Ctx() { em, userId }: Context
   ): Promise<AllowanceResponse> {
-    if (!user) throw new Error("You are not authenticated!");
+    const user = await em.findOneOrFail(User, { id: userId });
+    console.log(user);
+
     const newAllowance = em.create(Allowance, allowance);
     await em.persistAndFlush(newAllowance);
     return { data: newAllowance };
@@ -36,9 +43,11 @@ export class AllowanceResolver {
   @Mutation(() => AllowanceResponse, { nullable: true })
   async updateAllowance(
     @Arg("allowance") allowance: AllowanceInput,
-    @Ctx() { em, user }: Context
+    @Ctx() { em, userId }: Context
   ): Promise<AllowanceResponse | null> {
-    if (!user) throw new Error("You are not authenticated!");
+    const user = await em.findOneOrFail(User, { id: userId });
+    console.log(user);
+
     const existing = await em.findOne(Allowance, { id: allowance.id });
 
     if (!existing) {
@@ -64,9 +73,11 @@ export class AllowanceResolver {
   @Mutation(() => Boolean)
   async deleteAllowance(
     @Arg("id") id: string,
-    @Ctx() { em, user }: Context
+    @Ctx() { em, userId }: Context
   ): Promise<boolean> {
-    if (!user) throw new Error("You are not authenticated!");
+    const user = await em.findOneOrFail(User, { id: userId });
+    console.log(user);
+
     await em.nativeDelete(Allowance, { id });
     return true;
   }
