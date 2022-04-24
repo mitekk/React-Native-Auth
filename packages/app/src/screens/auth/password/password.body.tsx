@@ -3,7 +3,7 @@ import {useFormContext} from 'react-hook-form';
 import {View} from 'react-native';
 import {Button, HelperText, useTheme} from 'react-native-paper';
 import {TextField} from '../../../components/formFields';
-import {AuthResetPasswordResponse} from '../../../types/user/response.type';
+import {AuthResetPasswordResponse} from '../../../types/response/auth.response.type';
 
 type PasswordBodyProps = {
   onSubmit: () => void;

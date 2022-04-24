@@ -37,7 +37,7 @@ export class Profile extends BaseEntity {
   @Property()
   themePref!: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { defaultValue: 0 })
   @Property()
   balance!: number;
 

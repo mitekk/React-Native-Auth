@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {SubmitHandler} from 'react-hook-form';
 import {useMutation} from 'urql';
 import {resetPassword_mutation} from '../../../api/auth/reset-password.mutation';
-import {AuthResetPasswordResponse} from '../../../types/user/response.type';
+import {AuthResetPasswordResponse} from '../../../types/response/auth.response.type';
 import {PasswordInput} from './password.screen';
 
 const initialUserRegisterResponse: AuthResetPasswordResponse = {
