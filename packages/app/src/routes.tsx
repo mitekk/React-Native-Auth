@@ -10,17 +10,9 @@ import {
   SplashScreen,
 } from './screens';
 import {useAuth} from './hooks/auth.hook';
-// import {useMutation} from 'urql';
 
 export const Routes = () => {
-  const {accessToken, isLoading, isSignout} = useAuth();
-  console.log('Routes', isLoading, accessToken);
-
-  // useEffect(() => {
-  //   if (accessToken && !isSignout) {
-  //     const [{}, login] = useMutation(user_query);
-  //   }
-  // }, [accessToken]);
+  const {accessToken, isLoading} = useAuth();
 
   if (isLoading) {
     return <SplashScreen />;

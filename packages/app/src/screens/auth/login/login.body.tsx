@@ -5,7 +5,7 @@ import {TouchableOpacity, View} from 'react-native';
 import {Button, HelperText, Text, useTheme} from 'react-native-paper';
 import {PasswordField, TextField} from '../../../components/formFields';
 import {RegisterScreenNavigationProp} from './login.screen';
-import {AuthLoginResponse} from '../../../types/user/response.type';
+import {AuthLoginResponse} from '../../../types/response/auth.response.type';
 
 type LoginBodyProps = {
   onSubmit: () => void;

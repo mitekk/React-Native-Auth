@@ -29,7 +29,7 @@ export interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
   isLoading: boolean;
-  isSignout: boolean;
+  isSignedIn: boolean;
 }
 
 interface AuthContextActions {
@@ -43,12 +43,14 @@ export const AuthContext = createContext<AuthContextType>({
   accessToken: null,
   refreshToken: null,
   isLoading: true,
-  isSignout: false,
+  isSignedIn: true,
   signIn: async () => {},
   signOut: async () => {},
 });
 
 const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
+  console.log('action', action);
+
   switch (action.type) {
     case 'RESTORE_TOKEN':
       return {
@@ -56,7 +58,7 @@ const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
         accessToken: action?.accessToken || null,
         refreshToken: action?.refreshToken || null,
         isLoading: false,
-        isSignout: false,
+        isSignedIn: true,
       };
     case 'SIGN_IN':
       return {
@@ -64,7 +66,7 @@ const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
         accessToken: action?.accessToken || null,
         refreshToken: action?.refreshToken || null,
         isLoading: false,
-        isSignout: false,
+        isSignedIn: true,
       };
     case 'SIGN_OUT':
       return {
@@ -72,7 +74,7 @@ const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
         accessToken: null,
         refreshToken: null,
         isLoading: false,
-        isSignout: true,
+        isSignedIn: false,
       };
   }
 };
@@ -83,7 +85,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
     accessToken: null,
     refreshToken: null,
     isLoading: true,
-    isSignout: false,
+    isSignedIn: true,
   });
 
   useEffect(() => {
@@ -106,7 +108,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
           refreshToken: storageRefreshToken,
         });
 
-        console.log('data', data);
+        console.log('refreshTokens', data);
 
         const accessToken = data?.refresh?.accessToken;
         const refreshToken = data?.refresh?.refreshToken;
@@ -116,6 +118,8 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
           dispatch({type: 'SIGN_OUT'});
         }
       }
+
+      dispatch({type: 'SIGN_OUT'});
     };
 
     initState();
@@ -124,13 +128,13 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
   const authActions: AuthContextActions = useMemo(
     () => ({
       signIn: async (accessToken: string, refreshToken: string) => {
-        dispatch({type: 'SIGN_IN', accessToken, refreshToken});
         await setAccessToken(accessToken);
         await setRefreshToken(refreshToken);
 
         console.log(
           `tokens stored in storage - accessToken: ${accessToken}, refreshToken: ${refreshToken}`,
         );
+        dispatch({type: 'SIGN_IN', accessToken, refreshToken});
       },
       signOut: async () => {
         await removeAccessToken();

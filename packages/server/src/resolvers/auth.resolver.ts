@@ -70,6 +70,7 @@ export class AuthResolver {
       });
 
       await em.persistAndFlush([userEntity, refreshTokenEntity]);
+      await userEntity.profiles.init({ populate: true });
 
       const { sendVerifyEmail } = Email();
       sendVerifyEmail({ to: email, name, token: verifyToken });

@@ -3,7 +3,7 @@ import {SubmitHandler} from 'react-hook-form';
 import {useMutation} from 'urql';
 import {register_mutation} from '../../../api/auth/register.mutation';
 import {useAuth} from '../../../hooks/auth.hook';
-import {AuthRegisterResponse} from '../../../types/user/response.type';
+import {AuthRegisterResponse} from '../../../types/response/auth.response.type';
 import {RegisterInput} from './register.screen';
 
 const initialUserRegisterResponse: AuthRegisterResponse = {

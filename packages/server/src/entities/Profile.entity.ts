@@ -37,15 +37,14 @@ export class Profile extends BaseEntity {
   @Property()
   themePref!: string;
 
-  @Field(() => Int)
+  @Field(() => Int, { defaultValue: 0 })
   @Property()
   balance!: number;
 
-  @Field(() => User)
   @ManyToOne(() => User)
   user!: User;
 
-  @Field(() => Allowance)
+  @Field(() => [Allowance], { nullable: "items" })
   @OneToMany(() => Allowance, (allowance) => allowance.profile)
   allowances = new Collection<Allowance>(this);
 }

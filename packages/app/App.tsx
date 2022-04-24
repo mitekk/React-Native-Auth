@@ -24,8 +24,8 @@ const App = () => {
   }
 
   return (
-    <UrqlProvider>
-      <AuthProvider>
+    <AuthProvider>
+      <UrqlProvider>
         <StoreProvider>
           <SafeAreaProvider>
             <ThemeProvider>
@@ -33,8 +33,8 @@ const App = () => {
             </ThemeProvider>
           </SafeAreaProvider>
         </StoreProvider>
-      </AuthProvider>
-    </UrqlProvider>
+      </UrqlProvider>
+    </AuthProvider>
   );
 };
 

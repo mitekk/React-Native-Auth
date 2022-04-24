@@ -1,5 +1,5 @@
 import {gql} from 'urql';
-import {AuthLoginResponse} from '../../types/user/response.type';
+import {AuthLoginResponse} from '../../types/response/auth.response.type';
 
 export const login_mutation = gql<AuthLoginResponse>`
   mutation Login($email: String!, $password: String!) {

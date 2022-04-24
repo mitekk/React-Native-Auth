@@ -1,5 +1,5 @@
 import {gql} from 'urql';
-import {AuthResetPasswordResponse} from '../../types/user/response.type';
+import {AuthResetPasswordResponse} from '../../types/response/auth.response.type';
 
 export const resetPassword_mutation = gql<AuthResetPasswordResponse>`
   mutation SendResetPasswordEmail($email: String!) {

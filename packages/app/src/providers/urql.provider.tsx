@@ -13,7 +13,7 @@ import {useAuth} from '../hooks/auth.hook';
 import {AuthState} from './auth.provider';
 
 const getClient = () => {
-  const {accessToken, refreshToken, isLoading, isSignout, signOut} = useAuth();
+  const {accessToken, refreshToken, isLoading, isSignedIn, signOut} = useAuth();
   return createClient({
     url: 'http://localhost:4000/graphql',
     exchanges: [
@@ -40,8 +40,8 @@ const getClient = () => {
           authState: AuthState;
           operation: any;
         }) => {
-          console.log('authExchang', authState, operation);
-
+          console.log('authExchang state', authState);
+          console.log('operation', operation);
           // the token isn't in the auth state, return the operation without changes
           if (!authState || !authState.accessToken || !authState.refreshToken) {
             return operation;
@@ -65,12 +65,12 @@ const getClient = () => {
           });
         },
         willAuthError: ({authState}) => {
+          console.log('willAuthError', !authState);
+
           if (!authState) {
-            console.log('failed');
             return true;
           }
           // e.g. check for expiration, existence of auth etc
-          console.log('passed');
           return false;
         },
         didAuthError: ({error}) => {
@@ -85,8 +85,11 @@ const getClient = () => {
 
           // for initial launch, fetch the auth state from storage (local storage, async storage etc)
           if (!authState) {
+            console.log('accessToken', accessToken);
+            console.log('refreshToken', refreshToken);
+
             if (accessToken && refreshToken) {
-              return {accessToken, refreshToken, isLoading, isSignout};
+              return {accessToken, refreshToken, isLoading, isSignedIn};
             }
 
             return null;

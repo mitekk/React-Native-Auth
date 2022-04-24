@@ -1,5 +1,5 @@
 import {gql} from 'urql';
-import {AuthRegisterResponse} from '../../types/user/response.type';
+import {AuthRegisterResponse} from '../../types/response/auth.response.type';
 
 export const register_mutation = gql<AuthRegisterResponse>`
   mutation Register($name: String!, $email: String!, $password: String!) {

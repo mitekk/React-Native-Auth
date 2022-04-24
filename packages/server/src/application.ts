@@ -19,6 +19,8 @@ export const Application = () => {
 
   const getUser = (token?: string) => {
     try {
+      console.log("token", token);
+
       if (token) {
         return JwtUtil.verify(token, TokenType.AccessToken);
       }
