@@ -5,12 +5,14 @@ interface UserState {
   id: string;
   name: string;
   email: string;
+  verified: boolean;
 }
 
 const initialState: UserState = {
   id: '',
   name: '',
   email: '',
+  verified: false,
 };
 
 export const userSlice = createSlice({
@@ -18,7 +20,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<UserState>) => {
-      state = action.payload;
+      state = {...state, ...action.payload};
     },
   },
 });
