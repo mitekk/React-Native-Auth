@@ -1,4 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {createSlice, current, PayloadAction} from '@reduxjs/toolkit';
 import type {RootState} from './store';
 
 interface UserState {
@@ -16,11 +16,15 @@ const initialState: UserState = {
 };
 
 export const userSlice = createSlice({
-  name: 'counter',
+  name: 'user',
   initialState,
   reducers: {
     setUser: (state, action: PayloadAction<UserState>) => {
-      state = {...state, ...action.payload};
+      const {id, email, name, verified} = action.payload;
+      state.id = id;
+      state.email = email;
+      state.name = name;
+      state.verified = verified;
     },
   },
 });
