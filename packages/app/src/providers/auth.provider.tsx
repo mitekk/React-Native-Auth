@@ -5,8 +5,6 @@ import React, {
   useEffect,
   useMemo,
 } from 'react';
-import {useMutation} from 'urql';
-import {refreshToken_mutation} from '../api/auth/reset-token.mutation';
 import {
   getAccessToken,
   getRefreshToken,
@@ -33,8 +31,8 @@ export interface AuthState {
 }
 
 interface AuthContextActions {
-  signIn: (accessToken: string, refreshToken: string) => void;
-  signOut: () => void;
+  signIn: (accessToken: string, refreshToken: string) => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 export interface AuthContextType extends AuthState, AuthContextActions {}
@@ -49,8 +47,6 @@ export const AuthContext = createContext<AuthContextType>({
 });
 
 const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
-  console.log('action', action);
-
   switch (action.type) {
     case 'RESTORE_TOKEN':
       return {
@@ -80,7 +76,6 @@ const AuthReducer = (prevState: AuthState, action: AuthAction): AuthState => {
 };
 
 export const AuthProvider = ({children}: {children: ReactNode}) => {
-  const [{}, refreshTokens] = useMutation(refreshToken_mutation);
   const [state, dispatch] = useReducer(AuthReducer, {
     accessToken: null,
     refreshToken: null,
@@ -90,36 +85,22 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
   useEffect(() => {
     const initState = async () => {
-      let storageRefreshToken;
-      let storageAccessToken;
       try {
-        storageAccessToken = await getAccessToken();
-        storageRefreshToken = await getRefreshToken();
-      } catch (e) {
-        console.warn(e);
-      }
+        const storageAccessToken = await getAccessToken();
+        const storageRefreshToken = await getRefreshToken();
 
-      console.log(
-        `got storage tokens - accessToken: ${storageAccessToken}, refreshToken: ${storageRefreshToken}`,
-      );
-
-      if (storageRefreshToken) {
-        const {data} = await refreshTokens({
-          refreshToken: storageRefreshToken,
-        });
-
-        console.log('refreshTokens', data);
-
-        const accessToken = data?.refresh?.accessToken;
-        const refreshToken = data?.refresh?.refreshToken;
-        if (accessToken && refreshToken) {
-          dispatch({type: 'RESTORE_TOKEN', accessToken, refreshToken});
+        if (storageAccessToken && storageRefreshToken) {
+          dispatch({
+            type: 'RESTORE_TOKEN',
+            accessToken: storageAccessToken,
+            refreshToken: storageRefreshToken,
+          });
         } else {
           dispatch({type: 'SIGN_OUT'});
         }
+      } catch (e) {
+        console.warn(e);
       }
-
-      dispatch({type: 'SIGN_OUT'});
     };
 
     initState();
