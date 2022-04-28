@@ -6,7 +6,7 @@ const store = configureStore({
   reducer: {
     user: userReducer,
   },
-  devTools: true,
+  devTools: false,
   enhancers: [
     devToolsEnhancer({realtime: false, port: 8081, hostname: 'localhost'}),
   ],
