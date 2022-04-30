@@ -21,7 +21,7 @@ export const Routes = () => {
   return (
     <NavigationContainer>
       {accessToken ? (
-        <MainStack.Navigator>
+        <MainStack.Navigator screenOptions={{headerShown: false}}>
           <MainStack.Screen name="Home" component={HomeScreen} />
         </MainStack.Navigator>
       ) : (

@@ -5,7 +5,7 @@ import {StyleSheet} from 'react-native';
 import {useTheme} from 'react-native-paper';
 import {LoginLayout} from '../../../layouts/login.layout';
 import {passwordSchema} from '../../../utils/validation/password.validation';
-import {AuthHeader} from '../components/header.login';
+import {AuthTitle} from '../components/title.auth';
 import {PasswordBody} from './password.body';
 import {usePassword} from './password.hook';
 
@@ -28,8 +28,8 @@ export const PasswordScreen = () => {
   return (
     <FormProvider {...methods}>
       <LoginLayout
-        header={<AuthHeader />}
-        headerStyle={{...styles.headerStyle, backgroundColor: colors.roseWhite}}
+        title={<AuthTitle />}
+        titleStyle={{...styles.titleStyle, backgroundColor: colors.roseWhite}}
         showBack>
         <PasswordBody onSubmit={methods.handleSubmit(onSubmit)} data={data} />
       </LoginLayout>
@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 50,
     marginVertical: 50,
   },
-  headerStyle: {
+  titleStyle: {
     justifyContent: 'center',
     alignItems: 'center',
   },

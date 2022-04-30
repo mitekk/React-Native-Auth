@@ -7,7 +7,7 @@ import {useTheme} from 'react-native-paper';
 import {LoginLayout} from '../../../layouts/login.layout';
 import {AuthStackParams} from '../../../types/route.type';
 import {registerSchema} from '../../../utils/validation/register.validation';
-import {AuthHeader} from '../components/header.login';
+import {AuthTitle} from '../components/title.auth';
 import {RegisterBody} from './register.body';
 import {useRegister} from './register.hook';
 
@@ -39,8 +39,8 @@ export const RegisterScreen = () => {
   return (
     <FormProvider {...methods}>
       <LoginLayout
-        header={<AuthHeader />}
-        headerStyle={{...styles.headerStyle, backgroundColor: colors.roseWhite}}
+        title={<AuthTitle />}
+        titleStyle={{...styles.titleStyle, backgroundColor: colors.roseWhite}}
         showBack={false}>
         <RegisterBody onSubmit={methods.handleSubmit(onSubmit)} data={data} />
       </LoginLayout>
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 50,
     marginVertical: 50,
   },
-  headerStyle: {
+  titleStyle: {
     justifyContent: 'center',
     alignItems: 'center',
   },

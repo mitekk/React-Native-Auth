@@ -2,7 +2,7 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useTheme, Text} from 'react-native-paper';
 
-export const AuthHeader = () => {
+export const AuthTitle = () => {
   const {colors, fonts} = useTheme();
 
   return (
