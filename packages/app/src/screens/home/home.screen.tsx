@@ -5,6 +5,7 @@ import {useQuery} from 'urql';
 import {user_query} from '../../api/auth/user.gql';
 import {useAuth} from '../../hooks/auth.hook';
 import {useAppDispatch, useAppSelector} from '../../hooks/store.hook';
+import {HomeLayout} from '../../layouts/home.layout';
 import {selectUser, setUser} from '../../state/user.slice';
 
 export const HomeScreen = () => {
@@ -31,15 +32,11 @@ export const HomeScreen = () => {
   }, [userData]);
 
   return (
-    <View style={styles.homeContainer}>
-      <Text>Home</Text>
-      <Text>{user?.name}</Text>
-      <Button onPress={signOut}>signout</Button>
-      <Button onPress={executeUserQuery}>reload</Button>
-    </View>
+    <HomeLayout>
+      <View>
+        <Button onPress={signOut}>signout</Button>
+        <Button onPress={executeUserQuery}>reload</Button>
+      </View>
+    </HomeLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  homeContainer: {flex: 1},
-});

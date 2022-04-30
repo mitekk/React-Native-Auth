@@ -6,11 +6,11 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {RegisterScreenNavigationProp} from '../screens/auth/login/login.screen';
 
 type LayoutProps = {
-  header?: JSX.Element;
+  title?: JSX.Element;
   children?: JSX.Element;
   showBack?: boolean;
   showOption?: boolean;
-  headerStyle?: ViewStyle;
+  titleStyle?: ViewStyle;
   bodyStyle?: ViewStyle;
   optionClick?: () => void;
 };
@@ -21,11 +21,11 @@ const defaultProps: LayoutProps = {
 };
 
 const LoginLayout = ({
-  header,
+  title,
   children,
   showBack,
   showOption,
-  headerStyle,
+  titleStyle,
   bodyStyle,
   optionClick,
 }: LayoutProps) => {
@@ -37,9 +37,9 @@ const LoginLayout = ({
       edges={['top']}
       style={[
         styles.container,
-        {backgroundColor: headerStyle?.backgroundColor || colors.mossGreen},
+        {backgroundColor: titleStyle?.backgroundColor || colors.mossGreen},
       ]}>
-      <View style={[headerStyle, styles.topSection]}>
+      <View style={[titleStyle, styles.topSection]}>
         {showBack && (
           <TouchableOpacity onPress={goBack} style={styles.navBack}>
             <Avatar.Icon
@@ -58,7 +58,7 @@ const LoginLayout = ({
             />
           </TouchableOpacity>
         )}
-        {header}
+        {title}
       </View>
 
       <View

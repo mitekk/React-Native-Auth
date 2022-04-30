@@ -7,7 +7,7 @@ import {useTheme} from 'react-native-paper';
 import {LoginLayout} from '../../../layouts/login.layout';
 import {AuthStackParams} from '../../../types/route.type';
 import {loginSchema} from '../../../utils/validation/login.validation';
-import {AuthHeader} from '../components/header.login';
+import {AuthTitle} from '../components/title.auth';
 import {LoginBody} from './login.body';
 import {useLogin} from './login.hook';
 
@@ -22,8 +22,8 @@ export type LoginInput = {
 };
 
 const defaultLoginValues: LoginInput = {
-  email: 'mitekk11@gmail.com',
-  password: 'vwpxvD3u!',
+  email: 't_login@gmail.com',
+  password: '123qweASD!',
 };
 
 export const LoginScreen = () => {
@@ -37,8 +37,8 @@ export const LoginScreen = () => {
   return (
     <FormProvider {...methods}>
       <LoginLayout
-        header={<AuthHeader />}
-        headerStyle={{...styles.headerStyle, backgroundColor: colors.roseWhite}}
+        title={<AuthTitle />}
+        titleStyle={{...styles.titleStyle, backgroundColor: colors.roseWhite}}
         showBack>
         <LoginBody onSubmit={methods.handleSubmit(onSubmit)} data={data} />
       </LoginLayout>
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 50,
     marginVertical: 50,
   },
-  headerStyle: {
+  titleStyle: {
     justifyContent: 'center',
     alignItems: 'center',
   },
