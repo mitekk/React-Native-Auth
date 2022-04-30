@@ -22,8 +22,8 @@ export type LoginInput = {
 };
 
 const defaultLoginValues: LoginInput = {
-  email: 'mitekk11@gmail.com',
-  password: 'vwpxvD3u!',
+  email: 't_login@gmail.com',
+  password: '123qweASD!',
 };
 
 export const LoginScreen = () => {
