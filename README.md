@@ -79,7 +79,9 @@ yarn <ios/android>
 yarn dev
 ```
 
-<img src="register.png" width="150"/>
-<img src="login.png" width="150"/>
-<img src="reset.png" width="150"/>
-<img src="logged.png" width="150"/>
+<p float="left">
+    <img src="register.png" width="150"/>
+    <img src="login.png" width="150"/>
+    <img src="reset.png" width="150"/>
+    <img src="logged.png" width="150"/>
+</p>
