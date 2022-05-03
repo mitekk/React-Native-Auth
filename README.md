@@ -11,8 +11,6 @@ This example is a template for basic authentication flows with according UI in w
 
 ## Stack
 
----
-
 ### web
 
 - next.js - framework
@@ -37,8 +35,6 @@ This example is a template for basic authentication flows with according UI in w
 
 ## Setup
 
----
-
 #### Environment
 
 - yarn 1.22.15
@@ -62,8 +58,6 @@ yarn --cwd ./packages/web
 ```
 
 ## Run
-
----
 
 #### From packages/server folder - to load server
 
