@@ -79,7 +79,7 @@ yarn <ios/android>
 yarn dev
 ```
 
-[<img src="register.png" width="200"/>]
-[<img src="login.png" width="200"/>]
-[<img src="reset.png" width="200"/>]
-[<img src="logged.png" width="200"/>]
+<img src="register.png" width="150"/>
+<img src="login.png" width="150"/>
+<img src="reset.png" width="150"/>
+<img src="logged.png" width="150"/>
