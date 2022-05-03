@@ -9,13 +9,9 @@ This example is a template for basic authentication flows with according UI in w
 - Forgot password (by email)
 - Verify token (by email)
 
+<br />
+
 ## Stack
-
-### web
-
-- next.js - framework
-- urql - query lib
-- emotion - design
 
 ### api
 
@@ -32,6 +28,14 @@ This example is a template for basic authentication flows with according UI in w
 - urql - GraphQL for API calls (inc. tokens managment)
 - react-redux - user state managment
 - expo-secure-store - secure tokens storage
+
+### web
+
+- next.js - react framework
+- urql - GraphQL for API calls
+- emotion - css styles composition
+
+<br />
 
 ## Setup
 
@@ -57,6 +61,8 @@ yarn --cwd ./packages/web
  yarn seed:profile_icon
 ```
 
+<br />
+
 ## Run
 
 #### From packages/server folder - to load server
@@ -78,6 +84,10 @@ yarn <ios/android>
 ```bash
 yarn dev
 ```
+
+<br />
+
+## Examples
 
 <p float="left">
     <img src="register.png" width="150"/>
