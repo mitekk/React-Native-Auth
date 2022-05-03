@@ -28,8 +28,6 @@ const getClient = () => {
           );
 
           if (isAuthError) {
-            console.log('isAuthError', isAuthError);
-
             await signOut();
           }
         },
@@ -72,7 +70,6 @@ const getClient = () => {
           return false;
         },
         didAuthError: ({error}) => {
-          console.log('didAuthError', error);
           // check if the error was an auth error (this can be implemented in various ways, e.g. 401 or a special error code)
           return error.graphQLErrors.some(
             e => e.extensions?.code === 'FORBIDDEN',

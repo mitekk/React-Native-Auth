@@ -111,10 +111,6 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
       signIn: async (accessToken: string, refreshToken: string) => {
         await setAccessToken(accessToken);
         await setRefreshToken(refreshToken);
-
-        console.log(
-          `tokens stored in storage - accessToken: ${accessToken}, refreshToken: ${refreshToken}`,
-        );
         dispatch({type: 'SIGN_IN', accessToken, refreshToken});
       },
       signOut: async () => {
