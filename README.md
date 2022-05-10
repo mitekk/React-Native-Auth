@@ -1,8 +1,12 @@
 # React Native auth flow
 
-This example is a template for basic authentication flows with according UI in web and native application (ios/android).
+This project was created as part of explore and implement of new javascript libraries/framework that I yet had the opportunity to work with. It is native application of authentication screens with support with restore password and account verification flows, which are partly web and email pages. [OWASP](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html) auth security best practices were taken into account but it always can be better.
 
-## Including:
+<br />
+
+## Screens:
+
+#### with support for form fields and server validation error notifications
 
 - Login
 - Register
@@ -11,29 +15,39 @@ This example is a template for basic authentication flows with according UI in w
 
 <br />
 
+<p float="left">
+    <img src="./screens/register.png" width="150"/>
+    <img src="./screens/login.png" width="150"/>
+    <img src="./screens/reset.png" width="150"/>
+    <img src="./screens/logged.png" width="150"/>
+</p>
+<br />
+
 ## Stack
 
 ### api
 
-- node.js - node server
-- apollo-server-express - as an add-on for GraphQL compatibility
-- postgresql - relational database
-- mikro-orm - typescript ORM
-- type-graphql - typescript GraphQL schemas
+- [node.js](https://nodejs.org/en/) - node server
+- [apollo-server-express](https://github.com/apollographql/apollo-server) - as an add-on for GraphQL compatibility
+- [mikro-orm](https://mikro-orm.io/) - typescript ORM
+- [typegraphql](https://typegraphql.com/) - typescript GraphQL schemas
+- [postgresql](https://www.postgresql.org/) - relational database
 
 ### application
 
-- react-native - Android and iOS using React
-- react-native-paper - material design for RN
-- urql - GraphQL for API calls (inc. tokens managment)
-- react-redux - user state managment
-- expo-secure-store - secure tokens storage
+- [react-native](https://reactnative.dev/) - Android and iOS using React
+- [react-redux](https://react-redux.js.org/) - user state managment
+- [urql](https://formidable.com/open-source/urql/) - GraphQL API calls (inc. tokens managment)
+- [expo-secure-store](https://docs.expo.dev/versions/latest/sdk/securestore/) - secure tokens storage
+- [react-hook-form](https://react-hook-form.com/) - forms with validations
+- [yup](https://github.com/jquense/yup/) - schema validation
+- [react-native-paper](https://callstack.github.io/react-native-paper/) - material design for RN
 
 ### web
 
-- next.js - react framework
-- urql - GraphQL for API calls
-- emotion - css styles composition
+- [next.js](https://nextjs.org/) - react framework
+- [urql](https://formidable.com/open-source/urql/) - GraphQL API calls
+- [emotion](https://github.com/emotion-js/emotion/tree/main/packages/react) - css styles composition
 
 <br />
 
@@ -42,7 +56,7 @@ This example is a template for basic authentication flows with according UI in w
 #### Environment
 
 - yarn 1.22.15
-- node lts/fermium
+- node lts/fermium (for [nvm](https://github.com/nvm-sh/nvm) type in terminal at project\`s root folder: `"nvm use"`)
 
 #### Run from root folder
 
@@ -60,6 +74,10 @@ yarn --cwd ./packages/web
  yarn migration:update
  yarn seed:profile_icon
 ```
+
+#### [Ethereal](https://ethereal.email/) SMTP service
+
+navigate to `./packages/server/src/managers/email.manager.ts` to setup account credentials
 
 <br />
 
@@ -86,12 +104,3 @@ yarn dev
 ```
 
 <br />
-
-## Examples
-
-<p float="left">
-    <img src="register.png" width="150"/>
-    <img src="login.png" width="150"/>
-    <img src="reset.png" width="150"/>
-    <img src="logged.png" width="150"/>
-</p>
