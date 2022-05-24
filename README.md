@@ -1,6 +1,6 @@
 # React Native auth flow
 
-This project was created as part of explore and implement of new javascript libraries/framework that I yet had the opportunity to work with. It is native application of authentication screens with restore password and account verification flows, which are partly web and email pages. With [OWASP](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html) auth security best practices were taken into consideration.
+This project was created as part of explore and implement of new javascript libraries/framework that I yet had the opportunity to develop with. It is native application of authentication screens with restore password and account verification flows, which are partly web and email pages.
 
 <br />
 
